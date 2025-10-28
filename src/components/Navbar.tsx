@@ -29,7 +29,7 @@ export function Navbar() {
       initial={{ y: -30, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="sticky top-0 z-40 bg-background/70 backdrop-blur-md border-b"
+      className="sticky top-0 z-15 bg-background/0 backdrop-blur-md"
     >
       <div className="max-w-6xl mx-auto flex justify-between items-center p-4">
         <Link
