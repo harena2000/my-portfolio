@@ -76,6 +76,10 @@ export function Contact() {
           </motion.form>
         </div>
       </div>
+      <div className="relative flex justify-end">
+          <div className="absolute -top-10 right-0 w-[400px] h-[400px] bg-blue-600/20 rounded-full blur-3xl" />
+        </div>
+      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
     </AnimatedSection>
   );
 }

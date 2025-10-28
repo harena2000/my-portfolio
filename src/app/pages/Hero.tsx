@@ -3,16 +3,17 @@
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { CV } from '@/constant/cv'
-import { AnimatedSection } from '@/components/AnimatedSection'
+import Image from 'next/image'
 
 export function Hero() {
   return (
-    <AnimatedSection
+    <section
       id="home"
       className="relative min-h-screen flex flex-col justify-center px-6 overflow-hidden bg-gradient-to-b from-[#020618] via-[#0f1e64] to-[#132f9c] text-white"
     >
       {/* Content Container */}
       <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-8 items-center z-10">
+        
         {/* Left Text Section */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -44,10 +45,27 @@ export function Hero() {
           </div>
         </motion.div>
 
-        {/* Right Spacer (optional image or gradient glow) */}
-        <div className="relative flex justify-end">
+        {/* Right Image Section */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+          className="relative flex justify-center md:justify-end"
+        >
+          {/* Glow behind image */}
           <div className="absolute -top-10 right-0 w-[400px] h-[400px] bg-blue-600/20 rounded-full blur-3xl" />
-        </div>
+          
+          {/* Profile Image */}
+          <div className="relative w-60 h-60 md:w-72 md:h-72 rounded-full overflow-hidden border-4 border-white/10 shadow-[0_0_40px_rgba(59,130,246,0.25)]">
+            <Image
+              src="/profile.png"
+              alt="Harena Rico"
+              fill
+              className="object-cover rounded-full"
+              priority
+            />
+          </div>
+        </motion.div>
       </div>
 
       {/* Cards Section */}
@@ -81,6 +99,6 @@ export function Hero() {
 
       {/* Gradient glow background overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
-    </AnimatedSection>
+    </section>
   )
 }

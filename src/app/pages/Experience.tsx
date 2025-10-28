@@ -21,9 +21,9 @@ export function Experience() {
         </motion.h2>
 
         <div className="space-y-6">
-          {CV.experience.map((e) => (
+          {CV.experience.map((e, idx) => (
             <motion.div
-              key={e.company}
+              key={idx}
               whileHover={{ scale: 1.02, y: -3 }}
               className="rounded-xl bg-white/5 backdrop-blur-md border border-white/10 p-6 hover:shadow-[0_0_25px_rgba(59,130,246,0.15)] transition"
             >
