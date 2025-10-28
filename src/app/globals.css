@@ -283,3 +283,31 @@ body {
 section {
   scroll-snap-align: start;
 }
+
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.bg-animated-gradient {
+  background: linear-gradient(-45deg, #020618, #0f1e64, #132f9c, #1a237e);
+  background-size: 400% 400%;
+  animation: gradientMove 20s ease infinite;
+}
+
+.skill-logo {
+  transition: filter 0.3s ease;
+}
+
+.skill-logo:hover {
+  filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.6));
+}

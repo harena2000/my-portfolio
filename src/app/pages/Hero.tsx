@@ -24,7 +24,7 @@ export function Hero() {
           <div>
             <h1 className="text-5xl md:text-6xl font-extrabold leading-tight tracking-tight">
               Harena Rico <br />
-              <span className="text-white/90">Mahefaniaiana.</span>
+              <span className="text-white/90">Mahefaniaina.</span>
             </h1>
             <p className="mt-4 text-gray-300 max-w-lg">
               {CV.profile}

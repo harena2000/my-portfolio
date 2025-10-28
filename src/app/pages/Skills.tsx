@@ -1,9 +1,10 @@
-'use client'
+"use client";
 
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { Progress } from "@/components/ui/progress";
 import { CV } from "@/constant/cv";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 export function Skills() {
   return (
@@ -28,11 +29,26 @@ export function Skills() {
               whileHover={{ scale: 1.02, y: -3 }}
               className="rounded-xl bg-white/5 backdrop-blur-md border border-white/10 p-6 hover:shadow-[0_0_25px_rgba(59,130,246,0.15)] transition"
             >
-              <div className="flex justify-between mb-2">
-                <span className="font-medium">{s.name}</span>
-                <span className="text-sm text-gray-300">{s.level}%</span>
+              <div className="grid grid-rows-[32px,auto] items-center gap-2">
+                {s.logo && (
+                  <div className="relative w-8 h-8 row-span-1">
+                    <Image
+                      src={s.logo}
+                      alt={`${s.name} logo`}
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
+                )}
+                <div className="">
+                  <div className="flex justify-between mb-2">
+                    {" "}
+                    <span className="font-medium">{s.name}</span>{" "}
+                    <span className="text-sm text-gray-300">{s.level}%</span>{" "}
+                  </div>{" "}
+                  <Progress value={s.level} />
+                </div>
               </div>
-              <Progress value={s.level} />
             </motion.div>
           ))}
         </div>
