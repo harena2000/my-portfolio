@@ -9,6 +9,9 @@ export default function Home() {
         <Projects />
         <Experience />
         <Contact />
+        <footer className="text-center text-sm py-6 text-muted-foreground">
+          © {new Date().getFullYear()} Harena Rico
+        </footer>
       </div>
     </main>
   );

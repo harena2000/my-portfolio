@@ -61,8 +61,9 @@ export function Hero() {
               src="/profile.png"
               alt="Harena Rico"
               fill
-              className="object-cover rounded-full"
+              className="object-cover rounded-cover"
               priority
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           </div>
         </motion.div>
@@ -75,9 +76,9 @@ export function Hero() {
         transition={{ duration: 0.9, delay: 0.3 }}
         className="mt-16 md:mt-24 max-w-7xl mx-auto grid md:grid-cols-3 gap-6 z-10"
       >
-        {CV.experience.slice(0, 3).map((exp) => (
+        {CV.experience.slice(0, 3).map((exp, idx) => (
           <div
-            key={exp.company}
+            key={idx}
             className="rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 p-6 hover:shadow-[0_0_25px_rgba(59,130,246,0.15)] transition"
           >
             <div className="flex items-center gap-3 mb-3">
