@@ -23,6 +23,61 @@ export default function Home() {
     return () => window.removeEventListener("keydown", handleKey);
   }, []);
 
+  useEffect(() => {
+    const handler = (ev: Event) => {
+      const detail = (ev as CustomEvent).detail as { id?: string; index?: number } | undefined;
+      const container = containerRef.current;
+      if (!container) return;
+
+      // prefer index-based horizontal scroll when provided
+      if (detail?.index !== undefined && typeof detail.index === "number") {
+        const left = window.innerWidth * detail.index;
+        container.scrollTo({ left, behavior: "smooth" });
+        return;
+      }
+
+      // fallback: try scroll to element by id (if sections rendered as anchors)
+      if (detail?.id) {
+        const el = document.getElementById(detail.id);
+        if (el) {
+          // compute element's left relative to container
+          const rect = el.getBoundingClientRect();
+          const containerRect = container.getBoundingClientRect();
+          const left = container.scrollLeft + (rect.left - containerRect.left);
+          container.scrollTo({ left, behavior: "smooth" });
+        }
+      }
+    };
+
+    window.addEventListener("navigateToSection", handler as EventListener);
+    return () => window.removeEventListener("navigateToSection", handler as EventListener);
+  }, []);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    let raf = 0;
+    const onScroll = () => {
+      if (raf) cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const width = window.innerWidth || 1;
+        const index = Math.round(container.scrollLeft / width);
+        window.dispatchEvent(new CustomEvent("sectionChanged", { detail: { index } }));
+      });
+    };
+
+    container.addEventListener("scroll", onScroll, { passive: true });
+    // emit initial position
+    const initIndex = Math.round(container.scrollLeft / (window.innerWidth || 1));
+    window.dispatchEvent(new CustomEvent("sectionChanged", { detail: { index: initIndex } }));
+
+    return () => {
+      container.removeEventListener("scroll", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [containerRef]);
+
   return (
     <main
       ref={containerRef}

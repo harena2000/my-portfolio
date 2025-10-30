@@ -112,7 +112,7 @@
   --sidebar-ring: oklch(0.551 0.027 264.364);
 }
 
-html, body,
+html,body,
 #__next {
   height: 100dvh;
   overflow: hidden;
