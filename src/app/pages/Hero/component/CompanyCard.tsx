@@ -13,7 +13,7 @@ export function CompanyCard({ exp }: { exp: Company }) {
     <div
       className="rounded-2xl bg-white/2 border border-white/10 p-6 hover:shadow-[0_0_15px_rgba(59,130,246,0.35)] transition"
       style={{
-        backdropFilter: "blur(10px)",
+        backdropFilter: "blur(8px)",
         WebkitBackdropFilter: "blur(10px)",
       }}
     >

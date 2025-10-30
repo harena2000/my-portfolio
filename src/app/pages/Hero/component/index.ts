@@ -1,1 +1,1 @@
-export { CompanyCard } from "@/app/pages/Hero/component/CompanyCard";
+export * from "@/app/pages/Hero/component/CompanyCard";

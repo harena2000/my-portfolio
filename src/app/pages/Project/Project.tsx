@@ -10,7 +10,7 @@ export function Projects() {
       id="project"
       className="w-full h-full flex items-center justify-center text-white py-12"
     >
-      <div className="max-w-6xl mx-auto px-6 w-full">
+      <div className="max-w-8xl mx-auto px-6 w-full">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -20,7 +20,7 @@ export function Projects() {
           Projects
         </motion.h2>
 
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid md:grid-cols-5 gap-8">
           {CV.projects.map((p) => (
             <motion.div
               key={p.title}

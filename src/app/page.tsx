@@ -1,6 +1,8 @@
 "use client";
 
 import { Contact, Experience, Hero, Projects, Skills } from "@/app/pages";
+import { Particles } from "@/components/ui/shadcn-io/particles";
+import { ShootingStars } from "@/components/ui/shadcn-io/shooting-stars";
 import { motion } from "framer-motion";
 import { useEffect, useRef } from "react";
 
@@ -27,9 +29,25 @@ export default function Home() {
       className="relative h-dvh w-screen overflow-x-auto overflow-y-hidden snap-x snap-mandatory flex scrollbar-none scroll-smooth bg-gradient-to-b from-[#020618] via-[#0f1e64] to-[#132f9c] text-white"
     >
       <div className="fixed inset-0 z-0 pointer-events-none">
-+        <div className="absolute inset-0 bg-[url('/images/background.jpg')] bg-center bg-cover opacity-30" />
-+        <div className="absolute inset-0 bg-black/20" />
-+      </div>
+        <ShootingStars
+          className="absolute inset-0"
+          starColor="#9E00FF"
+          trailColor="#2EB9DF"
+          minSpeed={150}
+          maxSpeed={350}
+          minDelay={100}
+          maxDelay={420}
+        />
+        <Particles
+          className="absolute inset-0"
+          quantity={2000}
+          ease={30}
+          staticity={50}
+          color="#ffffff"
+          size={0.8}
+        />
+        <div className="absolute inset-0 bg-black/20" />
+      </div>
 
       <section className="snap-center flex-shrink-0 w-screen h-dvh flex items-center justify-center">
         <Hero />
