@@ -10,7 +10,7 @@ export function Skills() {
   return (
     <AnimatedSection
       id="skills"
-      className="min-h-screen flex items-center justify-center text-white"
+      className="w-full h-full flex items-center justify-center text-white"
     >
       <div className="max-w-8xl mx-auto px-20 w-full">
         <motion.h2

@@ -11,7 +11,7 @@ export function Contact() {
   return (
     <AnimatedSection
       id="contact"
-      className="min-h-screen flex items-center justify-center text-white py-12"
+      className="w-full h-full flex items-center justify-center text-white py-12"
     >
       <div className="max-w-4xl mx-auto px-6 w-full">
         <motion.h2

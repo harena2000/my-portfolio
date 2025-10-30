@@ -9,7 +9,7 @@ export function Hero() {
   return (
     <section
       id="home"
-      className="relative min-h-screen flex flex-col justify-center px-6 overflow-hidden bg-gradient-to-b from-[#020618] via-[#0f1e64] to-[#132f9c] text-white"
+      className="min-h-screen flex flex-col items-center justify-center px-6 overflow-hidden bg-gradient-to-b from-[#020618] via-[#0f1e64] to-[#132f9c] text-white"
     >
       {/* Content Container */}
       <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-8 items-center z-10">

@@ -1,17 +1,68 @@
+"use client";
+
 import { Contact, Experience, Hero, Projects, Skills } from "@/app/pages";
+import { motion } from "framer-motion";
+import { useEffect, useRef } from "react";
 
 export default function Home() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      const container = containerRef.current;
+      if (!container) return;
+      const scrollAmount = window.innerWidth;
+      if (e.key === "ArrowRight")
+        container.scrollBy({ left: scrollAmount, behavior: "smooth" });
+      if (e.key === "ArrowLeft")
+        container.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, []);
+
   return (
-    <main className="relative min-h-screen text-white overflow-x-hidden bg-gradient-to-b from-[#0a0a2e] via-[#0f1e64] to-[#132f9c]">
-      <div className="inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top_left,rgba(37,99,235,0.15),transparent_60%)]">
+    <main
+      ref={containerRef}
+      className="relative h-dvh w-screen overflow-x-auto overflow-y-hidden snap-x snap-mandatory flex scrollbar-none scroll-smooth bg-gradient-to-b from-[#020618] via-[#0f1e64] to-[#132f9c] text-white"
+    >
+      {/* Each section is now a horizontal slide */}
+      <section className="snap-center flex-shrink-0 w-screen h-dvh flex items-center justify-center">
         <Hero />
+      </section>
+
+      <section className="snap-center flex-shrink-0 w-screen h-dvh flex items-center justify-center">
         <Skills />
+      </section>
+
+      <section className="snap-center flex-shrink-0 w-screen h-dvh flex items-center justify-center">
         <Projects />
+      </section>
+
+      <section className="snap-center flex-shrink-0 w-screen h-dvh flex items-center justify-center">
         <Experience />
+      </section>
+
+      <section className="snap-center flex-shrink-0 w-screen h-dvh flex items-center justify-center">
         <Contact />
-        <footer className="text-center text-sm py-6 text-muted-foreground">
-          © {new Date().getFullYear()} Harena Rico
-        </footer>
+      </section>
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 flex gap-3 z-50">
+        {["Home", "Skills", "Projects", "Experience", "Contact"].map((_, i) => (
+          <motion.div
+            key={i}
+            className="w-3 h-3 rounded-full bg-white/40 hover:bg-white transition cursor-pointer"
+            whileHover={{ scale: 1.2 }}
+            onClick={() => {
+              const container = containerRef.current;
+              if (container) {
+                container.scrollTo({
+                  left: window.innerWidth * i,
+                  behavior: "smooth",
+                });
+              }
+            }}
+          />
+        ))}
       </div>
     </main>
   );

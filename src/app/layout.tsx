@@ -21,19 +21,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${montserratFont.className} antialiased`}
-      >
+      <body className={`${montserratFont.className} antialiased`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
           enableSystem={false}
         >
-          <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
-            <Navbar />
-            {children}
-            
-          </div>
+          <Navbar />
+          {children}
         </ThemeProvider>
       </body>
     </html>
