@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { CV } from '@/constant/cv'
 import Image from 'next/image'
+import { CompanyCard } from '@/app/pages/Hero/component'
 
 export function Hero() {
   return (
@@ -77,29 +78,12 @@ export function Hero() {
         className="mt-16 md:mt-24 max-w-7xl mx-auto grid md:grid-cols-3 gap-6 z-10"
       >
         {CV.experience.slice(0, 3).map((exp, idx) => (
-          <div
-            key={idx}
-            className="rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 p-6 hover:shadow-[0_0_25px_rgba(59,130,246,0.15)] transition"
-          >
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center font-bold text-white">
-                {exp.company[0]}
-              </div>
-              <div>
-                <h4 className="font-semibold text-white">{exp.company}</h4>
-                <p className="text-sm text-gray-400">{exp.role}</p>
-              </div>
-            </div>
-            <p className="text-gray-300 text-sm mb-3">{exp.details}</p>
-            <div className="text-xs text-gray-400">
-              {exp.from} – {exp.to}
-            </div>
-          </div>
+          <CompanyCard key={idx} exp={exp} />
         ))}
       </motion.div>
 
       {/* Gradient glow background overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
+      {/* <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" /> */}
     </section>
   )
 }

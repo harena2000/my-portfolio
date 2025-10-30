@@ -12,18 +12,7 @@ const menu = [
   "Resume",
 ];
 
-export function Navbar() {
-  // 👇 This function handles smooth scrolling
-  const handleScroll = (
-    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
-    id: string
-  ) => {
-    e.preventDefault();
-    const element = document.querySelector(id);
-    // 👇 The magic happens here
-    element?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
-
+export function Navbar() {  
   return (
     <motion.nav
       initial={{ y: -30, opacity: 0 }}
@@ -31,10 +20,9 @@ export function Navbar() {
       transition={{ duration: 0.5 }}
       className="sticky top-0 z-15 bg-background/0 backdrop-blur-md"
     >
-      <div className="max-w-6xl mx-auto flex justify-between items-center p-4">
+      <div className="max-w-4xl mx-auto flex justify-between items-center p-4">
         <Link
           href="#home"
-          onClick={(e) => handleScroll(e, "#home")}
           className="font-bold text-lg"
         >
           Harena Rico
@@ -47,7 +35,6 @@ export function Navbar() {
               <a
                 key={m}
                 href={id}
-                onClick={(e) => handleScroll(e, id)} // 👈 Smooth scroll trigger
                 className="text-sm hover:text-primary transition"
               >
                 {m}

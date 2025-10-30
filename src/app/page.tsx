@@ -26,7 +26,11 @@ export default function Home() {
       ref={containerRef}
       className="relative h-dvh w-screen overflow-x-auto overflow-y-hidden snap-x snap-mandatory flex scrollbar-none scroll-smooth bg-gradient-to-b from-[#020618] via-[#0f1e64] to-[#132f9c] text-white"
     >
-      {/* Each section is now a horizontal slide */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
++        <div className="absolute inset-0 bg-[url('/images/background.jpg')] bg-center bg-cover opacity-30" />
++        <div className="absolute inset-0 bg-black/20" />
++      </div>
+
       <section className="snap-center flex-shrink-0 w-screen h-dvh flex items-center justify-center">
         <Hero />
       </section>
@@ -64,6 +68,9 @@ export default function Home() {
           />
         ))}
       </div>
+      <footer className="fixed bottom-4 right-4 text-sm text-white/50 z-50">
+        &copy; {new Date().getFullYear()} Harena Rico. All rights reserved.
+      </footer>
     </main>
   );
 }

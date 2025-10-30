@@ -19,7 +19,7 @@ export function AnimatedSection({ children, className, id }: Props) {
 
   return (
     <motion.section
-      id={id}       // 👈 Pass it to the rendered <section>
+      id={id}
       ref={ref}
       className={className}
       variants={{
