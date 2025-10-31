@@ -123,7 +123,7 @@ export default function Home() {
       <section className="snap-center flex-shrink-0 w-screen h-dvh flex items-center justify-center">
         <Contact />
       </section>
-      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 flex gap-3 z-50">
+      {/* <div className="fixed bottom-6 left-1/2 -translate-x-1/2 flex gap-3 z-50">
         {["Home", "Skills", "Projects", "Experience", "Contact"].map((_, i) => (
           <motion.div
             key={i}
@@ -140,7 +140,7 @@ export default function Home() {
             }}
           />
         ))}
-      </div>
+      </div> */}
       <footer className="fixed bottom-4 right-4 text-sm text-white/50 z-50">
         &copy; {new Date().getFullYear()} Harena Rico. All rights reserved.
       </footer>

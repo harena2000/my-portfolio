@@ -127,11 +127,23 @@
   }
 }
 
-/* .scrollbar-none {
-  scrollbar-width: none;
-} .scrollbar-none::-webkit-scrollbar {
+.scrollbar-none::-webkit-scrollbar {
   display: none;
-} */
+}
+
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-furtif::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.scrollbar-furtif::-webkit-scrollbar-track {
+  background: transparent;
+}
 
 .scrollbar-furtif {
   scrollbar-width: thin;

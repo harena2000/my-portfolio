@@ -41,11 +41,11 @@ export function Skills() {
               Skills
             </motion.h2>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
-              {CV.skills.map((s) => (
-                <SkillsCard key={s.name} skill={s} align="right" />
-              ))}
-            </div>
+            <div className="flex flex-wrap justify-center sm:justify-start gap-6">
+  {CV.skills.map((s) => (
+    <SkillsCard key={s.name} skill={s} align="right" />
+  ))}
+</div>
           </div>
         </div>
       </div>

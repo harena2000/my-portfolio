@@ -15,14 +15,15 @@ interface SkillsCardProps {
   align?: "left" | "right";
 }
 
-export function SkillsCard({ skill }: SkillsCardProps) {
+export function SkillsCard({ skill, align = "right" }: SkillsCardProps) {
   return (
     <motion.div
       whileTap={{ scale: 1.02, y: -3 }}
-      className="flex flex-col sm:flex-row items-center sm:items-center gap-4 rounded-2xl bg-white/5 border border-white/10 p-4 sm:p-6 hover:shadow-[0_0_15px_rgba(59,130,246,0.35)] transition w-full"
+      className="flex flex-col sm:flex-row items-center sm:items-center gap-4 rounded-2xl bg-white/5 border border-white/10 p-4 sm:p-6 hover:shadow-[0_0_15px_rgba(59,130,246,0.35)] transition"
       style={{
         backdropFilter: "blur(10px)",
         WebkitBackdropFilter: "blur(10px)",
+        minWidth: "140px",
       }}
     >
       {skill.logo && (
@@ -36,11 +37,17 @@ export function SkillsCard({ skill }: SkillsCardProps) {
         </div>
       )}
 
-      <div className="flex-1 text-center sm:text-right w-full">
-        <div className="flex justify-between mb-2 items-center">
-          <span className="font-medium">{skill.name}</span>
-          <span className="text-sm text-gray-300">{skill.level}%</span>
+      <div className={`flex-1 text-center sm:text-${align} w-full`}>
+        {/* Added extra space between name and level */}
+        <div className="flex justify-between items-center mb-3 gap-4">
+          <span className="font-medium text-base sm:text-lg truncate">
+            {skill.name}
+          </span>
+          <span className="text-sm text-gray-300 whitespace-nowrap">
+            {skill.level}%
+          </span>
         </div>
+
         <Progress value={skill.level} />
       </div>
     </motion.div>
