@@ -11,7 +11,7 @@ export function Hero() {
     // We use overflow-y-auto as a failsafe, but the goal is to make content fit without scrolling.
     <section
       id="home"
-      className="w-full h-full flex flex-col items-center justify-center p-4 overflow-y-auto scrollbar-furtif pt-30 sm:pt-60 lg:pt-0"
+      className="w-full h-full flex flex-col items-center justify-center p-4 overflow-y-auto scrollbar-furtif pt-60 sm:pt-80 md:pt-0 lg:pt-0"
     >
       {/* Main content container with reduced vertical gaps on mobile */}
       <div className="w-full max-w-7xl mx-auto grid md:grid-cols-2 gap-x-8 gap-y-4 items-center z-10">
@@ -75,7 +75,7 @@ export function Hero() {
         transition={{ duration: 0.9, delay: 0.3 }}
         // STEP 3: Stack cards vertically on mobile and reduce spacing
         // We removed `hidden` so they are always visible.
-        className="flex flex-col md:grid md:grid-cols-3 gap-3 mt-6 w-full max-w-7xl z-10"
+        className="flex flex-col md:grid md:grid-cols-3 gap-3 mt-25 w-full max-w-7xl z-10"
       >
         {CV.experience.slice(0, 3).map((exp, idx) => (
           <CompanyCard key={idx} exp={exp} />
