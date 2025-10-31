@@ -42,10 +42,10 @@ export function Skills() {
             </motion.h2>
 
             <div className="flex flex-wrap justify-center sm:justify-start gap-6">
-  {CV.skills.map((s) => (
-    <SkillsCard key={s.name} skill={s} align="right" />
-  ))}
-</div>
+              {CV.skills.map((s) => (
+                <SkillsCard key={s.name} skill={s} align="right" />
+              ))}
+            </div>
           </div>
         </div>
       </div>

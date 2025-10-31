@@ -3,7 +3,6 @@
 import { Contact, Experience, Hero, Projects, Skills } from "@/app/pages";
 import { Particles } from "@/components/ui/shadcn-io/particles";
 import { ShootingStars } from "@/components/ui/shadcn-io/shooting-stars";
-import { motion } from "framer-motion";
 import { useEffect, useRef } from "react";
 
 export default function Home() {
@@ -25,7 +24,9 @@ export default function Home() {
 
   useEffect(() => {
     const handler = (ev: Event) => {
-      const detail = (ev as CustomEvent).detail as { id?: string; index?: number } | undefined;
+      const detail = (ev as CustomEvent).detail as
+        | { id?: string; index?: number }
+        | undefined;
       const container = containerRef.current;
       if (!container) return;
 
@@ -50,7 +51,8 @@ export default function Home() {
     };
 
     window.addEventListener("navigateToSection", handler as EventListener);
-    return () => window.removeEventListener("navigateToSection", handler as EventListener);
+    return () =>
+      window.removeEventListener("navigateToSection", handler as EventListener);
   }, []);
 
   useEffect(() => {
@@ -63,14 +65,20 @@ export default function Home() {
       raf = requestAnimationFrame(() => {
         const width = window.innerWidth || 1;
         const index = Math.round(container.scrollLeft / width);
-        window.dispatchEvent(new CustomEvent("sectionChanged", { detail: { index } }));
+        window.dispatchEvent(
+          new CustomEvent("sectionChanged", { detail: { index } })
+        );
       });
     };
 
     container.addEventListener("scroll", onScroll, { passive: true });
     // emit initial position
-    const initIndex = Math.round(container.scrollLeft / (window.innerWidth || 1));
-    window.dispatchEvent(new CustomEvent("sectionChanged", { detail: { index: initIndex } }));
+    const initIndex = Math.round(
+      container.scrollLeft / (window.innerWidth || 1)
+    );
+    window.dispatchEvent(
+      new CustomEvent("sectionChanged", { detail: { index: initIndex } })
+    );
 
     return () => {
       container.removeEventListener("scroll", onScroll);
@@ -81,7 +89,7 @@ export default function Home() {
   return (
     <main
       ref={containerRef}
-      className="relative h-dvh w-screen overflow-x-auto overflow-y-hidden snap-x snap-mandatory flex scrollbar-none scroll-smooth bg-gradient-to-b from-[#020618] via-[#0f1e64] to-[#132f9c] text-white"
+      className="relative h-dvh w-screen overflow-x-hidden overflow-y-auto snap-x snap-mandatory flex scrollbar-none scroll-smooth bg-gradient-to-b from-[#020618] via-[#0f1e64] to-[#132f9c] text-white"
     >
       <div className="fixed inset-0 z-0 pointer-events-none">
         <ShootingStars
@@ -123,24 +131,6 @@ export default function Home() {
       <section className="snap-center flex-shrink-0 w-screen h-dvh flex items-center justify-center">
         <Contact />
       </section>
-      {/* <div className="fixed bottom-6 left-1/2 -translate-x-1/2 flex gap-3 z-50">
-        {["Home", "Skills", "Projects", "Experience", "Contact"].map((_, i) => (
-          <motion.div
-            key={i}
-            className="w-3 h-3 rounded-full bg-white/40 hover:bg-white transition cursor-pointer"
-            whileHover={{ scale: 1.2 }}
-            onClick={() => {
-              const container = containerRef.current;
-              if (container) {
-                container.scrollTo({
-                  left: window.innerWidth * i,
-                  behavior: "smooth",
-                });
-              }
-            }}
-          />
-        ))}
-      </div> */}
       <footer className="fixed bottom-4 right-4 text-sm text-white/50 z-50">
         &copy; {new Date().getFullYear()} Harena Rico. All rights reserved.
       </footer>
