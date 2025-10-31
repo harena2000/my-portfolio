@@ -15,7 +15,7 @@ interface SkillsCardProps {
   align?: "left" | "right";
 }
 
-export function SkillsCard({ skill, align = "right" }: SkillsCardProps) {
+export function SkillsCard({ skill }: SkillsCardProps) {
   return (
     <motion.div
       whileTap={{ scale: 1.02, y: -3 }}
