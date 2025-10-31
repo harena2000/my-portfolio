@@ -1,56 +1,59 @@
 "use client";
 import { motion } from "framer-motion";
-import { MenuDockItem } from "@/components/ui/shadcn-io/menu-dock";
 import { Briefcase, FileText, Folder, HomeIcon, Mail, Zap } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const dispatchNav = (detail: { id?: string; index?: number }) =>
   window.dispatchEvent(new CustomEvent("navigateToSection", { detail }));
 
 export function Navbar() {
   const [activeIndex, setActiveIndex] = useState<number>(0);
+  const lastManualNavRef = useRef<number | null>(null);
+  const IGNORE_MS = 800; // ignore sectionChanged events for this many ms after manual nav
 
   useEffect(() => {
     const handler = (ev: Event) => {
       const detail = (ev as CustomEvent).detail as { index?: number } | undefined;
-      if (detail?.index !== undefined) setActiveIndex(detail.index);
+      if (detail?.index === undefined) return;
+
+      // ignore updates right after a manual navigation triggered by the navbar click
+      const last = lastManualNavRef.current;
+      if (last && Date.now() - last < IGNORE_MS) return;
+
+      setActiveIndex(detail.index);
     };
+
     window.addEventListener("sectionChanged", handler as EventListener);
     return () => window.removeEventListener("sectionChanged", handler as EventListener);
   }, []);
+
+  const handleClick = (index: number, id?: string) => {
+    // mark manual navigation time to suppress incoming sectionChanged events
+    // eslint-disable-next-line react-hooks/purity
+    lastManualNavRef.current = Date.now();
+    // optimistically set active index so the UI updates immediately
+    setActiveIndex(index);
+    dispatchNav({ id, index });
+    // clear the ref after IGNORE_MS to avoid permanent suppression
+    window.setTimeout(() => {
+      lastManualNavRef.current = null;
+    }, IGNORE_MS + 50);
+  };
 
   type NavItem = {
     label: string;
     icon: React.ElementType<{ className?: string }>;
     index: number;
-    onClick: () => void;
-  }
+    id?: string;
+  };
 
   const items: NavItem[] = [
-    { label: "Home", icon: HomeIcon, index: 0, onClick: () => {
-      setActiveIndex(0);
-      dispatchNav({ id: "home", index: 0 })
-    } },
-    { label: "Skills", icon: Zap, index: 1, onClick: () => {
-      setActiveIndex(1);
-      dispatchNav({ id: "skills", index: 1 })
-    } },
-    { label: "Project", icon: Folder, index: 2, onClick: () => {
-      setActiveIndex(2);
-      dispatchNav({ id: "project", index: 2 })
-    } },
-    { label: "Experience", icon: Briefcase, index: 3, onClick: () => {
-      setActiveIndex(3);
-      dispatchNav({ id: "experience", index: 3 })
-    } },
-    { label: "Contact", icon: Mail, index: 4, onClick: () => {
-      setActiveIndex(4);
-      dispatchNav({ id: "contact", index: 4 })
-    } },
-    { label: "Resume", icon: FileText, index: 5, onClick: () => {
-      setActiveIndex(5);
-      dispatchNav({ id: "resume", index: 5 })
-    } },
+    { label: "Home", icon: HomeIcon, index: 0, id: "home" },
+    { label: "Skills", icon: Zap, index: 1, id: "skills" },
+    { label: "Project", icon: Folder, index: 2, id: "project" },
+    { label: "Experience", icon: Briefcase, index: 3, id: "experience" },
+    { label: "Contact", icon: Mail, index: 4, id: "contact" },
+    { label: "Resume", icon: FileText, index: 5, id: "resume" },
   ];
 
   return (
@@ -60,31 +63,24 @@ export function Navbar() {
       transition={{ duration: 0.5 }}
       className="sticky top-5 z-50"
     >
-      {/* Outer dock box */}
       <div className="mx-auto max-w-lg px-4">
         <div className="relative rounded-2xl bg-white/6 backdrop-blur-md border border-white/10 px-3 py-3 shadow-lg">
-          {/* inner dock row */}
           <div className="flex items-center justify-between gap-2 relative">
-            {items.map((item, i) => {
+            {items.map((item) => {
               const Icon = item.icon;
               const isActive = item.index === activeIndex;
 
               return (
                 <button
                   key={item.label}
-                  onClick={() => {
-                    item.onClick?.();
-                  }}
+                  onClick={() => handleClick(item.index, item.id)}
                   title={item.label}
                   aria-current={isActive ? "true" : undefined}
                   className={
                     "relative flex flex-col items-center justify-center w-12 h-12 rounded-lg transition-transform duration-150 " +
-                    (isActive
-                      ? "text-white"
-                      : "text-white/70 hover:bg-white/5 hover:text-white")
+                    (isActive ? "text-white" : "text-white/70 hover:bg-white/5 hover:text-white")
                   }
                 >
-                  {/* Animated icon only */}
                   <motion.div
                     initial={false}
                     animate={isActive ? { y: [-2, -8, -2] } : { y: 0 }}
@@ -94,7 +90,6 @@ export function Navbar() {
                     <Icon className="w-5 h-5" />
                   </motion.div>
 
-                  {/* Label */}
                   <motion.span
                     className="mt-1 text-[11px] font-medium"
                     initial={{ opacity: 0.85, y: 2 }}
@@ -104,7 +99,6 @@ export function Navbar() {
                     {item.label}
                   </motion.span>
 
-                  {/* Shared animated underline: rendered only for active item but uses layoutId so it animates between buttons */}
                   {isActive && (
                     <motion.span
                       layoutId="nav-underline"
