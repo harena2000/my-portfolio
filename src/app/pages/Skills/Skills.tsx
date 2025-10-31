@@ -7,7 +7,6 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { SkillsCard } from "@/app/pages/Skills/component";
 
-
 export function Skills() {
   return (
     <AnimatedSection
@@ -42,7 +41,7 @@ export function Skills() {
               Skills
             </motion.h2>
 
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
               {CV.skills.map((s) => (
                 <SkillsCard key={s.name} skill={s} align="right" />
               ))}
