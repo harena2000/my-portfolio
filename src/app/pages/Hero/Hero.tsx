@@ -11,7 +11,7 @@ export function Hero() {
     // We use overflow-y-auto as a failsafe, but the goal is to make content fit without scrolling.
     <section
       id="home"
-      className="w-full h-full flex flex-col items-center justify-center p-4 overflow-y-auto scrollbar-furtif pt-100 sm:pt-80 md:pt-0 lg:pt-0"
+      className="w-full h-full flex flex-col items-center justify-center p-16 scrollbar-furtif pt-100 sm:pt-80 md:pt-0 lg:pt-0"
     >
       {/* Main content container with reduced vertical gaps on mobile */}
       <div className="w-full max-w-7xl mx-auto grid md:grid-cols-2 gap-x-8 gap-y-4 items-center z-10">

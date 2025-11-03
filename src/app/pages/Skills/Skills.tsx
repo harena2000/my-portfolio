@@ -11,7 +11,7 @@ export function Skills() {
   return (
     <AnimatedSection
       id="skills"
-      className="w-full h-full flex items-center justify-center text-white"
+      className="w-full h-full flex items-center justify-center text-white py-12"
     >
       {/* shift the whole content up by an exact amount without using items-start */}
       <div className="max-w-8xl mx-auto px-8 w-full transform -translate-y-[80px]">
@@ -41,7 +41,7 @@ export function Skills() {
               Skills
             </motion.h2>
 
-            <div className="flex flex-wrap justify-center sm:justify-start gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {CV.skills.map((s) => (
                 <SkillsCard key={s.name} skill={s} align="right" />
               ))}
@@ -52,4 +52,3 @@ export function Skills() {
     </AnimatedSection>
   );
 }
-// ...existing code...

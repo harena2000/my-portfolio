@@ -10,9 +10,10 @@ export function Projects() {
   return (
     <AnimatedSection
       id="project"
-      className="w-full h-full flex items-start justify-center text-white py-12"
+      className="w-full h-full flex items-start justify-center text-white p-16 scrollbar-furtif"
     >
       <div className="max-w-8xl mx-auto px-6 w-full">
+        {/* Section title */}
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -22,19 +23,20 @@ export function Projects() {
           Projects
         </motion.h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-8 items-start">
-          {/* Left column: project grid (2 columns on md+, scrollable when many items) */}
+        {/* Grid layout — only 2 columns on large screens */}
+        <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-8 items-start">
+          {/* 🧱 Left column — Project cards (full width on md and sm) */}
           <div
-            className="grid grid-cols-1 md:grid-cols-3 gap-6 overflow-y-auto pr-4 scrollbar-furtif p-4"
-            style={{ maxHeight: "calc(100dvh - 200px)" }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pr-4 p-4"
+            style={{ maxHeight: "calc(100dvh - 500px)" }}
           >
             {CV.projects.map((p) => (
               <ProjectCard key={p.title} project={p} />
             ))}
           </div>
 
-          {/* Right column: illustration / image (no border, higher position) */}
-          <div className="flex-shrink-0 w-full relative self-start -mt-8 md:-mt-12 h-[420px] md:h-[760px]">
+          {/* 🖼️ Right column — Illustration (hidden on md and sm) */}
+          <div className="hidden lg:flex flex-shrink-0 w-full relative self-start -mt-8 h-[320px] lg:h-[460px]">
             <Image
               src="/images/project.png"
               alt="Projects illustration"
@@ -49,4 +51,3 @@ export function Projects() {
 }
 
 export default Projects;
-// ...existing code...

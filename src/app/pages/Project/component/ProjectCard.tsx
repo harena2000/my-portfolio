@@ -61,7 +61,7 @@ export function ProjectCard({ project }: { project: Project }) {
 
       {fullDesc ? (
         <div className="mb-4">
-          <p className="text-sm text-gray-300">{preview}</p>
+          <p className="text-sm text-gray-300 line-clamp-3">{preview}</p>
 
           {needsToggle && (
             <button

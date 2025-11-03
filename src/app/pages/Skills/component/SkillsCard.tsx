@@ -15,41 +15,47 @@ interface SkillsCardProps {
   align?: "left" | "right";
 }
 
-export function SkillsCard({ skill, align = "right" }: SkillsCardProps) {
+export function SkillsCard({ skill }: SkillsCardProps) {
   return (
     <motion.div
-      whileTap={{ scale: 1.02, y: -3 }}
-      className="flex flex-col sm:flex-row items-center sm:items-center gap-4 rounded-2xl bg-white/5 border border-white/10 p-4 sm:p-6 hover:shadow-[0_0_15px_rgba(59,130,246,0.35)] transition"
-      style={{
-        backdropFilter: "blur(10px)",
-        WebkitBackdropFilter: "blur(10px)",
-        minWidth: "140px",
-      }}
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 1.01 }}
+      className="w-full overflow-hidden rounded-2xl bg-white/5 border border-white/10 p-3 sm:p-4 transition shadow-sm"
+      style={{ backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)" }}
     >
-      {skill.logo && (
-        <div className="flex-shrink-0 w-12 h-12 relative mb-2 sm:mb-0">
-          <Image
-            src={skill.logo}
-            alt={`${skill.name} logo`}
-            fill
-            className="object-contain"
-          />
-        </div>
-      )}
+      {/* Row: logo | content */}
+      <div className="flex items-start gap-4">
+        {skill.logo && (
+          <div className="flex-shrink-0 w-10 h-10 relative">
+            <Image src={skill.logo} alt={`${skill.name} logo`} fill className="object-contain" />
+          </div>
+        )}
 
-      <div className={`flex-1 text-center sm:text-${align} w-full`}>
-        {/* Added extra space between name and level */}
-        <div className="flex justify-between items-center mb-3 gap-4">
-          <span className="font-medium text-base sm:text-lg truncate">
-            {skill.name}
-          </span>
-          <span className="text-sm text-gray-300 whitespace-nowrap">
-            {skill.level}%
-          </span>
-        </div>
+        {/* The content area must be able to shrink: use min-w-0 for truncation */}
+        <div className="flex-1 min-w-0">
+          {/* Top row: name (truncated) + percent */}
+          <div className="flex items-center justify-between gap-3">
+            <div className="truncate font-medium text-sm sm:text-base">
+              {skill.name}
+            </div>
 
-        <Progress value={skill.level} />
+            {/* percent is kept separate so it doesn't overlay the progress */}
+            <div className="flex-shrink-0 text-xs sm:text-sm text-gray-300 whitespace-nowrap pl-2">
+              {skill.level}%
+            </div>
+          </div>
+
+          {/* Progress container — takes full available width inside the card padding */}
+          <div className="mt-3">
+            {/* Ensure Progress component fills this container and has rounded corners */}
+            <div className="w-full h-2 rounded-full overflow-hidden">
+              {/* If your Progress accepts className, pass `w-full h-full` */}
+              <Progress value={skill.level} className="w-full h-full rounded-full" />
+            </div>
+          </div>
+        </div>
       </div>
     </motion.div>
   );
 }
+
