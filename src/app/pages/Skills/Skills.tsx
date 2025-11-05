@@ -11,7 +11,7 @@ export function Skills() {
   return (
     <AnimatedSection
       id="skills"
-      className="w-full h-full flex items-center justify-center text-white py-12"
+      className="w-full h-full flex items-center justify-center text-white"
     >
       {/* shift the whole content up by an exact amount without using items-start */}
       <div className="max-w-8xl mx-auto px-8 w-full transform -translate-y-[80px]">
@@ -19,7 +19,7 @@ export function Skills() {
           {/* remove the global heading from here */}
         </div>
 
-        <div className="grid md:grid-cols-2 items-center justify-start gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 items-center justify-start gap-8">
           {/* Illustration on the left */}
           <div className="flex-shrink-0 w-full h-full relative order-1 md:order-1">
             <Image
