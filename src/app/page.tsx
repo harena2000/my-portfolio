@@ -131,9 +131,6 @@ export default function Home() {
       <section className="snap-center flex-shrink-0 w-screen h-dvh flex items-center justify-center">
         <Contact />
       </section>
-      <footer className="fixed bottom-4 right-4 text-sm text-white/50 z-50">
-        &copy; {new Date().getFullYear()} Harena Rico. All rights reserved.
-      </footer>
     </main>
   );
 }
