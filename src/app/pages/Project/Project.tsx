@@ -10,7 +10,7 @@ export function Projects() {
   return (
     <AnimatedSection
       id="project"
-      className="w-full min-h-screen flex items-start justify-center text-white p-16 scrollbar-furtif pt-32"
+      className="w-full min-h-screen flex items-start justify-center text-white p-16 scrollbar-furtif pt-280 sm:pt-50 md:pt-50 lg:pt-20"
     >
       <div className="max-w-8xl mx-auto px-6 w-full">
         {/* Section title */}
