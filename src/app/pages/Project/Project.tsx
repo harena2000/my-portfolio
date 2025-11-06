@@ -10,7 +10,7 @@ export function Projects() {
   return (
     <AnimatedSection
       id="project"
-      className="scroll-mt-24 sm:scroll-mt-28 lg:scroll-mt-36 w-full min-h-screen flex items-start justify-center text-white p-16 scrollbar-furtif"
+      className="w-full min-h-screen flex items-start justify-center text-white p-16 scrollbar-furtif pt-32"
     >
       <div className="max-w-8xl mx-auto px-6 w-full">
         {/* Section title */}
@@ -24,11 +24,10 @@ export function Projects() {
         </motion.h2>
 
         {/* Responsive 2-column layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_0.8fr] gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-[3fr_1fr] gap-8 items-start">
           {/* 🧱 Left column — Fixed proportion */}
           <div
             className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 pr-4 p-4"
-            style={{ maxHeight: "calc(100dvh - 500px)" }}
           >
             {CV.projects.map((p) => (
               <ProjectCard key={p.title} project={p} />

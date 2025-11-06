@@ -89,7 +89,7 @@ export default function Home() {
   return (
     <main
       ref={containerRef}
-      className="relative min-h-screen w-screen overflow-x-hidden overflow-y-auto snap-x snap-mandatory flex scrollbar-none scroll-smooth pb-1 bg-gradient-to-b from-[#020618] via-[#0f1e64] to-[#132f9c] text-white"
+      className="relative min-h-screen w-screen overflow-x-hidden overflow-y-auto snap-x snap-mandatory flex scrollbar-none scroll-smooth bg-gradient-to-b from-[#020618] via-[#0f1e64] to-[#132f9c] text-white"
     >
       <div className="fixed inset-0 z-0 pointer-events-none">
         <ShootingStars
