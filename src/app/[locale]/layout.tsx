@@ -14,6 +14,13 @@ const montserratFont = Montserrat({
 export const metadata: Metadata = {
   title: "Harena Rico | Portfolio",
   description: "Full-stack Mobile & Web Developer — Flutter, Next.js, TypeScript, GIS",
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
+    viewportFit: 'cover',
+  },
 };
 
 export default async function RootLayout({

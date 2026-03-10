@@ -11,7 +11,6 @@ interface Skill {
   logo: string
 }
 
-// Stagger container — animates children in sequence
 const listVariants: Variants = {
   hidden: {},
   visible: { transition: { staggerChildren: 0.07 } },
@@ -31,7 +30,7 @@ function SkillBar({ skill, index }: { skill: Skill; index: number }) {
   return (
     <motion.div variants={rowVariants} className="group">
       <div className="flex items-center gap-3 mb-2">
-        <div className="w-7 h-7 relative flex-shrink-0">
+        <div className="w-6 h-6 sm:w-7 sm:h-7 relative flex-shrink-0">
           <Image src={skill.logo} alt={skill.name} fill className="object-contain" />
         </div>
         <div className="flex items-center justify-between w-full">
@@ -58,13 +57,13 @@ function SkillCard({ skill }: { skill: Skill }) {
     <motion.div
       variants={cardVariants}
       whileHover={{ y: -4, transition: { duration: 0.2 } }}
-      className="flex flex-col items-center gap-2 p-4 rounded-xl bg-white/5 border border-white/10 hover:border-blue-500/40 hover:bg-blue-900/10 transition-colors duration-200 cursor-default group"
+      className="flex flex-col items-center gap-2 p-3 sm:p-4 rounded-xl bg-white/5 border border-white/10 hover:border-blue-500/40 hover:bg-blue-900/10 transition-colors duration-200 cursor-default group"
       style={{ willChange: 'transform' }}
     >
-      <div className="w-10 h-10 relative">
+      <div className="w-8 h-8 sm:w-10 sm:h-10 relative">
         <Image src={skill.logo} alt={skill.name} fill className="object-contain" />
       </div>
-      <span className="text-xs font-medium text-gray-300 group-hover:text-white transition-colors duration-150">{skill.name}</span>
+      <span className="text-xs font-medium text-gray-300 group-hover:text-white transition-colors duration-150 text-center">{skill.name}</span>
       <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
         <motion.div
           initial={{ scaleX: 0 }}
@@ -87,45 +86,44 @@ export function Skills() {
   return (
     <section
       id="skills"
-      className="w-full h-full flex items-center justify-center text-white py-12 px-6"
+      className="w-full h-full flex items-center justify-center text-white py-8 sm:py-12 px-4 sm:px-6"
     >
       <div className="max-w-6xl mx-auto w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Left: Skill bars */}
-          <div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, ease: 'easeOut' }}
-              className="mb-8"
-            >
-              <span className="text-xs font-semibold text-blue-400 uppercase tracking-widest">{t('subtitle')}</span>
-              <h2 className="text-3xl md:text-4xl font-bold mt-2 bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
-                {t('title')}
-              </h2>
-            </motion.div>
+        {/* Section header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
+          className="mb-6 sm:mb-8"
+        >
+          <span className="text-xs font-semibold text-blue-400 uppercase tracking-widest">{t('subtitle')}</span>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mt-2 bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
+            {t('title')}
+          </h2>
+        </motion.div>
 
-            <motion.div
-              variants={listVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: '-60px' }}
-              className="space-y-5"
-            >
-              {cv.skills.map((skill, i) => (
-                <SkillBar key={skill.name} skill={skill} index={i} />
-              ))}
-            </motion.div>
-          </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
+          {/* Left: Skill bars */}
+          <motion.div
+            variants={listVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-40px' }}
+            className="space-y-4 sm:space-y-5"
+          >
+            {cv.skills.map((skill, i) => (
+              <SkillBar key={skill.name} skill={skill} index={i} />
+            ))}
+          </motion.div>
 
           {/* Right: Skill cards grid */}
           <motion.div
             variants={listVariants}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: '-60px' }}
-            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-3"
+            viewport={{ once: true, margin: '-40px' }}
+            className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3"
           >
             {cv.skills.map((skill) => (
               <SkillCard key={skill.name} skill={skill} />

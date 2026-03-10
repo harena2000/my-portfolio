@@ -112,9 +112,25 @@
   --sidebar-ring: oklch(0.551 0.027 264.364);
 }
 
-html, body, #__next {
-  height: 100dvh;
-  overflow: hidden;
+/* ─── Base ─── */
+html {
+  height: 100%;
+  /* Allow body to scroll on mobile */
+  overflow: auto;
+}
+
+body {
+  height: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Desktop: lock overflow to body so only the snap container scrolls */
+@media (min-width: 768px) {
+  html, body, #__next {
+    height: 100dvh;
+    overflow: hidden;
+  }
 }
 
 @layer base {
@@ -123,28 +139,19 @@ html, body, #__next {
   }
   body {
     @apply bg-background text-foreground;
-    /* Promote body to its own GPU layer */
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
   }
 }
 
-/* ─── Performance: promote animated elements to GPU layers ─── */
-.will-change-transform {
-  will-change: transform;
-}
-
-/* ─── Smooth scrolling for section containers ─── */
-.snap-x {
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
+/* ─── Safe area for iOS bottom notch ─── */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 8px);
 }
 
 /* ─── Scrollbar: hidden ─── */
 .scrollbar-none::-webkit-scrollbar { display: none; }
 .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* ─── Scrollbar: furtif (subtle, appears on hover) ─── */
+/* ─── Scrollbar: subtle ─── */
 .scrollbar-furtif {
   scrollbar-width: thin;
   scrollbar-color: rgba(255,255,255,0.10) transparent;
@@ -154,20 +161,19 @@ html, body, #__next {
 .scrollbar-furtif::-webkit-scrollbar-thumb {
   background: rgba(255,255,255,0.08);
   border-radius: 9999px;
-  transition: background 180ms ease;
 }
 .scrollbar-furtif:hover::-webkit-scrollbar-thumb {
   background: rgba(255,255,255,0.16);
 }
 .scrollbar-furtif::-webkit-scrollbar-corner { background: transparent; }
 
-/* ─── Keyframes: spin (used by decorative rings) ─── */
+/* ─── Spin keyframe ─── */
 @keyframes spin {
   from { transform: translate(-50%, -50%) rotate(0deg); }
   to   { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
-/* ─── Reduce motion: respect user preference ─── */
+/* ─── Reduce motion ─── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
