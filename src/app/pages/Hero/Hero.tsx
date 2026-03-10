@@ -1,42 +1,77 @@
 'use client'
 
-import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion'
+import { motion, type Variants } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { CVData } from '@/data/cv'
 import { useLocale, useTranslations } from 'next-intl'
 import { CompanyCard } from '@/app/pages/Hero/component'
-import { useRef, useEffect, useState } from 'react'
-import Image from 'next/image'
+import { useRef, useEffect, useCallback } from 'react'
 import dynamic from 'next/dynamic'
 
 // Dynamically import Rive to avoid SSR issues
 const RiveAnimation = dynamic(() => import('@/components/RiveAnimation'), { ssr: false })
 
+// Stagger children animation
+const containerVariants: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } },
+}
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: 'easeOut' } },
+}
+
+// Floating badge — uses transform only (GPU composited)
+function FloatingBadge({ label, className }: { label: string; className: string }) {
+  return (
+    <motion.div
+      className={`absolute px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-sm border border-blue-500/30 text-xs text-blue-300 font-medium shadow-lg ${className}`}
+      animate={{ y: [0, -8, 0] }}
+      transition={{ duration: 3 + Math.random() * 1.5, repeat: Infinity, ease: 'easeInOut', repeatType: 'mirror' }}
+      style={{ willChange: 'transform' }}
+    >
+      {label}
+    </motion.div>
+  )
+}
+
 export function Hero() {
   const locale = useLocale()
   const cv = CVData[locale as keyof typeof CVData]
   const t = useTranslations('Hero')
-  const ref = useRef<HTMLElement>(null)
-  const { scrollYProgress } = useScroll({ target: ref })
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
-  const y = useTransform(scrollYProgress, [0, 0.5], [0, -50])
-  const [riveLoaded, setRiveLoaded] = useState(false)
+  const glowRef = useRef<HTMLDivElement>(null)
+  const rafRef = useRef<number>(0)
+  const targetRef = useRef({ x: 0, y: 0 })
+  const currentRef = useRef({ x: 0, y: 0 })
 
-  // Cursor-following glow
-  const cursorX = useMotionValue(0)
-  const cursorY = useMotionValue(0)
-  const springX = useSpring(cursorX, { stiffness: 80, damping: 20 })
-  const springY = useSpring(cursorY, { stiffness: 80, damping: 20 })
+  // Cursor glow — pure DOM manipulation, no React state, lerped for smoothness
+  const onMouseMove = useCallback((e: MouseEvent) => {
+    targetRef.current = { x: e.clientX, y: e.clientY }
+  }, [])
 
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      cursorX.set(e.clientX)
-      cursorY.set(e.clientY)
+    window.addEventListener('mousemove', onMouseMove, { passive: true })
+
+    function lerp(a: number, b: number, t: number) { return a + (b - a) * t }
+
+    function animate() {
+      currentRef.current.x = lerp(currentRef.current.x, targetRef.current.x, 0.06)
+      currentRef.current.y = lerp(currentRef.current.y, targetRef.current.y, 0.06)
+      if (glowRef.current) {
+        // Use transform instead of left/top to avoid layout recalc
+        glowRef.current.style.transform =
+          `translate(${currentRef.current.x - 250}px, ${currentRef.current.y - 250}px)`
+      }
+      rafRef.current = requestAnimationFrame(animate)
     }
-    window.addEventListener('mousemove', handleMouseMove)
-    setRiveLoaded(true)
-    return () => window.removeEventListener('mousemove', handleMouseMove)
-  }, [cursorX, cursorY])
+    rafRef.current = requestAnimationFrame(animate)
+
+    return () => {
+      window.removeEventListener('mousemove', onMouseMove)
+      cancelAnimationFrame(rafRef.current)
+    }
+  }, [onMouseMove])
 
   const nameParts = cv.name.split(' ')
   const firstName = nameParts[0]
@@ -46,37 +81,25 @@ export function Hero() {
   return (
     <section
       id="home"
-      ref={ref}
-      className="w-full h-full flex flex-col items-center justify-center px-6 md:px-12 lg:px-16 scrollbar-furtif pt-16 md:pt-8 lg:pt-0 relative overflow-hidden"
+      className="w-full h-full flex flex-col items-center justify-center px-6 md:px-12 lg:px-16 pt-16 md:pt-8 lg:pt-0 relative overflow-hidden"
     >
-      {/* Cursor glow effect */}
-      <motion.div
+      {/* Cursor glow — GPU composited via transform */}
+      <div
+        ref={glowRef}
         className="fixed pointer-events-none z-0 w-[500px] h-[500px] rounded-full bg-blue-600/5 blur-3xl"
-        style={{
-          left: springX,
-          top: springY,
-          translateX: '-50%',
-          translateY: '-50%',
-        }}
+        style={{ willChange: 'transform', top: 0, left: 0 }}
       />
 
-      <motion.div
-        style={{ opacity, y }}
-        className="w-full max-w-7xl mx-auto grid md:grid-cols-2 gap-x-12 gap-y-6 items-center z-10"
-      >
+      <div className="w-full max-w-7xl mx-auto grid md:grid-cols-2 gap-x-12 gap-y-6 items-center z-10">
         {/* Left Text Section */}
         <motion.div
-          initial={{ opacity: 0, x: -40 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, ease: 'easeOut' }}
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
           className="space-y-5 text-center md:text-left order-last md:order-first"
         >
           {/* Available badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
+          <motion.div variants={itemVariants}>
             <span className="inline-flex items-center gap-2 px-3 py-1 text-xs font-semibold text-blue-400 bg-blue-900/30 border border-blue-500/30 rounded-full tracking-widest uppercase">
               <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
               {t('available')}
@@ -84,11 +107,7 @@ export function Hero() {
           </motion.div>
 
           {/* Name */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.3 }}
-          >
+          <motion.div variants={itemVariants}>
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight tracking-tight">
               <span className="text-white">{firstName} </span>
               <span className="text-blue-400">{lastName}</span>
@@ -104,24 +123,18 @@ export function Hero() {
 
           {/* Profile */}
           <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.5 }}
+            variants={itemVariants}
             className="text-sm text-gray-400 max-w-lg mx-auto md:mx-0 leading-relaxed"
           >
             {cv.profile}
           </motion.p>
 
           {/* CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.7 }}
-            className="flex flex-wrap gap-3 justify-center md:justify-start"
-          >
+          <motion.div variants={itemVariants} className="flex flex-wrap gap-3 justify-center md:justify-start">
             <Button
               size="sm"
-              className="rounded-full bg-blue-600 hover:bg-blue-500 text-white px-6 shadow-lg shadow-blue-600/30 transition-all duration-300 hover:shadow-blue-500/50 hover:scale-105 cursor-pointer"
+              className="rounded-full bg-blue-600 hover:bg-blue-500 text-white px-6 shadow-lg shadow-blue-600/30 transition-colors duration-200 hover:shadow-blue-500/50 cursor-pointer"
+              style={{ willChange: 'transform' }}
               onClick={() => window.dispatchEvent(new CustomEvent('navigateToSection', { detail: { id: 'project', index: 2 } }))}
             >
               {t('exploreProjects')}
@@ -129,7 +142,8 @@ export function Hero() {
             <Button
               size="sm"
               variant="outline"
-              className="rounded-full border border-blue-500/40 bg-blue-900/10 text-white hover:bg-blue-900/30 px-6 transition-all duration-300 hover:scale-105 cursor-pointer"
+              className="rounded-full border border-blue-500/40 bg-blue-900/10 text-white hover:bg-blue-900/30 px-6 transition-colors duration-200 cursor-pointer"
+              style={{ willChange: 'transform' }}
               onClick={() => window.dispatchEvent(new CustomEvent('navigateToSection', { detail: { id: 'contact', index: 4 } }))}
             >
               {t('hireMe')}
@@ -137,12 +151,7 @@ export function Hero() {
           </motion.div>
 
           {/* Status row */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.9 }}
-            className="flex items-center gap-4 justify-center md:justify-start"
-          >
+          <motion.div variants={itemVariants} className="flex items-center gap-4 justify-center md:justify-start">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
               <span className="text-xs text-gray-400">{t('openToWork')}</span>
@@ -154,60 +163,48 @@ export function Hero() {
 
         {/* Right Animation Section */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
+          initial={{ opacity: 0, scale: 0.92 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
+          transition={{ duration: 0.7, ease: 'easeOut', delay: 0.2 }}
           className="relative flex justify-center md:justify-end order-first md:order-last"
+          style={{ willChange: 'transform, opacity' }}
         >
-          {/* Decorative rings */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] h-[340px] rounded-full border border-blue-500/10 animate-[spin_20s_linear_infinite]" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] h-[280px] rounded-full border border-blue-500/15 animate-[spin_15s_linear_infinite_reverse]" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-blue-600/8 rounded-full blur-3xl" />
+          {/* Decorative rings — GPU composited */}
+          <div
+            className="absolute top-1/2 left-1/2 w-[340px] h-[340px] rounded-full border border-blue-500/10"
+            style={{ transform: 'translate(-50%,-50%)', animation: 'spin 20s linear infinite', willChange: 'transform' }}
+          />
+          <div
+            className="absolute top-1/2 left-1/2 w-[280px] h-[280px] rounded-full border border-blue-500/15"
+            style={{ transform: 'translate(-50%,-50%)', animation: 'spin 15s linear infinite reverse', willChange: 'transform' }}
+          />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-blue-600/8 rounded-full blur-3xl pointer-events-none" />
 
           {/* Rive animation container */}
           <motion.div
             animate={{ y: [0, -10, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+            transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', repeatType: 'mirror' }}
             className="relative w-72 h-72 sm:w-80 sm:h-80 md:w-96 md:h-96"
+            style={{ willChange: 'transform' }}
           >
-            {/* Background glow for Rive */}
             <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 to-transparent rounded-full blur-2xl" />
-            {riveLoaded && (
-              <RiveAnimation src="/vehicles.riv" className="relative z-10" />
-            )}
+            <RiveAnimation src="/vehicles.riv" className="relative z-10" />
           </motion.div>
 
           {/* Floating tech badges */}
-          <motion.div
-            animate={{ y: [0, -6, 0], rotate: [-2, 2, -2] }}
-            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
-            className="absolute top-4 right-4 sm:right-8 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-sm border border-blue-500/30 text-xs text-blue-300 font-medium shadow-lg"
-          >
-            Flutter
-          </motion.div>
-          <motion.div
-            animate={{ y: [0, 6, 0], rotate: [2, -2, 2] }}
-            transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-            className="absolute bottom-8 right-2 sm:right-6 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-sm border border-blue-500/30 text-xs text-blue-300 font-medium shadow-lg"
-          >
-            Next.js
-          </motion.div>
-          <motion.div
-            animate={{ y: [0, -8, 0], rotate: [1, -1, 1] }}
-            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
-            className="absolute top-1/2 -left-2 sm:left-0 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-sm border border-blue-500/30 text-xs text-blue-300 font-medium shadow-lg"
-          >
-            TypeScript
-          </motion.div>
+          <FloatingBadge label="Flutter" className="top-4 right-4 sm:right-8" />
+          <FloatingBadge label="Next.js" className="bottom-8 right-2 sm:right-6" />
+          <FloatingBadge label="TypeScript" className="top-1/2 -left-2 sm:left-0" />
         </motion.div>
-      </motion.div>
+      </div>
 
       {/* Cards Section */}
       <motion.div
-        initial={{ opacity: 0, y: 40 }}
+        initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.9, delay: 0.8 }}
+        transition={{ duration: 0.6, delay: 0.7, ease: 'easeOut' }}
         className="flex flex-col md:grid md:grid-cols-3 gap-3 mt-8 w-full max-w-7xl z-10"
+        style={{ willChange: 'transform, opacity' }}
       >
         {cv.experience.slice(0, 3).map((exp, idx) => (
           <CompanyCard key={idx} exp={exp} index={idx} />

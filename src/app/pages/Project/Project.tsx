@@ -1,10 +1,14 @@
 'use client'
 
-import { AnimatedSection } from '@/components/AnimatedSection'
 import { CVData } from '@/data/cv'
 import { useLocale, useTranslations } from 'next-intl'
-import { motion } from 'framer-motion'
+import { motion, type Variants } from 'framer-motion'
 import { ProjectCard } from './component'
+
+const gridVariants: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.08 } },
+}
 
 export function Projects() {
   const locale = useLocale()
@@ -12,7 +16,7 @@ export function Projects() {
   const t = useTranslations('Projects')
 
   return (
-    <AnimatedSection
+    <section
       id="project"
       className="w-full min-h-screen flex items-start justify-center text-white p-4 sm:p-8 md:p-12 lg:p-16 scrollbar-furtif pt-20 sm:pt-16 md:pt-12 lg:pt-8"
     >
@@ -21,7 +25,7 @@ export function Projects() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
           className="mb-10"
         >
           <span className="text-xs font-semibold text-blue-400 uppercase tracking-widest">{t('subtitle')}</span>
@@ -30,13 +34,19 @@ export function Projects() {
           </h2>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+        <motion.div
+          variants={gridVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-60px' }}
+          className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5"
+        >
           {cv.projects.map((p, idx) => (
             <ProjectCard key={p.title} project={p} index={idx} />
           ))}
-        </div>
+        </motion.div>
       </div>
-    </AnimatedSection>
+    </section>
   )
 }
 

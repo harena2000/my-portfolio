@@ -1,9 +1,8 @@
 'use client'
 
-import { AnimatedSection } from '@/components/AnimatedSection'
 import { CVData } from '@/data/cv'
 import { useLocale, useTranslations } from 'next-intl'
-import { motion } from 'framer-motion'
+import { motion, type Variants } from 'framer-motion'
 import Image from 'next/image'
 
 interface Skill {
@@ -12,15 +11,25 @@ interface Skill {
   logo: string
 }
 
+// Stagger container — animates children in sequence
+const listVariants: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.07 } },
+}
+
+const rowVariants: Variants = {
+  hidden: { opacity: 0, x: -16 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.4, ease: 'easeOut' } },
+}
+
+const cardVariants: Variants = {
+  hidden: { opacity: 0, scale: 0.88 },
+  visible: { opacity: 1, scale: 1, transition: { duration: 0.35, ease: 'easeOut' } },
+}
+
 function SkillBar({ skill, index }: { skill: Skill; index: number }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, x: -20 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5, delay: index * 0.08 }}
-      className="group"
-    >
+    <motion.div variants={rowVariants} className="group">
       <div className="flex items-center gap-3 mb-2">
         <div className="w-7 h-7 relative flex-shrink-0">
           <Image src={skill.logo} alt={skill.name} fill className="object-contain" />
@@ -32,38 +41,38 @@ function SkillBar({ skill, index }: { skill: Skill; index: number }) {
       </div>
       <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
         <motion.div
-          initial={{ width: 0 }}
-          whileInView={{ width: `${skill.level}%` }}
+          initial={{ scaleX: 0 }}
+          whileInView={{ scaleX: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 1, delay: index * 0.08 + 0.3, ease: 'easeOut' }}
-          className="h-full rounded-full bg-gradient-to-r from-blue-600 to-blue-400 group-hover:from-blue-500 group-hover:to-cyan-400 transition-all duration-300"
+          transition={{ duration: 0.8, delay: index * 0.06, ease: 'easeOut' }}
+          className="h-full rounded-full bg-gradient-to-r from-blue-600 to-blue-400"
+          style={{ transformOrigin: 'left', width: `${skill.level}%`, willChange: 'transform' }}
         />
       </div>
     </motion.div>
   )
 }
 
-function SkillCard({ skill, index }: { skill: Skill; index: number }) {
+function SkillCard({ skill }: { skill: Skill }) {
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.4, delay: index * 0.06 }}
-      whileHover={{ y: -4, scale: 1.03 }}
-      className="flex flex-col items-center gap-2 p-4 rounded-xl bg-white/5 border border-white/10 hover:border-blue-500/40 hover:bg-blue-900/10 transition-all duration-300 cursor-default group"
+      variants={cardVariants}
+      whileHover={{ y: -4, transition: { duration: 0.2 } }}
+      className="flex flex-col items-center gap-2 p-4 rounded-xl bg-white/5 border border-white/10 hover:border-blue-500/40 hover:bg-blue-900/10 transition-colors duration-200 cursor-default group"
+      style={{ willChange: 'transform' }}
     >
       <div className="w-10 h-10 relative">
         <Image src={skill.logo} alt={skill.name} fill className="object-contain" />
       </div>
-      <span className="text-xs font-medium text-gray-300 group-hover:text-white transition-colors">{skill.name}</span>
+      <span className="text-xs font-medium text-gray-300 group-hover:text-white transition-colors duration-150">{skill.name}</span>
       <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
         <motion.div
-          initial={{ width: 0 }}
-          whileInView={{ width: `${skill.level}%` }}
+          initial={{ scaleX: 0 }}
+          whileInView={{ scaleX: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: index * 0.06 + 0.2, ease: 'easeOut' }}
+          transition={{ duration: 0.7, ease: 'easeOut' }}
           className="h-full rounded-full bg-gradient-to-r from-blue-600 to-blue-400"
+          style={{ transformOrigin: 'left', width: `${skill.level}%`, willChange: 'transform' }}
         />
       </div>
     </motion.div>
@@ -76,11 +85,11 @@ export function Skills() {
   const t = useTranslations('Skills')
 
   return (
-    <AnimatedSection
+    <section
       id="skills"
-      className="w-full h-full flex items-center justify-center text-white py-12"
+      className="w-full h-full flex items-center justify-center text-white py-12 px-6"
     >
-      <div className="max-w-6xl mx-auto px-6 w-full">
+      <div className="max-w-6xl mx-auto w-full">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left: Skill bars */}
           <div>
@@ -88,7 +97,7 @@ export function Skills() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
+              transition={{ duration: 0.5, ease: 'easeOut' }}
               className="mb-8"
             >
               <span className="text-xs font-semibold text-blue-400 uppercase tracking-widest">{t('subtitle')}</span>
@@ -96,23 +105,34 @@ export function Skills() {
                 {t('title')}
               </h2>
             </motion.div>
-            <div className="space-y-5">
+
+            <motion.div
+              variants={listVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: '-60px' }}
+              className="space-y-5"
+            >
               {cv.skills.map((skill, i) => (
                 <SkillBar key={skill.name} skill={skill} index={i} />
               ))}
-            </div>
+            </motion.div>
           </div>
 
           {/* Right: Skill cards grid */}
-          <div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-3">
-              {cv.skills.map((skill, i) => (
-                <SkillCard key={skill.name} skill={skill} index={i} />
-              ))}
-            </div>
-          </div>
+          <motion.div
+            variants={listVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-60px' }}
+            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-3"
+          >
+            {cv.skills.map((skill) => (
+              <SkillCard key={skill.name} skill={skill} />
+            ))}
+          </motion.div>
         </div>
       </div>
-    </AnimatedSection>
+    </section>
   )
 }

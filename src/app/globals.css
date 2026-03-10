@@ -112,8 +112,7 @@
   --sidebar-ring: oklch(0.551 0.027 264.364);
 }
 
-html,body,
-#__next {
+html, body, #__next {
   height: 100dvh;
   overflow: hidden;
 }
@@ -124,116 +123,55 @@ html,body,
   }
   body {
     @apply bg-background text-foreground;
+    /* Promote body to its own GPU layer */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
-.scrollbar-none::-webkit-scrollbar {
-  display: none;
+/* ─── Performance: promote animated elements to GPU layers ─── */
+.will-change-transform {
+  will-change: transform;
 }
 
-.scrollbar-none {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+/* ─── Smooth scrolling for section containers ─── */
+.snap-x {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
 }
 
-.scrollbar-furtif::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 3px;
-}
+/* ─── Scrollbar: hidden ─── */
+.scrollbar-none::-webkit-scrollbar { display: none; }
+.scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
 
-.scrollbar-furtif::-webkit-scrollbar-track {
-  background: transparent;
-}
-
+/* ─── Scrollbar: furtif (subtle, appears on hover) ─── */
 .scrollbar-furtif {
   scrollbar-width: thin;
-  /* Firefox */
-  scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
-  /* Firefox: thumb then track */
+  scrollbar-color: rgba(255,255,255,0.10) transparent;
 }
-
-/* WebKit browsers */
-.scrollbar-furtif::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-.scrollbar-furtif::-webkit-scrollbar-track {
-  background: transparent;
-}
-
+.scrollbar-furtif::-webkit-scrollbar { width: 5px; height: 5px; }
+.scrollbar-furtif::-webkit-scrollbar-track { background: transparent; }
 .scrollbar-furtif::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.06));
+  background: rgba(255,255,255,0.08);
   border-radius: 9999px;
-  border: 2px solid transparent;
-  background-clip: padding-box;
+  transition: background 180ms ease;
 }
-
 .scrollbar-furtif:hover::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.08));
+  background: rgba(255,255,255,0.16);
+}
+.scrollbar-furtif::-webkit-scrollbar-corner { background: transparent; }
+
+/* ─── Keyframes: spin (used by decorative rings) ─── */
+@keyframes spin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
-.scrollbar-furtif::-webkit-scrollbar-corner {
-  background: transparent;
-}
-
-/* optional: hide when not hovering (very furtif) */
-.scrollbar-furtif {
-  --sf-opacity: 0.0;
-}
-
-.scrollbar-furtif:hover {
-  --sf-opacity: 1;
-}
-
-.scrollbar-furtif::-webkit-scrollbar-thumb {
-  opacity: var(--sf-opacity);
-  transition: opacity 180ms ease;
-}
-
-/* subtle (furtif) scrollbar for the scrollable project column */
-.scrollbar-furtif {
-  scrollbar-width: thin;
-  /* Firefox */
-  scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
-  /* Firefox: thumb then track */
-}
-
-/* WebKit browsers */
-.scrollbar-furtif::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-.scrollbar-furtif::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.scrollbar-furtif::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.06));
-  border-radius: 9999px;
-  border: 2px solid transparent;
-  background-clip: padding-box;
-}
-
-.scrollbar-furtif:hover::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.08));
-}
-
-.scrollbar-furtif::-webkit-scrollbar-corner {
-  background: transparent;
-}
-
-/* optional: hide when not hovering (very furtif) */
-.scrollbar-furtif {
-  --sf-opacity: 0.0;
-}
-
-.scrollbar-furtif:hover {
-  --sf-opacity: 1;
-}
-
-.scrollbar-furtif::-webkit-scrollbar-thumb {
-  opacity: var(--sf-opacity);
-  transition: opacity 180ms ease;
+/* ─── Reduce motion: respect user preference ─── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

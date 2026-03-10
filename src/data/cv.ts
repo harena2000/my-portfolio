@@ -38,6 +38,8 @@ export interface Contact {
   email: string;
   phone: string;
   address: string;
+  github?: string;
+  linkedin?: string;
 }
 
 export interface CVLocale {
@@ -59,6 +61,8 @@ export const CVData: Record<string, CVLocale> = {
       email: "harenaricom@gmail.com",
       phone: "+261 34 33 135 51",
       address: "Lot TR42 Ampahimanga, Ambohimanambola",
+      github: "https://github.com/harena2000",
+      linkedin: "https://linkedin.com/in/harena-rico",
     },
     profile: `Experienced full-stack mobile and web developer with over 3.5 years of expertise at Futurmap. Specialized in Flutter development with a strong command of modern web technologies (Node.js, Vue.js, Django, Next.js). Expert in GIS solutions and complex geospatial systems integration.`,
     skills: [
@@ -151,6 +155,8 @@ export const CVData: Record<string, CVLocale> = {
       email: "harenaricom@gmail.com",
       phone: "+261 34 33 135 51",
       address: "Lot TR42 Ampahimanga, Ambohimanambola",
+      github: "https://github.com/harena2000",
+      linkedin: "https://linkedin.com/in/harena-rico",
     },
     profile: `Développeur mobile et web fullstack expérimenté avec plus de 3 ans et demi d'expertise chez Futurmap. Spécialisé en développement Flutter avec une solide maîtrise des technologies web modernes (Node.js, Vue.js, Django, Next.js). Expert en solutions SIG et intégration de systèmes géospatiaux complexes.`,
     skills: [

@@ -1,10 +1,19 @@
 'use client'
 
-import { AnimatedSection } from '@/components/AnimatedSection'
 import { CVData } from '@/data/cv'
 import { useLocale, useTranslations } from 'next-intl'
-import { motion } from 'framer-motion'
+import { motion, type Variants } from 'framer-motion'
 import { Briefcase, Calendar, ChevronRight } from 'lucide-react'
+
+const listVariants: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.1 } },
+}
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, x: -20 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.4, ease: 'easeOut' } },
+}
 
 export function Experience() {
   const locale = useLocale()
@@ -12,16 +21,16 @@ export function Experience() {
   const t = useTranslations('Experience')
 
   return (
-    <AnimatedSection
+    <section
       id="experience"
-      className="w-full h-full flex items-center justify-center text-white py-12"
+      className="w-full h-full flex items-center justify-center text-white py-12 px-6"
     >
-      <div className="max-w-5xl mx-auto px-6 w-full">
+      <div className="max-w-5xl mx-auto w-full">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
           className="mb-10"
         >
           <span className="text-xs font-semibold text-blue-400 uppercase tracking-widest">{t('subtitle')}</span>
@@ -34,29 +43,33 @@ export function Experience() {
           {/* Timeline line */}
           <div className="absolute left-6 top-0 bottom-0 w-px bg-gradient-to-b from-blue-500/50 via-blue-500/20 to-transparent hidden md:block" />
 
-          <div className="space-y-6">
+          <motion.div
+            variants={listVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-60px' }}
+            className="space-y-6"
+          >
             {cv.experience.map((exp, idx) => (
               <motion.div
                 key={idx}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: idx * 0.15 }}
-                whileHover={{ x: 4 }}
+                variants={itemVariants}
+                whileHover={{ x: 4, transition: { duration: 0.15 } }}
                 className="relative flex gap-6 group"
+                style={{ willChange: 'transform' }}
               >
                 {/* Timeline dot */}
                 <div className="hidden md:flex flex-col items-center">
-                  <div className="w-12 h-12 rounded-xl bg-blue-900/30 border border-blue-500/30 flex items-center justify-center flex-shrink-0 group-hover:bg-blue-900/50 group-hover:border-blue-500/60 transition-all duration-300">
+                  <div className="w-12 h-12 rounded-xl bg-blue-900/30 border border-blue-500/30 flex items-center justify-center flex-shrink-0 group-hover:bg-blue-900/50 group-hover:border-blue-500/60 transition-colors duration-200">
                     <Briefcase className="w-5 h-5 text-blue-400" />
                   </div>
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 p-5 hover:border-blue-500/30 hover:bg-white/8 transition-all duration-300 hover:shadow-[0_0_20px_rgba(59,130,246,0.1)]">
+                <div className="flex-1 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 p-5 hover:border-blue-500/30 hover:bg-white/[0.08] transition-colors duration-200 hover:shadow-[0_0_20px_rgba(59,130,246,0.1)]">
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-3">
                     <div>
-                      <h3 className="text-lg font-semibold text-white group-hover:text-blue-300 transition-colors">{exp.role}</h3>
+                      <h3 className="text-lg font-semibold text-white group-hover:text-blue-300 transition-colors duration-150">{exp.role}</h3>
                       <div className="flex items-center gap-2 mt-1">
                         <span className="text-sm font-medium text-blue-400">{exp.company}</span>
                         <ChevronRight className="w-3 h-3 text-gray-600" />
@@ -66,7 +79,7 @@ export function Experience() {
                         </div>
                       </div>
                     </div>
-                    <span className={`self-start text-xs px-2 py-1 rounded-full font-medium ${exp.to === 'Present' || exp.to === 'Present' ? 'bg-green-900/30 text-green-400 border border-green-500/30' : 'bg-gray-800 text-gray-400 border border-gray-700'}`}>
+                    <span className={`self-start text-xs px-2 py-1 rounded-full font-medium ${exp.to === 'Present' ? 'bg-green-900/30 text-green-400 border border-green-500/30' : 'bg-gray-800 text-gray-400 border border-gray-700'}`}>
                       {exp.to === 'Present' ? '● Current' : 'Past'}
                     </span>
                   </div>
@@ -74,9 +87,9 @@ export function Experience() {
                 </div>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </div>
-    </AnimatedSection>
+    </section>
   )
 }

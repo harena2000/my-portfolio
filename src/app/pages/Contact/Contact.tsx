@@ -4,11 +4,20 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { CVData } from '@/data/cv'
-import { AnimatedSection } from '@/components/AnimatedSection'
-import { motion } from 'framer-motion'
+import { motion, type Variants } from 'framer-motion'
 import { useLocale, useTranslations } from 'next-intl'
 import { Mail, Phone, MapPin, Send, Github, Linkedin } from 'lucide-react'
 import { useState } from 'react'
+
+const colVariants: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.09 } },
+}
+
+const rowVariants: Variants = {
+  hidden: { opacity: 0, y: 12 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.38, ease: 'easeOut' } },
+}
 
 export function Contact() {
   const locale = useLocale()
@@ -19,10 +28,7 @@ export function Contact() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setSending(true)
-    setTimeout(() => {
-      setSending(false)
-      alert('Message sent (demo)')
-    }, 1500)
+    setTimeout(() => setSending(false), 1500)
   }
 
   const contactItems = [
@@ -32,16 +38,16 @@ export function Contact() {
   ]
 
   return (
-    <AnimatedSection
+    <section
       id="contact"
-      className="w-full h-full flex items-center justify-center text-white py-12"
+      className="w-full h-full flex items-center justify-center text-white py-12 px-6"
     >
-      <div className="max-w-5xl mx-auto px-6 w-full">
+      <div className="max-w-5xl mx-auto w-full">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
           className="mb-10"
         >
           <span className="text-xs font-semibold text-blue-400 uppercase tracking-widest">{t('subtitle')}</span>
@@ -53,10 +59,10 @@ export function Contact() {
         <div className="grid md:grid-cols-2 gap-8">
           {/* Left: Contact info */}
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            variants={colVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-60px' }}
             className="space-y-4"
           >
             {contactItems.map((item, idx) => {
@@ -64,19 +70,16 @@ export function Contact() {
               return (
                 <motion.div
                   key={idx}
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: idx * 0.1 }}
-                  className="flex items-center gap-4 p-4 rounded-xl bg-white/5 border border-white/10 hover:border-blue-500/30 hover:bg-blue-900/10 transition-all duration-300 group"
+                  variants={rowVariants}
+                  className="flex items-center gap-4 p-4 rounded-xl bg-white/5 border border-white/10 hover:border-blue-500/30 hover:bg-blue-900/10 transition-colors duration-200 group"
                 >
-                  <div className="w-10 h-10 rounded-lg bg-blue-900/30 border border-blue-500/30 flex items-center justify-center flex-shrink-0 group-hover:bg-blue-900/50 transition-all">
+                  <div className="w-10 h-10 rounded-lg bg-blue-900/30 border border-blue-500/30 flex items-center justify-center flex-shrink-0 group-hover:bg-blue-900/50 transition-colors duration-200">
                     <Icon className="w-4 h-4 text-blue-400" />
                   </div>
                   <div>
                     <p className="text-xs text-gray-500 uppercase tracking-wider">{item.label}</p>
                     {item.href ? (
-                      <a href={item.href} className="text-sm text-gray-200 hover:text-blue-400 transition-colors">{item.value}</a>
+                      <a href={item.href} className="text-sm text-gray-200 hover:text-blue-400 transition-colors duration-150">{item.value}</a>
                     ) : (
                       <p className="text-sm text-gray-200">{item.value}</p>
                     )}
@@ -86,28 +89,24 @@ export function Contact() {
             })}
 
             {/* Social links */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: 0.4 }}
-              className="flex gap-3 pt-2"
-            >
+            <motion.div variants={rowVariants} className="flex gap-3 pt-2">
               <a
-                href="https://github.com"
+                href={cv.contact.github ?? 'https://github.com'}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:bg-blue-900/30 hover:border-blue-500/40 transition-all duration-300 hover:scale-110"
+                className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:bg-blue-900/30 hover:border-blue-500/40 transition-colors duration-200"
+                style={{ willChange: 'transform' }}
               >
-                <Github className="w-4 h-4 text-gray-400 hover:text-white" />
+                <Github className="w-4 h-4 text-gray-400 hover:text-white transition-colors duration-150" />
               </a>
               <a
-                href="https://linkedin.com"
+                href={cv.contact.linkedin ?? 'https://linkedin.com'}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:bg-blue-900/30 hover:border-blue-500/40 transition-all duration-300 hover:scale-110"
+                className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:bg-blue-900/30 hover:border-blue-500/40 transition-colors duration-200"
+                style={{ willChange: 'transform' }}
               >
-                <Linkedin className="w-4 h-4 text-gray-400 hover:text-white" />
+                <Linkedin className="w-4 h-4 text-gray-400 hover:text-white transition-colors duration-150" />
               </a>
             </motion.div>
           </motion.div>
@@ -117,31 +116,32 @@ export function Contact() {
             onSubmit={handleSubmit}
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="space-y-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:border-blue-500/20 transition-all duration-300"
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
+            className="space-y-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:border-blue-500/20 transition-colors duration-200"
+            style={{ willChange: 'transform, opacity' }}
           >
             <Input
               placeholder={t('yourName')}
               required
-              className="bg-white/5 text-white border-white/10 focus:border-blue-500/50 rounded-lg placeholder:text-gray-600 transition-all"
+              className="bg-white/5 text-white border-white/10 focus:border-blue-500/50 rounded-lg placeholder:text-gray-600 transition-colors duration-150"
             />
             <Input
               placeholder={t('yourEmail')}
               type="email"
               required
-              className="bg-white/5 text-white border-white/10 focus:border-blue-500/50 rounded-lg placeholder:text-gray-600 transition-all"
+              className="bg-white/5 text-white border-white/10 focus:border-blue-500/50 rounded-lg placeholder:text-gray-600 transition-colors duration-150"
             />
             <Textarea
               placeholder={t('message')}
               required
               rows={4}
-              className="bg-white/5 text-white border-white/10 focus:border-blue-500/50 rounded-lg placeholder:text-gray-600 resize-none transition-all"
+              className="bg-white/5 text-white border-white/10 focus:border-blue-500/50 rounded-lg placeholder:text-gray-600 resize-none transition-colors duration-150"
             />
             <Button
               type="submit"
               disabled={sending}
-              className="w-full bg-blue-600 hover:bg-blue-500 text-white rounded-lg shadow-lg shadow-blue-600/20 hover:shadow-blue-500/30 transition-all duration-300 hover:scale-[1.02] flex items-center gap-2 justify-center"
+              className="w-full bg-blue-600 hover:bg-blue-500 text-white rounded-lg shadow-lg shadow-blue-600/20 hover:shadow-blue-500/30 transition-colors duration-200 flex items-center gap-2 justify-center"
             >
               {sending ? (
                 <span className="flex items-center gap-2">
@@ -161,6 +161,6 @@ export function Contact() {
           </motion.form>
         </div>
       </div>
-    </AnimatedSection>
+    </section>
   )
 }
