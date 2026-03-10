@@ -1,0 +1,41 @@
+{
+  "Navbar": {
+    "home": "Home",
+    "skills": "Skills",
+    "project": "Projects",
+    "experience": "Experience",
+    "contact": "Contact",
+    "resume": "Resume"
+  },
+  "Hero": {
+    "available": "Available for work",
+    "exploreProjects": "Explore Projects",
+    "hireMe": "Hire Me",
+    "openToWork": "Open to work",
+    "yearsExp": "years of experience"
+  },
+  "Skills": {
+    "title": "Skills",
+    "subtitle": "Technologies I work with"
+  },
+  "Projects": {
+    "title": "Projects",
+    "subtitle": "What I've built"
+  },
+  "Experience": {
+    "title": "Experience",
+    "subtitle": "My professional journey"
+  },
+  "Contact": {
+    "title": "Contact",
+    "subtitle": "Let's work together",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "yourName": "Your name",
+    "yourEmail": "Your email",
+    "message": "Message",
+    "send": "Send Message",
+    "sending": "Sending..."
+  }
+}

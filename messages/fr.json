@@ -1,0 +1,41 @@
+{
+  "Navbar": {
+    "home": "Accueil",
+    "skills": "Compétences",
+    "project": "Projets",
+    "experience": "Expérience",
+    "contact": "Contact",
+    "resume": "CV"
+  },
+  "Hero": {
+    "available": "Disponible pour travailler",
+    "exploreProjects": "Voir les Projets",
+    "hireMe": "M'engager",
+    "openToWork": "Ouvert aux opportunités",
+    "yearsExp": "ans d'expérience"
+  },
+  "Skills": {
+    "title": "Compétences",
+    "subtitle": "Technologies avec lesquelles je travaille"
+  },
+  "Projects": {
+    "title": "Projets",
+    "subtitle": "Ce que j'ai construit"
+  },
+  "Experience": {
+    "title": "Expérience",
+    "subtitle": "Mon parcours professionnel"
+  },
+  "Contact": {
+    "title": "Contact",
+    "subtitle": "Travaillons ensemble",
+    "email": "Email",
+    "phone": "Téléphone",
+    "address": "Adresse",
+    "yourName": "Votre nom",
+    "yourEmail": "Votre email",
+    "message": "Message",
+    "send": "Envoyer le message",
+    "sending": "Envoi..."
+  }
+}

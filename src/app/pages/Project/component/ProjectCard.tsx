@@ -1,93 +1,107 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { ProjectStatus } from "@/constant/cv";
+import { useState } from 'react'
+import { motion } from 'framer-motion'
+import { ProjectStatus } from '@/data/cv'
+import { ChevronDown, ChevronUp, ExternalLink } from 'lucide-react'
 
 export type Project = {
-  title: string;
-  subtitle?: string;
-  desc?: string;
-  tech?: string[];
-  status?: ProjectStatus | string;
-};
+  title: string
+  subtitle?: string
+  desc?: string
+  tech?: string[]
+  status?: ProjectStatus | string
+  index?: number
+}
 
-export function ProjectCard({ project }: { project: Project }) {
-  const [expanded, setExpanded] = useState(false);
+const statusConfig: Record<string, { label: string; bg: string; text: string; dot: string }> = {
+  [ProjectStatus.COMPLETED]: {
+    label: 'Completed',
+    bg: 'bg-emerald-900/30',
+    text: 'text-emerald-400',
+    dot: 'bg-emerald-400',
+  },
+  [ProjectStatus.IN_PROGRESS]: {
+    label: 'In Progress',
+    bg: 'bg-amber-900/30',
+    text: 'text-amber-400',
+    dot: 'bg-amber-400',
+  },
+  [ProjectStatus.ON_STANDBY]: {
+    label: 'On Standby',
+    bg: 'bg-gray-800/50',
+    text: 'text-gray-400',
+    dot: 'bg-gray-400',
+  },
+}
 
-  const fullDesc = project.desc ?? "";
-
-  const status = project.status;
-  const statusMap: Record<string, { label: string; classes: string }> = {
-    [ProjectStatus.COMPLETED]: {
-      label: ProjectStatus.COMPLETED,
-      classes: "bg-emerald-600 text-white",
-    },
-    [ProjectStatus.IN_PROGRESS]: {
-      label: ProjectStatus.IN_PROGRESS,
-      classes: "bg-amber-200 text-black",
-    },
-    [ProjectStatus.ON_STANDBY]: {
-      label: ProjectStatus.ON_STANDBY,
-      classes: "bg-slate-500 text-white",
-    },
-  };
-  const badge = status ? statusMap[status] : null;
+export function ProjectCard({ project, index = 0 }: { project: Project; index?: number }) {
+  const [expanded, setExpanded] = useState(false)
+  const fullDesc = project.desc ?? ''
+  const badge = project.status ? statusConfig[project.status] : null
 
   return (
     <motion.div
-      whileHover={{ scale: 1.02, y: -3 }}
-      className="rounded-2xl bg-white/2 border border-white/10 p-6 
-             hover:shadow-[0_0_15px_rgba(59,130,246,0.35)] transition
-             min-h-[260px] sm:min-h-[280px] lg:min-h-[300px]
-             flex flex-col relative"
-      style={{
-        backdropFilter: "blur(10px)",
-        WebkitBackdropFilter: "blur(10px)",
-      }}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+      whileHover={{ y: -4 }}
+      className="rounded-2xl bg-white/4 border border-white/10 p-5 hover:border-blue-500/30 hover:bg-white/6 hover:shadow-[0_0_20px_rgba(59,130,246,0.12)] transition-all duration-300 flex flex-col group"
+      style={{ backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}
     >
-      {badge && (
-        <span
-          className={`absolute top-3 right-3 px-2.5 py-0.5 rounded-full text-xs font-medium ${badge.classes}`}
-        >
-          {badge.label}
-        </span>
-      )}
+      {/* Header */}
+      <div className="flex items-start justify-between mb-3">
+        <div className="flex-1 min-w-0">
+          <h3 className="text-base font-bold text-white group-hover:text-blue-300 transition-colors truncate">{project.title}</h3>
+          {project.subtitle && (
+            <p className="text-xs text-gray-500 mt-0.5 truncate">{project.subtitle}</p>
+          )}
+        </div>
+        {badge && (
+          <span className={`flex items-center gap-1 ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${badge.bg} ${badge.text} border border-current/20 flex-shrink-0`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${badge.dot} animate-pulse`} />
+            {badge.label}
+          </span>
+        )}
+      </div>
 
-      <h3 className="text-xl font-semibold mb-2">{project.title}</h3>
-
-      {project.subtitle && (
-        <p className="text-sm text-gray-400 mb-3">{project.subtitle}</p>
-      )}
-
+      {/* Description */}
       {fullDesc && (
-        <div className="mb-4">
-          <p
-            className={`text-sm text-gray-300 ${
-              expanded ? "" : "line-clamp-3"
-            }`}
-          >
+        <div className="mb-4 flex-1">
+          <p className={`text-sm text-gray-400 leading-relaxed ${expanded ? '' : 'line-clamp-3'}`}>
             {fullDesc}
           </p>
-
           {fullDesc.length > 160 && (
             <button
               onClick={() => setExpanded((s) => !s)}
-              className="mt-3 text-xs font-medium text-blue-400 hover:underline"
+              className="mt-2 text-xs font-medium text-blue-400 hover:text-blue-300 transition-colors flex items-center gap-1"
             >
-              {expanded ? "Show less" : "Show more"}
+              {expanded ? (
+                <><ChevronUp className="w-3 h-3" /> Show less</>
+              ) : (
+                <><ChevronDown className="w-3 h-3" /> Show more</>
+              )}
             </button>
           )}
         </div>
       )}
 
+      {/* Tech stack */}
       {project.tech && (
-        <div className="text-xs text-gray-400 mt-auto">
-          {project.tech.join(" • ")}
+        <div className="flex flex-wrap gap-1.5 mt-auto pt-3 border-t border-white/5">
+          {project.tech.map((tech) => (
+            <span
+              key={tech}
+              className="px-2 py-0.5 text-xs rounded-md bg-blue-900/20 text-blue-300 border border-blue-500/20 hover:bg-blue-900/40 transition-colors"
+            >
+              {tech}
+            </span>
+          ))}
         </div>
       )}
     </motion.div>
-  );
+  )
 }
 
-export default ProjectCard;
+export default ProjectCard

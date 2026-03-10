@@ -30,18 +30,15 @@ export default function Home() {
       const container = containerRef.current;
       if (!container) return;
 
-      // prefer index-based horizontal scroll when provided
       if (detail?.index !== undefined && typeof detail.index === "number") {
         const left = window.innerWidth * detail.index;
         container.scrollTo({ left, behavior: "smooth" });
         return;
       }
 
-      // fallback: try scroll to element by id (if sections rendered as anchors)
       if (detail?.id) {
         const el = document.getElementById(detail.id);
         if (el) {
-          // compute element's left relative to container
           const rect = el.getBoundingClientRect();
           const containerRect = container.getBoundingClientRect();
           const left = container.scrollLeft + (rect.left - containerRect.left);
@@ -72,7 +69,6 @@ export default function Home() {
     };
 
     container.addEventListener("scroll", onScroll, { passive: true });
-    // emit initial position
     const initIndex = Math.round(
       container.scrollLeft / (window.innerWidth || 1)
     );
@@ -89,46 +85,66 @@ export default function Home() {
   return (
     <main
       ref={containerRef}
-      className="relative min-h-screen w-screen overflow-x-hidden overflow-y-auto snap-x snap-mandatory flex scrollbar-none scroll-smooth bg-gradient-to-b from-[#020618] via-[#0f1e64] to-[#132f9c] text-white"
+      className="relative min-h-screen w-screen overflow-x-hidden overflow-y-auto snap-x snap-mandatory flex scrollbar-none scroll-smooth text-white"
+      style={{
+        background: 'linear-gradient(135deg, #020818 0%, #050d1f 30%, #071428 60%, #040c1c 100%)',
+      }}
     >
+      {/* Background effects */}
       <div className="fixed inset-0 z-0 pointer-events-none">
+        {/* Ambient glow effects */}
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-600/8 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-800/6 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-900/5 rounded-full blur-3xl" />
+
         <ShootingStars
           className="absolute inset-0"
-          starColor="#9E00FF"
-          trailColor="#2EB9DF"
-          minSpeed={150}
-          maxSpeed={350}
-          minDelay={100}
-          maxDelay={420}
+          starColor="#3b82f6"
+          trailColor="#60a5fa"
+          minSpeed={80}
+          maxSpeed={200}
+          minDelay={200}
+          maxDelay={600}
         />
         <Particles
           className="absolute inset-0"
-          quantity={2000}
-          ease={30}
-          staticity={50}
-          color="#ffffff"
-          size={0.8}
+          quantity={800}
+          ease={40}
+          staticity={60}
+          color="#3b82f6"
+          size={0.6}
         />
-        <div className="absolute inset-0 bg-black/20" />
+        {/* Grid overlay */}
+        <div
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(59,130,246,0.5) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(59,130,246,0.5) 1px, transparent 1px)
+            `,
+            backgroundSize: '60px 60px',
+          }}
+        />
+        <div className="absolute inset-0 bg-black/10" />
       </div>
 
-      <section className="snap-center flex-shrink-0 w-screen h-dvh flex items-center justify-center">
+      <section className="snap-center flex-shrink-0 w-screen h-dvh flex items-center justify-center relative z-10">
         <Hero />
       </section>
 
-      <section className="snap-center flex-shrink-0 w-screen h-dvh flex items-center justify-center">
+      <section className="snap-center flex-shrink-0 w-screen h-dvh flex items-center justify-center relative z-10">
         <Skills />
       </section>
 
-      <section className="snap-center flex-shrink-0 w-screen h-dvh flex items-center justify-center">
+      <section className="snap-center flex-shrink-0 w-screen min-h-dvh flex items-start justify-center relative z-10">
         <Projects />
       </section>
 
-      <section className="snap-center flex-shrink-0 w-screen h-dvh flex items-center justify-center">
+      <section className="snap-center flex-shrink-0 w-screen h-dvh flex items-center justify-center relative z-10">
         <Experience />
       </section>
 
-      <section className="snap-center flex-shrink-0 w-screen h-dvh flex items-center justify-center">
+      <section className="snap-center flex-shrink-0 w-screen h-dvh flex items-center justify-center relative z-10">
         <Contact />
       </section>
     </main>
