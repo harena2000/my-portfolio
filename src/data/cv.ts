@@ -98,7 +98,7 @@ export const CVData: Record<string, CVLocale> = {
         role: "Fullstack Developer Vue / Laravel",
         from: "2021",
         to: "2022",
-        details: "Developed a mobile application with Java.",
+        details: "Developed a storage management application with Vue.js and Laravel.",
       },
     ],
     projects: [
@@ -194,7 +194,7 @@ export const CVData: Record<string, CVLocale> = {
         role: "Développeur Fullstack Vue / Laravel",
         from: "2021",
         to: "2022",
-        details: "Développer une application mobile avec Java.",
+        details: "Développement d'une application de stockage avec Vue.js et Laravel.",
       },
     ],
     projects: [
