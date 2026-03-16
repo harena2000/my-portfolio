@@ -4,7 +4,8 @@
     "skills": "Skills",
     "project": "Projects",
     "experience": "Experience",
-    "contact": "Contact"
+    "contact": "Contact",
+    "resume": "Resume"
   },
   "Hero": {
     "available": "Available for work",
@@ -36,5 +37,13 @@
     "message": "Message",
     "send": "Send Message",
     "sending": "Sending..."
+  },
+  "Resume": {
+    "title": "Resume",
+    "subtitle": "My curriculum vitae",
+    "download": "Download PDF",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "resetZoom": "Reset zoom"
   }
 }

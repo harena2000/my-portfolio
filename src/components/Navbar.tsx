@@ -1,6 +1,6 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
-import { Briefcase, Folder, HomeIcon, Mail, Zap, Globe } from "lucide-react";
+import { Briefcase, FileText, Folder, HomeIcon, Mail, Zap, Globe } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
@@ -59,6 +59,7 @@ export function Navbar() {
     { label: t('project'), icon: Folder, index: 2, id: "project" },
     { label: t('experience'), icon: Briefcase, index: 3, id: "experience" },
     { label: t('contact'), icon: Mail, index: 4, id: "contact" },
+    { label: t('resume'), icon: FileText, index: 5, id: "resume" },
   ];
 
   // ── MOBILE: bottom tab bar ──
@@ -72,7 +73,7 @@ export function Navbar() {
         style={{ willChange: 'transform, opacity' }}
       >
         <div className="rounded-2xl bg-black/70 backdrop-blur-xl border border-white/10 px-1 py-1 shadow-2xl shadow-black/50 flex items-center justify-between">
-          {items.slice(0, 5).map((item) => {
+          {items.map((item) => {
             const Icon = item.icon;
             const isActive = item.index === activeIndex;
             return (

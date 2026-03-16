@@ -1,12 +1,12 @@
 "use client";
 
-import { Contact, Experience, Hero, Projects, Skills } from "@/app/pages";
+import { Contact, Experience, Hero, Projects, Resume, Skills } from "@/app/pages";
 import { Particles } from "@/components/ui/shadcn-io/particles";
 import { ShootingStars } from "@/components/ui/shadcn-io/shooting-stars";
 import { ScrollIndicator } from "@/components/ScrollIndicator";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-const SECTION_IDS = ["home", "skills", "project", "experience", "contact"];
+const SECTION_IDS = ["home", "skills", "project", "experience", "contact", "resume"];
 
 /** A single snap panel that scrolls vertically when content overflows */
 function SnapPanel({
@@ -173,8 +173,11 @@ export default function Home() {
           <div id="section-experience" className="min-h-dvh w-full py-16 px-4">
             <Experience />
           </div>
-          <div id="section-contact" className="min-h-dvh w-full py-16 px-4 pb-28">
+          <div id="section-contact" className="min-h-dvh w-full py-16 px-4">
             <Contact />
+          </div>
+          <div id="section-resume" className="min-h-dvh w-full py-16 px-4 pb-28">
+            <Resume />
           </div>
         </div>
       </div>
@@ -207,6 +210,9 @@ export default function Home() {
       </SnapPanel>
       <SnapPanel id="contact">
         <Contact />
+      </SnapPanel>
+      <SnapPanel id="resume">
+        <Resume />
       </SnapPanel>
     </div>
   );

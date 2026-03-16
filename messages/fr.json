@@ -4,7 +4,8 @@
     "skills": "Compétences",
     "project": "Projets",
     "experience": "Expérience",
-    "contact": "Contact"
+    "contact": "Contact",
+    "resume": "CV"
   },
   "Hero": {
     "available": "Disponible pour travailler",
@@ -36,5 +37,13 @@
     "message": "Message",
     "send": "Envoyer le message",
     "sending": "Envoi..."
+  },
+  "Resume": {
+    "title": "CV",
+    "subtitle": "Mon curriculum vitae",
+    "download": "Télécharger le PDF",
+    "zoomIn": "Agrandir",
+    "zoomOut": "Réduire",
+    "resetZoom": "Réinitialiser le zoom"
   }
 }
