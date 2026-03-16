@@ -95,7 +95,7 @@ export const CVData: Record<string, CVLocale> = {
       },
       {
         company: "Fitiavana.MG",
-        role: "Mobile Developer | Freelance",
+        role: "Fullstack Developer Vue / Laravel",
         from: "2021",
         to: "2022",
         details: "Developed a mobile application with Java.",
@@ -191,7 +191,7 @@ export const CVData: Record<string, CVLocale> = {
       },
       {
         company: "Fitiavana.MG",
-        role: "Développeur Mobile | Freelance",
+        role: "Développeur Fullstack Vue / Laravel",
         from: "2021",
         to: "2022",
         details: "Développer une application mobile avec Java.",
