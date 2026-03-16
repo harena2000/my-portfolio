@@ -115,19 +115,28 @@
 /* ─── Base ─── */
 html {
   height: 100%;
-  /* Allow body to scroll on mobile */
-  overflow: auto;
+  overflow: hidden; /* the snap/scroll containers handle their own overflow */
 }
 
 body {
   height: 100%;
+  overflow: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Desktop: lock overflow to body so only the snap container scrolls */
+/* Mobile: allow the page to scroll vertically */
+@media (max-width: 767px) {
+  html, body {
+    overflow: auto;
+    height: auto;
+    min-height: 100%;
+  }
+}
+
+/* Desktop: body locked — only the horizontal snap container scrolls */
 @media (min-width: 768px) {
-  html, body, #__next {
+  html, body {
     height: 100dvh;
     overflow: hidden;
   }

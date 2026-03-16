@@ -5,11 +5,15 @@ import { Particles } from "@/components/ui/shadcn-io/particles";
 import { ShootingStars } from "@/components/ui/shadcn-io/shooting-stars";
 import { useEffect, useRef, useState } from "react";
 
+// Section IDs in order — used for nav tracking and keyboard nav
+const SECTION_IDS = ["home", "skills", "project", "experience", "contact"];
+
 export default function Home() {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const outerRef = useRef<HTMLDivElement>(null); // horizontal snap container (desktop)
+  const sectionRefs = useRef<(HTMLElement | null)[]>([]);
   const [isMobile, setIsMobile] = useState(false);
 
-  // Detect mobile
+  // Detect mobile breakpoint
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
     check();
@@ -17,58 +21,44 @@ export default function Home() {
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  // Keyboard navigation (desktop only)
+  // ── Keyboard navigation (desktop: left/right arrows) ──
   useEffect(() => {
     if (isMobile) return;
     const handleKey = (e: KeyboardEvent) => {
-      const container = containerRef.current;
-      if (!container) return;
-      const scrollAmount = window.innerWidth;
-      if (e.key === "ArrowRight")
-        container.scrollBy({ left: scrollAmount, behavior: "smooth" });
-      if (e.key === "ArrowLeft")
-        container.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+      const outer = outerRef.current;
+      if (!outer) return;
+      if (e.key === "ArrowRight") outer.scrollBy({ left: window.innerWidth, behavior: "smooth" });
+      if (e.key === "ArrowLeft") outer.scrollBy({ left: -window.innerWidth, behavior: "smooth" });
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
   }, [isMobile]);
 
-  // Navigate to section by index or id
+  // ── Navigate to section by id or index ──
   useEffect(() => {
     const handler = (ev: Event) => {
       const detail = (ev as CustomEvent).detail as { id?: string; index?: number } | undefined;
-      const container = containerRef.current;
-      if (!container) return;
+
+      const resolveIndex = (): number | null => {
+        if (detail?.index !== undefined) return detail.index;
+        if (detail?.id) {
+          const i = SECTION_IDS.indexOf(detail.id);
+          return i >= 0 ? i : null;
+        }
+        return null;
+      };
+
+      const idx = resolveIndex();
+      if (idx === null) return;
 
       if (isMobile) {
-        // On mobile: vertical scroll to section by id
-        const targetId = detail?.id;
-        if (targetId) {
-          const el = document.getElementById(targetId);
-          if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-        } else if (detail?.index !== undefined) {
-          const sections = ["home", "skills", "project", "experience", "contact"];
-          const id = sections[detail.index];
-          if (id) {
-            const el = document.getElementById(id);
-            if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-          }
-        }
-        return;
-      }
-
-      // Desktop: horizontal scroll
-      if (detail?.index !== undefined && typeof detail.index === "number") {
-        container.scrollTo({ left: window.innerWidth * detail.index, behavior: "smooth" });
-        return;
-      }
-      if (detail?.id) {
-        const el = document.getElementById(detail.id);
-        if (el) {
-          const rect = el.getBoundingClientRect();
-          const containerRect = container.getBoundingClientRect();
-          container.scrollTo({ left: container.scrollLeft + (rect.left - containerRect.left), behavior: "smooth" });
-        }
+        // Mobile: scroll the page vertically to the section
+        const el = document.getElementById(SECTION_IDS[idx]);
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else {
+        // Desktop: scroll the outer container horizontally to the snap panel
+        const outer = outerRef.current;
+        if (outer) outer.scrollTo({ left: window.innerWidth * idx, behavior: "smooth" });
       }
     };
 
@@ -76,121 +66,140 @@ export default function Home() {
     return () => window.removeEventListener("navigateToSection", handler as EventListener);
   }, [isMobile]);
 
-  // Track current section for navbar highlight
+  // ── Track active section for navbar highlight ──
   useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
     let raf = 0;
 
     if (isMobile) {
-      // On mobile: use IntersectionObserver to track visible section
-      const sections = ["home", "skills", "project", "experience", "contact"];
+      // Mobile: IntersectionObserver on each section
       const observers: IntersectionObserver[] = [];
-
-      sections.forEach((id, index) => {
+      SECTION_IDS.forEach((id, index) => {
         const el = document.getElementById(id);
         if (!el) return;
         const obs = new IntersectionObserver(
           ([entry]) => {
-            if (entry.isIntersecting) {
+            if (entry.isIntersecting)
               window.dispatchEvent(new CustomEvent("sectionChanged", { detail: { index } }));
-            }
           },
-          { threshold: 0.5 }
+          { threshold: 0.4 }
         );
         obs.observe(el);
         observers.push(obs);
       });
-
       window.dispatchEvent(new CustomEvent("sectionChanged", { detail: { index: 0 } }));
       return () => observers.forEach((o) => o.disconnect());
     }
 
-    // Desktop: scroll-based tracking
+    // Desktop: track horizontal scroll position
+    const outer = outerRef.current;
+    if (!outer) return;
     const onScroll = () => {
       if (raf) cancelAnimationFrame(raf);
       raf = requestAnimationFrame(() => {
-        const index = Math.round(container.scrollLeft / (window.innerWidth || 1));
+        const index = Math.round(outer.scrollLeft / (window.innerWidth || 1));
         window.dispatchEvent(new CustomEvent("sectionChanged", { detail: { index } }));
       });
     };
-
-    container.addEventListener("scroll", onScroll, { passive: true });
+    outer.addEventListener("scroll", onScroll, { passive: true });
     window.dispatchEvent(new CustomEvent("sectionChanged", { detail: { index: 0 } }));
-
     return () => {
-      container.removeEventListener("scroll", onScroll);
+      outer.removeEventListener("scroll", onScroll);
       if (raf) cancelAnimationFrame(raf);
     };
   }, [isMobile]);
 
-  return (
-    <div
-      ref={containerRef}
-      className={
-        isMobile
-          ? // Mobile: normal vertical scroll
-            "relative w-screen overflow-x-hidden overflow-y-auto text-white scrollbar-none"
-          : // Desktop: horizontal snap scroll
-            "relative min-h-screen w-screen overflow-x-auto overflow-y-hidden snap-x snap-mandatory flex scrollbar-none text-white"
-      }
-      style={{ background: "linear-gradient(135deg, #020818 0%, #050d1f 40%, #040c1c 100%)" }}
-    >
-      {/* Background — fixed layer */}
-      <div className="fixed inset-0 z-0 pointer-events-none" style={{ willChange: "transform" }}>
-        <div className="absolute top-0 left-1/4 w-80 h-80 bg-blue-600/6 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-blue-800/5 rounded-full blur-3xl" />
-        <ShootingStars className="absolute inset-0" />
-        <Particles className="absolute inset-0" quantity={isMobile ? 40 : 80} ease={60} staticity={50} color="#3b82f6" size={0.5} />
-        <div
-          className="absolute inset-0 opacity-[0.025]"
-          style={{
-            backgroundImage: `linear-gradient(rgba(59,130,246,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.5) 1px, transparent 1px)`,
-            backgroundSize: "60px 60px",
-          }}
-        />
-      </div>
+  // ── Shared background layer ──
+  const Background = (
+    <div className="fixed inset-0 z-0 pointer-events-none">
+      <div className="absolute top-0 left-1/4 w-80 h-80 bg-blue-600/6 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-blue-800/5 rounded-full blur-3xl" />
+      <ShootingStars className="absolute inset-0" />
+      <Particles
+        className="absolute inset-0"
+        quantity={isMobile ? 40 : 80}
+        ease={60}
+        staticity={50}
+        color="#3b82f6"
+        size={0.5}
+      />
+      <div
+        className="absolute inset-0 opacity-[0.025]"
+        style={{
+          backgroundImage: `
+            linear-gradient(rgba(59,130,246,0.5) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(59,130,246,0.5) 1px, transparent 1px)
+          `,
+          backgroundSize: "60px 60px",
+        }}
+      />
+    </div>
+  );
 
-      {/* ── MOBILE: stacked vertical sections ── */}
-      {isMobile ? (
+  // ─────────────────────────────────────────────
+  // MOBILE: one long vertical page, sections stacked
+  // ─────────────────────────────────────────────
+  if (isMobile) {
+    return (
+      <div
+        className="relative w-screen min-h-screen overflow-x-hidden overflow-y-auto text-white scrollbar-none"
+        style={{ background: "linear-gradient(135deg, #020818 0%, #050d1f 40%, #040c1c 100%)" }}
+      >
+        {Background}
         <div className="relative z-10 flex flex-col">
-          <section id="home" className="min-h-dvh flex items-center justify-center py-20 px-4">
+          {/* Each section: min-h-screen so it fills the viewport, but grows if content is taller */}
+          <section id="home" className="min-h-dvh w-full flex flex-col items-center justify-center py-20 px-4">
             <Hero />
           </section>
-          <section id="skills" className="min-h-dvh flex items-center justify-center py-16 px-4">
+          <section id="skills" className="min-h-dvh w-full flex flex-col items-center justify-center py-16 px-4">
             <Skills />
           </section>
-          <section id="project" className="flex items-start justify-center py-16 px-4">
+          <section id="project" className="w-full flex flex-col items-start justify-center py-16 px-4">
             <Projects />
           </section>
-          <section id="experience" className="min-h-dvh flex items-center justify-center py-16 px-4">
+          <section id="experience" className="min-h-dvh w-full flex flex-col items-center justify-center py-16 px-4">
             <Experience />
           </section>
-          <section id="contact" className="min-h-dvh flex items-center justify-center py-16 px-4 pb-24">
+          <section id="contact" className="min-h-dvh w-full flex flex-col items-center justify-center py-16 px-4 pb-28">
             <Contact />
           </section>
         </div>
-      ) : (
-        /* ── DESKTOP: horizontal snap sections ── */
-        <>
-          <section className="snap-center flex-shrink-0 w-screen h-dvh flex items-center justify-center relative z-10">
-            <Hero />
-          </section>
-          <section className="snap-center flex-shrink-0 w-screen h-dvh flex items-center justify-center relative z-10">
-            <Skills />
-          </section>
-          <section className="snap-center flex-shrink-0 w-screen min-h-dvh flex items-start justify-center relative z-10">
-            <Projects />
-          </section>
-          <section className="snap-center flex-shrink-0 w-screen h-dvh flex items-center justify-center relative z-10">
-            <Experience />
-          </section>
-          <section className="snap-center flex-shrink-0 w-screen h-dvh flex items-center justify-center relative z-10">
-            <Contact />
-          </section>
-        </>
-      )}
+      </div>
+    );
+  }
+
+  // ─────────────────────────────────────────────
+  // DESKTOP: horizontal snap, each panel scrolls vertically
+  // ─────────────────────────────────────────────
+  return (
+    <div
+      ref={outerRef}
+      className="relative w-screen h-dvh overflow-x-auto overflow-y-hidden snap-x snap-mandatory flex scrollbar-none text-white"
+      style={{ background: "linear-gradient(135deg, #020818 0%, #050d1f 40%, #040c1c 100%)" }}
+    >
+      {Background}
+
+      {/* Each section is a snap panel that is exactly 100vw wide and 100dvh tall,
+          but its inner content div can scroll vertically */}
+      {[
+        { id: "home",       El: Hero },
+        { id: "skills",     El: Skills },
+        { id: "project",    El: Projects },
+        { id: "experience", El: Experience },
+        { id: "contact",    El: Contact },
+      ].map(({ id, El }, idx) => (
+        <section
+          key={id}
+          id={id}
+          ref={(el) => { sectionRefs.current[idx] = el; }}
+          className="snap-center flex-shrink-0 w-screen h-dvh relative z-10 overflow-y-auto scrollbar-furtif"
+        >
+          {/* Inner wrapper: min-h full so content is centered when short,
+              grows naturally when content is taller than viewport */}
+          <div className="min-h-full flex flex-col items-center justify-center">
+            <El />
+          </div>
+        </section>
+      ))}
     </div>
   );
 }
