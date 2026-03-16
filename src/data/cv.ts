@@ -80,7 +80,7 @@ export const CVData: Record<string, CVLocale> = {
       {
         company: "Futurmap",
         role: "Lead Mobile Developer",
-        from: "June 2024",
+        from: "October 2024",
         to: "January 2026",
         details:
           "Lead developer in the beyond map department for code maintainability, project management, and team supervision.",
@@ -176,7 +176,7 @@ export const CVData: Record<string, CVLocale> = {
       {
         company: "Futurmap",
         role: "Lead Développeur Mobile",
-        from: "Juin 2024",
+        from: "Octobre 2024",
         to: "Janvier 2026",
         details:
           "Lead développeur dans le département beyond map pour la maintenabilité des codes, du projet et l'encadrement de l'équipe.",
