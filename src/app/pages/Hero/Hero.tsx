@@ -80,8 +80,7 @@ export function Hero() {
 
   return (
     <section
-      id="home"
-      className="w-full flex flex-col items-center justify-center px-4 sm:px-6 md:px-12 lg:px-16 py-8 md:py-10 relative overflow-hidden"
+      className="w-full flex flex-col items-center justify-center px-4 sm:px-6 md:px-12 lg:px-16 py-8 md:py-10 relative"
     >
       {/* Cursor glow — hidden on touch devices */}
       <div

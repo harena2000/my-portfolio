@@ -22,7 +22,6 @@ export function Experience() {
 
   return (
     <section
-      id="experience"
       className="w-full flex items-center justify-center text-white py-8 sm:py-12 px-4 sm:px-6"
     >
       <div className="max-w-5xl mx-auto w-full">

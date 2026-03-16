@@ -17,7 +17,6 @@ export function Projects() {
 
   return (
     <section
-      id="project"
       className="w-full flex items-start justify-center text-white px-4 sm:px-6 md:px-8 lg:px-12 py-8 sm:py-12"
     >
       <div className="max-w-7xl mx-auto w-full">
