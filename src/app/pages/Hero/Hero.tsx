@@ -147,6 +147,19 @@ export function Hero() {
             </Button>
           </motion.div>
 
+          {/* Skills row */}
+          <motion.div variants={itemVariants} className="flex flex-wrap gap-2 justify-center md:justify-start">
+            {cv.skills.map((skill) => (
+              <div
+                key={skill.name}
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/5 border border-white/10 hover:border-blue-500/30 hover:bg-blue-900/10 transition-colors duration-200"
+              >
+                <Image src={skill.logo} alt={skill.name} width={14} height={14} className="object-contain" />
+                <span className="text-[11px] text-gray-400 font-medium">{skill.name}</span>
+              </div>
+            ))}
+          </motion.div>
+
           {/* Status row */}
           <motion.div variants={itemVariants} className="flex items-center gap-4 justify-center md:justify-start">
             <div className="flex items-center gap-2">
