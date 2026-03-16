@@ -32,6 +32,7 @@ export interface Project {
   desc?: string;
   tech?: string[];
   status?: ProjectStatus | string;
+  link?: string;
 }
 
 export interface Contact {
@@ -130,6 +131,7 @@ export const CVData: Record<string, CVLocale> = {
         desc: "Development of a dedicated mobile application for learning golf, offering an optimal user experience and advanced features for golf enthusiasts.",
         tech: ["Flutter", "Stripe", "Firebase"],
         status: ProjectStatus.COMPLETED,
+        link: "https://play.google.com/store/apps/details?id=com.idevshop.oppgolf&pcampaignid=web_share",
       },
       {
         title: "Product Ticketing",
@@ -224,6 +226,7 @@ export const CVData: Record<string, CVLocale> = {
         desc: "Développement d'une application mobile dédiée sur l'apprentissage du golf, offrant une expérience utilisateur optimale et des fonctionnalités avancées pour les passionnés de golf.",
         tech: ["Flutter", "Stripe", "Firebase"],
         status: ProjectStatus.COMPLETED,
+        link: "https://play.google.com/store/apps/details?id=com.idevshop.oppgolf&pcampaignid=web_share",
       },
       {
         title: "Product Ticketing",
