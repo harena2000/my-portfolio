@@ -1,6 +1,6 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
-import { Briefcase, FileText, Folder, HomeIcon, Mail, Zap, Globe } from "lucide-react";
+import { Briefcase, Folder, HomeIcon, Mail, Zap, Globe } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
@@ -59,7 +59,6 @@ export function Navbar() {
     { label: t('project'), icon: Folder, index: 2, id: "project" },
     { label: t('experience'), icon: Briefcase, index: 3, id: "experience" },
     { label: t('contact'), icon: Mail, index: 4, id: "contact" },
-    { label: t('resume'), icon: FileText, index: 5, id: "resume" },
   ];
 
   // ── MOBILE: bottom tab bar ──
