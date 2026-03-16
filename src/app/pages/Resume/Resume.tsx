@@ -3,7 +3,7 @@
 import { motion, type Variants } from 'framer-motion'
 import { useLocale, useTranslations } from 'next-intl'
 import { Download, FileText, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react'
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 
 const containerVariants: Variants = {
   hidden: {},
@@ -24,12 +24,15 @@ export function Resume() {
   const locale = useLocale()
   const t = useTranslations('Resume')
   const [zoom, setZoom] = useState(1)
-  const iframeRef = useRef<HTMLIFrameElement>(null)
+  const [pageImages, setPageImages] = useState<string[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
+  const canvasContainerRef = useRef<HTMLDivElement>(null)
 
   const pdfUrl = RESUME_FILES[locale] ?? RESUME_FILES.en
 
   const handleZoomIn = useCallback(() => {
-    setZoom((prev) => Math.min(prev + 0.2, 2))
+    setZoom((prev) => Math.min(prev + 0.2, 2.5))
   }, [])
 
   const handleZoomOut = useCallback(() => {
@@ -40,8 +43,53 @@ export function Resume() {
     setZoom(1)
   }, [])
 
+  // Render PDF pages to canvas images using pdf.js
+  useEffect(() => {
+    let cancelled = false
+    setLoading(true)
+    setError(false)
+    setPageImages([])
+
+    const renderPdf = async () => {
+      try {
+        // Dynamically load pdf.js from CDN
+        const pdfjsLib = await loadPdfJs()
+        const pdf = await pdfjsLib.getDocument(pdfUrl).promise
+
+        const images: string[] = []
+        for (let i = 1; i <= pdf.numPages; i++) {
+          if (cancelled) return
+          const page = await pdf.getPage(i)
+          // Render at 2x for crisp display
+          const scale = 2
+          const viewport = page.getViewport({ scale })
+          const canvas = document.createElement('canvas')
+          canvas.width = viewport.width
+          canvas.height = viewport.height
+          const ctx = canvas.getContext('2d')!
+          await page.render({ canvasContext: ctx, viewport }).promise
+          images.push(canvas.toDataURL('image/png'))
+        }
+
+        if (!cancelled) {
+          setPageImages(images)
+          setLoading(false)
+        }
+      } catch (err) {
+        console.error('PDF render error:', err)
+        if (!cancelled) {
+          setError(true)
+          setLoading(false)
+        }
+      }
+    }
+
+    renderPdf()
+    return () => { cancelled = true }
+  }, [pdfUrl])
+
   return (
-    <section className="w-full flex items-start justify-center text-white py-8 sm:py-12 px-4 sm:px-6">
+    <section className="w-full flex items-start justify-center text-white px-4 sm:px-6">
       <div className="max-w-5xl mx-auto w-full">
         {/* Header */}
         <motion.div
@@ -80,7 +128,7 @@ export function Resume() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.35, ease: 'easeOut', delay: 0.15 }}
-          className="flex items-center justify-between mb-4 px-3 py-2 rounded-xl bg-white/5 border border-white/10"
+          className="flex items-center justify-between mb-4 px-3 py-2 rounded-xl bg-white/5 border border-white/10 sticky top-16 z-20 backdrop-blur-xl"
         >
           <div className="flex items-center gap-2 text-sm text-gray-400">
             <FileText className="w-4 h-4 text-blue-400" />
@@ -118,57 +166,131 @@ export function Resume() {
           </div>
         </motion.div>
 
-        {/* PDF Viewer */}
+        {/* PDF Pages — rendered as full images, scrolled by the parent section */}
         <motion.div
+          ref={canvasContainerRef}
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, ease: 'easeOut', delay: 0.2 }}
-          className="relative rounded-2xl overflow-hidden border border-white/10 bg-white/5 backdrop-blur-sm hover:border-blue-500/20 transition-colors duration-200"
+          className="flex flex-col items-center gap-6"
           style={{ willChange: 'transform, opacity' }}
         >
-          {/* PDF iframe container with zoom */}
-          <div
-            className="w-full overflow-auto scrollbar-furtif"
-            style={{ height: 'calc(100dvh - 280px)', minHeight: '400px' }}
-          >
+          {loading && (
+            <div className="flex flex-col items-center justify-center py-20 gap-4">
+              <svg className="animate-spin w-8 h-8 text-blue-400" viewBox="0 0 24 24" fill="none">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              </svg>
+              <span className="text-sm text-gray-500">{locale === 'fr' ? 'Chargement du CV...' : 'Loading resume...'}</span>
+            </div>
+          )}
+
+          {error && (
+            <div className="flex flex-col items-center justify-center py-20 gap-4">
+              <FileText className="w-12 h-12 text-gray-600" />
+              <p className="text-sm text-gray-500">{locale === 'fr' ? 'Impossible de charger le PDF' : 'Failed to load PDF'}</p>
+              <a
+                href={pdfUrl}
+                download
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-sm transition-colors duration-200"
+              >
+                <Download className="w-4 h-4" />
+                {t('download')}
+              </a>
+            </div>
+          )}
+
+          {pageImages.map((src, idx) => (
             <div
+              key={idx}
+              className="w-full rounded-2xl overflow-hidden border border-white/10 bg-white shadow-2xl shadow-black/30"
               style={{
                 transform: `scale(${zoom})`,
                 transformOrigin: 'top center',
-                width: zoom !== 1 ? `${100 / zoom}%` : '100%',
-                transition: 'transform 0.2s ease-out',
+                marginBottom: zoom !== 1 ? `${(zoom - 1) * 100}%` : undefined,
+                transition: 'transform 0.25s ease-out',
               }}
             >
-              <iframe
-                ref={iframeRef}
-                src={`${pdfUrl}#toolbar=0&navpanes=0&scrollbar=1`}
-                className="w-full border-0"
-                style={{ height: 'calc(100dvh - 280px)', minHeight: '400px' }}
-                title={t('title')}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={src}
+                alt={`${t('title')} - Page ${idx + 1}`}
+                className="w-full h-auto block"
+                draggable={false}
               />
             </div>
-          </div>
+          ))}
         </motion.div>
 
         {/* Mobile: prominent download CTA */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4, delay: 0.3 }}
-          className="mt-4 sm:hidden"
-        >
-          <a
-            href={pdfUrl}
-            download
-            className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-medium text-sm shadow-lg shadow-blue-600/20 transition-colors duration-200"
+        {!loading && !error && pageImages.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4, delay: 0.3 }}
+            className="mt-6 sm:hidden"
           >
-            <Download className="w-4 h-4" />
-            {t('download')}
-          </a>
-        </motion.div>
+            <a
+              href={pdfUrl}
+              download
+              className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-medium text-sm shadow-lg shadow-blue-600/20 transition-colors duration-200"
+            >
+              <Download className="w-4 h-4" />
+              {t('download')}
+            </a>
+          </motion.div>
+        )}
       </div>
     </section>
   )
+}
+
+/** Dynamically load pdf.js from CDN (only once) */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function loadPdfJs(): Promise<any> {
+  return new Promise((resolve, reject) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if ((window as any).pdfjsLib) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      resolve((window as any).pdfjsLib)
+      return
+    }
+
+    const script = document.createElement('script')
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs'
+    script.type = 'module'
+
+    // For module scripts, we need a different approach
+    const inlineScript = document.createElement('script')
+    inlineScript.type = 'module'
+    inlineScript.textContent = `
+      import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs';
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs';
+      window.pdfjsLib = pdfjsLib;
+      window.dispatchEvent(new Event('pdfjsReady'));
+    `
+
+    const onReady = () => {
+      window.removeEventListener('pdfjsReady', onReady)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      resolve((window as any).pdfjsLib)
+    }
+
+    window.addEventListener('pdfjsReady', onReady)
+    document.head.appendChild(inlineScript)
+
+    // Timeout fallback
+    setTimeout(() => {
+      window.removeEventListener('pdfjsReady', onReady)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if ((window as any).pdfjsLib) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        resolve((window as any).pdfjsLib)
+      } else {
+        reject(new Error('pdf.js load timeout'))
+      }
+    }, 10000)
+  })
 }
