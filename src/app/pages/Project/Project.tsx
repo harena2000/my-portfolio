@@ -49,10 +49,12 @@ export function Projects() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-40px' }}
-          className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5 items-start"
+          className="columns-1 sm:columns-2 xl:columns-3 gap-4 sm:gap-5 [column-fill:balance]"
         >
           {cv.projects.map((p, idx) => (
-            <ProjectCard key={p.title} project={p} index={idx} />
+            <div key={p.title} className="mb-4 sm:mb-5 break-inside-avoid">
+              <ProjectCard project={p} index={idx} />
+            </div>
           ))}
         </motion.div>
       </div>
