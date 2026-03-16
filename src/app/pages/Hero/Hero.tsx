@@ -147,19 +147,6 @@ export function Hero() {
             </Button>
           </motion.div>
 
-          {/* Skills row */}
-          <motion.div variants={itemVariants} className="flex flex-wrap gap-2 justify-center md:justify-start">
-            {cv.skills.map((skill) => (
-              <div
-                key={skill.name}
-                className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/5 border border-white/10 hover:border-blue-500/30 hover:bg-blue-900/10 transition-colors duration-200"
-              >
-                <Image src={skill.logo} alt={skill.name} width={14} height={14} className="object-contain" />
-                <span className="text-[11px] text-gray-400 font-medium">{skill.name}</span>
-              </div>
-            ))}
-          </motion.div>
-
           {/* Status row */}
           <motion.div variants={itemVariants} className="flex items-center gap-4 justify-center md:justify-start">
             <div className="flex items-center gap-2">
@@ -167,7 +154,7 @@ export function Hero() {
               <span className="text-xs text-gray-400">{t('openToWork')}</span>
             </div>
             <div className="h-4 w-px bg-white/20" />
-            <span className="text-xs text-gray-400">3.5+ {t('yearsExp')}</span>
+            <span className="text-xs text-gray-400">4+ {t('yearsExp')}</span>
           </motion.div>
         </motion.div>
 
@@ -213,8 +200,8 @@ export function Hero() {
           </motion.div>
 
           {/* Floating tech badges — hidden on very small screens */}
-          <FloatingBadge label="Flutter" className="top-0 right-0 sm:top-2 sm:right-2 hidden xs:block" />
-          <FloatingBadge label="Next.js" className="bottom-4 right-0 sm:right-2 hidden xs:block" />
+          <FloatingBadge label="Flutter" className="top-0 right-0 sm:top-2 sm:right-2 hidden sm:block" />
+          <FloatingBadge label="Next.js" className="bottom-4 right-0 sm:right-2 hidden sm:block" />
           <FloatingBadge label="TypeScript" className="top-1/3 -left-6 sm:-left-2 hidden sm:block" />
           <FloatingBadge label="Vue.js" className="bottom-8 -left-4 sm:left-0 hidden sm:block" />
           <FloatingBadge label="Express.js" className="top-0 left-1/4 sm:left-1/3 hidden sm:block" />
