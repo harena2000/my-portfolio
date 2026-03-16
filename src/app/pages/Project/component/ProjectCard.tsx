@@ -51,7 +51,7 @@ export function ProjectCard({ project }: { project: Project; index?: number }) {
     <motion.div
       variants={cardVariant}
       whileHover={{ y: -4, transition: { duration: 0.18 } }}
-      className="rounded-2xl bg-white/[0.04] border border-white/10 p-5 hover:border-blue-500/30 hover:bg-white/[0.06] hover:shadow-[0_0_20px_rgba(59,130,246,0.12)] transition-colors duration-200 flex flex-col group"
+      className="rounded-2xl bg-white/[0.04] border border-white/10 p-5 hover:border-blue-500/30 hover:bg-white/[0.06] hover:shadow-[0_0_20px_rgba(59,130,246,0.12)] transition-all duration-200 flex flex-col group self-start"
       style={{ backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', willChange: 'transform' }}
     >
       {/* Header */}
