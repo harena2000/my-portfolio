@@ -6,10 +6,7 @@ import { CVData } from '@/data/cv'
 import { useLocale, useTranslations } from 'next-intl'
 import { CompanyCard } from '@/app/pages/Hero/component'
 import { useRef, useEffect, useCallback } from 'react'
-import dynamic from 'next/dynamic'
-
-// Dynamically import Rive to avoid SSR issues
-const RiveAnimation = dynamic(() => import('@/components/RiveAnimation'), { ssr: false })
+import Image from 'next/image'
 
 const containerVariants: Variants = {
   hidden: {},
@@ -180,15 +177,26 @@ export function Hero() {
           />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] md:w-[400px] md:h-[400px] bg-blue-600/8 rounded-full blur-3xl pointer-events-none" />
 
-          {/* Rive animation */}
+          {/* Profile photo */}
           <motion.div
             animate={{ y: [0, -10, 0] }}
             transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', repeatType: 'mirror' }}
-            className="relative w-48 h-48 sm:w-60 sm:h-60 md:w-72 md:h-72 lg:w-96 lg:h-96"
+            className="relative w-48 h-48 sm:w-60 sm:h-60 md:w-72 md:h-72 lg:w-80 lg:h-80"
             style={{ willChange: 'transform' }}
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 to-transparent rounded-full blur-2xl" />
-            <RiveAnimation src="/vehicles.riv" className="relative z-10" />
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-blue-900/10 rounded-full blur-2xl scale-110" />
+            <div className="relative z-10 w-full h-full rounded-full overflow-hidden border-2 border-blue-500/30 shadow-2xl shadow-blue-600/20">
+              <Image
+                src="/images/profile.webp"
+                alt="Harena Rico"
+                fill
+                className="object-cover object-top"
+                priority
+              />
+            </div>
+            {/* Glow ring around photo */}
+            <div className="absolute inset-0 rounded-full border border-blue-400/20 scale-[1.08] pointer-events-none" />
+            <div className="absolute inset-0 rounded-full border border-blue-400/10 scale-[1.16] pointer-events-none" />
           </motion.div>
 
           {/* Floating tech badges — hidden on very small screens */}

@@ -8,6 +8,7 @@ import { motion, type Variants } from 'framer-motion'
 import { useLocale, useTranslations } from 'next-intl'
 import { Mail, Phone, MapPin, Send, Github, Linkedin } from 'lucide-react'
 import { useState } from 'react'
+import Image from 'next/image'
 
 const colVariants: Variants = {
   hidden: {},
@@ -52,12 +53,22 @@ export function Contact() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, ease: 'easeOut' }}
-          className="mb-6 sm:mb-10"
+          className="mb-6 sm:mb-10 flex items-center justify-between"
         >
-          <span className="text-xs font-semibold text-blue-400 uppercase tracking-widest">{t('subtitle')}</span>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mt-2 bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
-            {t('title')}
-          </h2>
+          <div>
+            <span className="text-xs font-semibold text-blue-400 uppercase tracking-widest">{t('subtitle')}</span>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mt-2 bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
+              {t('title')}
+            </h2>
+          </div>
+          <motion.div
+            animate={{ y: [0, -8, 0], rotate: [0, 4, 0] }}
+            transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+            className="hidden sm:block w-20 h-20 md:w-28 md:h-28 relative opacity-60"
+            style={{ willChange: 'transform' }}
+          >
+            <Image src="/images/contact-deco.png" alt="" fill className="object-contain" />
+          </motion.div>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
