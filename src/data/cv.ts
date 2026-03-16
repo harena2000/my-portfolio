@@ -122,7 +122,7 @@ export const CVData: Record<string, CVLocale> = {
           "Shadcn/ui",
           "PostgreSQL",
         ],
-        status: ProjectStatus.IN_PROGRESS,
+        status: ProjectStatus.COMPLETED,
       },
       {
         title: "InsideGolf",
@@ -136,7 +136,7 @@ export const CVData: Record<string, CVLocale> = {
         subtitle: "Freelance | Web Application",
         desc: "Design and development of a complete product ticket management platform. With a robust architecture allowing for efficient request management, ticket tracking, and real-time collaboration.",
         tech: ["Express.js", "Vue.js", "TailwindCSS", "Docker", "PostgreSQL"],
-        status: ProjectStatus.IN_PROGRESS,
+        status: ProjectStatus.COMPLETED,
       },
       {
         title: "SingSong",
@@ -216,7 +216,7 @@ export const CVData: Record<string, CVLocale> = {
           "Shadcn/ui",
           "PostgreSQL",
         ],
-        status: ProjectStatus.IN_PROGRESS,
+        status: ProjectStatus.COMPLETED,
       },
       {
         title: "InsideGolf",
@@ -230,7 +230,7 @@ export const CVData: Record<string, CVLocale> = {
         subtitle: "Freelance | Application Web",
         desc: "Conception et développement d'une plateforme de gestion de ticket complète des produits. Avec une architecture robuste permettant la gestion efficace des demandes, le suivi des tickets et la collaboration en temps réel.",
         tech: ["Express.js", "Vue.js", "TailwindCSS", "Docker", "PostgreSQL"],
-        status: ProjectStatus.IN_PROGRESS,
+        status: ProjectStatus.COMPLETED,
       },
       {
         title: "SingSong",
