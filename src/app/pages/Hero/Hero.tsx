@@ -200,9 +200,11 @@ export function Hero() {
           </motion.div>
 
           {/* Floating tech badges — hidden on very small screens */}
-          <FloatingBadge label="Flutter" className="top-2 right-2 sm:top-4 sm:right-4 hidden xs:block" />
-          <FloatingBadge label="Next.js" className="bottom-4 right-0 sm:right-4 hidden xs:block" />
-          <FloatingBadge label="TypeScript" className="top-1/2 -left-4 sm:left-0 hidden sm:block" />
+          <FloatingBadge label="Flutter" className="top-0 right-0 sm:top-2 sm:right-2 hidden xs:block" />
+          <FloatingBadge label="Next.js" className="bottom-4 right-0 sm:right-2 hidden xs:block" />
+          <FloatingBadge label="TypeScript" className="top-1/3 -left-6 sm:-left-2 hidden sm:block" />
+          <FloatingBadge label="Vue.js" className="bottom-8 -left-4 sm:left-0 hidden sm:block" />
+          <FloatingBadge label="Express.js" className="top-0 left-1/4 sm:left-1/3 hidden sm:block" />
         </motion.div>
       </div>
 
