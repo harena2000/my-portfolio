@@ -146,7 +146,7 @@ export const CVData: Record<string, CVLocale> = {
         desc: "A social karaoke mobile application allowing users to sing, listen, and record songs. This application is targeted for Adventists.",
         tech: ["Flutter"],
         status: ProjectStatus.COMPLETED,
-        link: "https://play.google.com/store/apps/details?id=com.ayconnect.singsong&pcampaignid=web_share",
+        link: "/projects/singsong",
       },
       {
         title: "MENTO",
@@ -250,7 +250,7 @@ export const CVData: Record<string, CVLocale> = {
         desc: "Une application mobile de karaoké social permettant aux utilisateurs de chanter, d'écouter et d'enregistrer des chansons. Cette application est ciblée pour les Adventistes.",
         tech: ["Flutter"],
         status: ProjectStatus.COMPLETED,
-        link: "https://play.google.com/store/apps/details?id=com.ayconnect.singsong&pcampaignid=web_share",
+        link: "/projects/singsong",
       },
       {
         title: "MENTO",
