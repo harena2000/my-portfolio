@@ -183,8 +183,8 @@ export default function MentoPreviewPage() {
     html.style.height = "auto";
     body.style.height = "auto";
 
-    // Hide the main portfolio navbar
-    const navbar = document.querySelector("nav") as HTMLElement | null;
+    // Hide the main portfolio navbar (it's a fixed div, not a <nav>)
+    const navbar = document.querySelector(".fixed.top-4.left-0.right-0.z-50") as HTMLElement | null;
     if (navbar) navbar.style.display = "none";
 
     return () => {
