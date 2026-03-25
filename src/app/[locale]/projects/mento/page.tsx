@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { ArrowLeft, X, ChevronLeft, ChevronRight, Smartphone } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -167,6 +167,28 @@ function Lightbox({
 export default function MentoPreviewPage() {
   const t = useTranslations("nav");
   const router = useRouter();
+
+  // Override the global overflow:hidden on html/body so this page can scroll
+  useEffect(() => {
+    const html = document.documentElement;
+    const body = document.body;
+    const prevHtmlOverflow = html.style.overflow;
+    const prevBodyOverflow = body.style.overflow;
+    const prevHtmlHeight = html.style.height;
+    const prevBodyHeight = body.style.height;
+
+    html.style.overflow = "auto";
+    body.style.overflow = "auto";
+    html.style.height = "auto";
+    body.style.height = "auto";
+
+    return () => {
+      html.style.overflow = prevHtmlOverflow;
+      body.style.overflow = prevBodyOverflow;
+      html.style.height = prevHtmlHeight;
+      body.style.height = prevBodyHeight;
+    };
+  }, []);
   const [lightbox, setLightbox] = useState<{
     groupIdx: number;
     screenIdx: number;
