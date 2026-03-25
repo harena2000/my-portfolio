@@ -168,7 +168,8 @@ export default function MentoPreviewPage() {
   const t = useTranslations("nav");
   const router = useRouter();
 
-  // Override the global overflow:hidden on html/body so this page can scroll
+  // Override the global overflow:hidden on html/body so this page can scroll,
+  // and hide the main portfolio navbar so only the project header shows.
   useEffect(() => {
     const html = document.documentElement;
     const body = document.body;
@@ -182,11 +183,16 @@ export default function MentoPreviewPage() {
     html.style.height = "auto";
     body.style.height = "auto";
 
+    // Hide the main portfolio navbar
+    const navbar = document.querySelector("nav") as HTMLElement | null;
+    if (navbar) navbar.style.display = "none";
+
     return () => {
       html.style.overflow = prevHtmlOverflow;
       body.style.overflow = prevBodyOverflow;
       html.style.height = prevHtmlHeight;
       body.style.height = prevBodyHeight;
+      if (navbar) navbar.style.display = "";
     };
   }, []);
   const [lightbox, setLightbox] = useState<{
@@ -286,11 +292,10 @@ export default function MentoPreviewPage() {
           >
             {/* Section title */}
             <div className="mb-6 flex items-center gap-3">
-              <div className="h-px flex-1 bg-gradient-to-r from-blue-500/30 to-transparent" />
               <h3 className="whitespace-nowrap text-sm font-semibold uppercase tracking-wider text-blue-400">
                 {group.title}
               </h3>
-              <div className="h-px flex-1 bg-gradient-to-l from-blue-500/30 to-transparent" />
+              <div className="h-px flex-1 bg-gradient-to-r from-blue-500/30 to-transparent" />
             </div>
 
             {/* Screen grid */}
