@@ -3,7 +3,8 @@
 import { useState } from 'react'
 import { motion, type Variants } from 'framer-motion'
 import { ProjectStatus } from '@/data/cv'
-import { ChevronDown, ChevronUp, ExternalLink } from 'lucide-react'
+import { ChevronDown, ChevronUp, ExternalLink, Eye } from 'lucide-react'
+import Link from 'next/link'
 
 export type Project = {
   title: string
@@ -93,15 +94,25 @@ export function ProjectCard({ project }: { project: Project; index?: number }) {
 
       {/* Link */}
       {project.link && (
-        <a
-          href={project.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 mb-3 text-sm font-medium text-blue-400 hover:text-blue-300 transition-colors duration-150 group/link"
-        >
-          <ExternalLink className="w-3.5 h-3.5 transition-transform duration-200 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" />
-          View Project
-        </a>
+        project.link.startsWith('/') ? (
+          <Link
+            href={project.link}
+            className="inline-flex items-center gap-1.5 mb-3 text-sm font-medium text-blue-400 hover:text-blue-300 transition-colors duration-150 group/link"
+          >
+            <Eye className="w-3.5 h-3.5 transition-transform duration-200 group-hover/link:scale-110" />
+            Preview Screens
+          </Link>
+        ) : (
+          <a
+            href={project.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 mb-3 text-sm font-medium text-blue-400 hover:text-blue-300 transition-colors duration-150 group/link"
+          >
+            <ExternalLink className="w-3.5 h-3.5 transition-transform duration-200 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" />
+            View Project
+          </a>
+        )
       )}
 
       {/* Tech stack */}
