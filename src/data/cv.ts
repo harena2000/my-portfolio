@@ -150,7 +150,7 @@ export const CVData: Record<string, CVLocale> = {
       },
       {
         title: "MENTO",
-        subtitle: "Freelance | Mobile Application",
+        subtitle: "AUREON | Mobile Application",
         desc: "MENTO is your personal companion for mental strength. An app that helps you organize your thoughts, understand your feelings, and gain new perspectives. No hocus-pocus, but modern psychology made simple and accessible.",
         tech: ["Flutter", "Firebase", "Gemini", "Stripe"],
         status: ProjectStatus.COMPLETED,
@@ -253,7 +253,7 @@ export const CVData: Record<string, CVLocale> = {
       },
       {
         title: "MENTO",
-        subtitle: "Freelance | Application Mobile",
+        subtitle: "AUREON | Application Mobile",
         desc: "MENTO est votre compagnon personnel pour la force mentale. Une application qui vous aide à organiser vos pensées, comprendre vos émotions et acquérir de nouvelles perspectives. Pas de charlatanisme, mais de la psychologie moderne rendue simple et accessible.",
         tech: ["Flutter", "Firebase", "Gemini", "Stripe"],
         status: ProjectStatus.COMPLETED,
