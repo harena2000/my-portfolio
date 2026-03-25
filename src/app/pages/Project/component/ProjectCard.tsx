@@ -5,6 +5,7 @@ import { motion, type Variants } from 'framer-motion'
 import { ProjectStatus } from '@/data/cv'
 import { ChevronDown, ChevronUp, ExternalLink, Eye } from 'lucide-react'
 import Link from 'next/link'
+import { useLocale } from 'next-intl'
 
 export type Project = {
   title: string
@@ -44,6 +45,7 @@ export const cardVariant: Variants = {
 }
 
 export function ProjectCard({ project }: { project: Project; index?: number }) {
+  const locale = useLocale()
   const [expanded, setExpanded] = useState(false)
   const fullDesc = project.desc ?? ''
   const badge = project.status ? statusConfig[project.status] : null
@@ -96,7 +98,7 @@ export function ProjectCard({ project }: { project: Project; index?: number }) {
       {project.link && (
         project.link.startsWith('/') ? (
           <Link
-            href={project.link}
+            href={`/${locale}${project.link}`}
             className="inline-flex items-center gap-1.5 mb-3 text-sm font-medium text-blue-400 hover:text-blue-300 transition-colors duration-150 group/link"
           >
             <Eye className="w-3.5 h-3.5 transition-transform duration-200 group-hover/link:scale-110" />
