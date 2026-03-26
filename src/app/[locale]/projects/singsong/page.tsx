@@ -158,7 +158,7 @@ export default function SingSongPreviewPage() {
     body.style.height = "auto";
 
     // Hide the main portfolio navbar (it's a fixed div, not a <nav>)
-    const navbar = document.querySelector(".fixed.top-4.left-0.right-0.z-50") as HTMLElement | null;
+    const navbar = document.querySelector(".fixed.top-0.left-0.right-0.z-50") as HTMLElement | null;
     if (navbar) navbar.style.display = "none";
 
     return () => {
