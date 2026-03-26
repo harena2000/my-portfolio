@@ -4,6 +4,7 @@ import { Briefcase, FileText, Folder, HomeIcon, Mail, Zap, Globe } from "lucide-
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 const dispatchNav = (detail: { id?: string; index?: number }) =>
   window.dispatchEvent(new CustomEvent("navigateToSection", { detail }));
@@ -152,6 +153,23 @@ export function Navbar() {
       <div className="mx-auto max-w-2xl px-4">
         <div className="relative rounded-2xl bg-black/40 backdrop-blur-xl border border-white/10 px-3 py-2 shadow-2xl shadow-black/30">
           <div className="flex items-center justify-between gap-1">
+            {/* Logo */}
+            <button
+              onClick={() => handleClick(0, 'home')}
+              className="relative flex items-center justify-center w-11 h-11 rounded-xl hover:bg-white/5 transition-colors duration-200 shrink-0 group"
+              title="Harena Rico"
+            >
+              <Image
+                src="/logo.png"
+                alt="HR Logo"
+                width={28}
+                height={28}
+                className="drop-shadow-[0_0_6px_rgba(59,130,246,0.5)] group-hover:drop-shadow-[0_0_10px_rgba(59,130,246,0.7)] transition-all duration-300"
+              />
+            </button>
+
+            <div className="w-px h-6 bg-white/10 mx-1" />
+
             {items.map((item) => {
               const Icon = item.icon;
               const isActive = item.index === activeIndex;

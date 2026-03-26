@@ -105,16 +105,25 @@ export function Hero() {
 
           {/* Name */}
           <motion.div variants={itemVariants}>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight">
-              <span className="text-white">{firstName} </span>
-              <span className="text-blue-400">{lastName}</span>
-              {rest && (
-                <>
-                  <br />
-                  <span className="text-white/70">{rest}.</span>
-                </>
-              )}
-            </h1>
+            <div className="flex items-center gap-3 md:gap-4 justify-center md:justify-start mb-1">
+              <Image
+                src="/logo.png"
+                alt="HR Logo"
+                width={48}
+                height={48}
+                className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 drop-shadow-[0_0_12px_rgba(59,130,246,0.5)]"
+              />
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight">
+                <span className="text-white">{firstName} </span>
+                <span className="text-blue-400">{lastName}</span>
+                {rest && (
+                  <>
+                    <br />
+                    <span className="text-white/70">{rest}.</span>
+                  </>
+                )}
+              </h1>
+            </div>
             <p className="mt-2 text-base md:text-lg font-medium text-blue-300/70">{cv.title}</p>
           </motion.div>
 
