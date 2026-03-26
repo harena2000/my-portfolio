@@ -78,6 +78,14 @@ export const CVData: Record<string, CVLocale> = {
     ],
     experience: [
       {
+        company: "Aureon",
+        role: "Lead Developer",
+        from: "January 2026",
+        to: "Present",
+        details:
+          "Lead developer responsible for technical architecture, team management, and development of mobile and web applications.",
+      },
+      {
         company: "Futurmap",
         role: "Lead Mobile Developer",
         from: "October 2024",
@@ -181,6 +189,14 @@ export const CVData: Record<string, CVLocale> = {
       { name: "Laravel", level: 65, logo: "/logos/laravel.svg" },
     ],
     experience: [
+      {
+        company: "Aureon",
+        role: "Lead Développeur",
+        from: "Janvier 2026",
+        to: "Présent",
+        details:
+          "Lead développeur responsable de l'architecture technique, de la gestion d'équipe et du développement d'applications mobiles et web.",
+      },
       {
         company: "Futurmap",
         role: "Lead Développeur Mobile",
