@@ -69,7 +69,7 @@ export function Navbar() {
         initial={{ y: 80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.45, ease: 'easeOut', delay: 0.2 }}
-        className="fixed bottom-0 left-0 right-0 z-50 px-2 pb-2 safe-area-bottom"
+        className="fixed bottom-0 left-0 right-0 z-50 px-2 pb-2 pt-4 safe-area-bottom backdrop-blur-md bg-gradient-to-t from-black/70 via-black/40 to-transparent"
         style={{ willChange: 'transform, opacity' }}
       >
         <div className="rounded-2xl bg-black/70 backdrop-blur-xl border border-white/10 px-1 py-1 shadow-2xl shadow-black/50 flex items-center justify-between">
