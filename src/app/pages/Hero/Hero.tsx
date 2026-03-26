@@ -105,11 +105,13 @@ export function Hero() {
 
           {/* Name */}
           <motion.div variants={itemVariants}>
-            <div className="flex items-center gap-3 md:gap-4 justify-center md:justify-start mb-1">
-              <img
+            <div className="flex items-start gap-3 md:gap-4 justify-center md:justify-start mb-1">
+              <Image
                 src="/logo.png"
                 alt="HR Logo"
-                className="h-full w-auto object-contain shrink-0 drop-shadow-[0_0_12px_rgba(59,130,246,0.5)]"
+                width={120}
+                height={120}
+                className="w-[60px] h-[60px] sm:w-[76px] sm:h-[76px] md:w-[96px] md:h-[96px] lg:w-[120px] lg:h-[120px] object-contain shrink-0 drop-shadow-[0_0_12px_rgba(59,130,246,0.5)]"
               />
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight">
                 <span className="text-white">{firstName} </span>
