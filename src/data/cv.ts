@@ -78,7 +78,7 @@ export const CVData: Record<string, CVLocale> = {
     ],
     experience: [
       {
-        company: "Aureon",
+        company: "Aureon Madagascar",
         role: "Lead Developer",
         from: "January 2026",
         to: "Present",
@@ -190,7 +190,7 @@ export const CVData: Record<string, CVLocale> = {
     ],
     experience: [
       {
-        company: "Aureon",
+        company: "Aureon Madagascar",
         role: "Lead Développeur",
         from: "Janvier 2026",
         to: "Présent",
