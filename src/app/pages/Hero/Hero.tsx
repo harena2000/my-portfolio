@@ -105,15 +105,12 @@ export function Hero() {
 
           {/* Name */}
           <motion.div variants={itemVariants}>
-            <div className="flex items-stretch gap-3 md:gap-4 justify-center md:justify-start mb-1">
-              <div className="relative self-stretch aspect-square shrink-0">
-                <Image
-                  src="/logo.png"
-                  alt="HR Logo"
-                  fill
-                  className="object-contain drop-shadow-[0_0_12px_rgba(59,130,246,0.5)]"
-                />
-              </div>
+            <div className="flex items-center gap-3 md:gap-4 justify-center md:justify-start mb-1">
+              <img
+                src="/logo.png"
+                alt="HR Logo"
+                className="h-full w-auto object-contain shrink-0 drop-shadow-[0_0_12px_rgba(59,130,246,0.5)]"
+              />
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight">
                 <span className="text-white">{firstName} </span>
                 <span className="text-blue-400">{lastName}</span>
