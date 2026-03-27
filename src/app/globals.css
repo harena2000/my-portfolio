@@ -182,6 +182,50 @@ body {
   to   { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
+/* ─── Hero ring animations (CSS-only, GPU-composited) ─── */
+.hero-ring {
+  animation: spin 20s linear infinite;
+}
+.hero-ring-reverse {
+  animation: spin 15s linear infinite reverse;
+}
+
+/* ─── Hero float (profile photo) ─── */
+@keyframes hero-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.hero-float {
+  animation: hero-float 5s ease-in-out infinite;
+}
+
+/* ─── Floating badge animation ─── */
+@keyframes badge-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.floating-badge {
+  animation: badge-float 3s ease-in-out infinite;
+}
+
+/* ─── Section decorative image float ─── */
+@keyframes deco-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(3deg); }
+}
+.section-deco-float {
+  animation: deco-float 5s ease-in-out infinite;
+}
+
+/* ─── Scroll indicator bounce ─── */
+@keyframes scroll-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+.scroll-bounce {
+  animation: scroll-bounce 1.5s ease-in-out infinite;
+}
+
 /* ─── Reduce motion ─── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

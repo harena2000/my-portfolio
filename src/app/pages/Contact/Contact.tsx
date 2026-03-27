@@ -7,7 +7,7 @@ import { CVData } from '@/data/cv'
 import { motion, type Variants } from 'framer-motion'
 import { useLocale, useTranslations } from 'next-intl'
 import { Mail, Phone, MapPin, Send, Github, Linkedin } from 'lucide-react'
-import { useState } from 'react'
+import { useState, memo } from 'react'
 import Image from 'next/image'
 
 const colVariants: Variants = {
@@ -20,7 +20,7 @@ const rowVariants: Variants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.38, ease: 'easeOut' } },
 }
 
-export function Contact() {
+function ContactInner() {
   const locale = useLocale()
   const cv = CVData[locale as keyof typeof CVData]
   const t = useTranslations('Contact')
@@ -61,14 +61,9 @@ export function Contact() {
               {t('title')}
             </h2>
           </div>
-          <motion.div
-            animate={{ y: [0, -8, 0], rotate: [0, 4, 0] }}
-            transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-            className="hidden sm:block w-20 h-20 md:w-28 md:h-28 relative opacity-60"
-            style={{ willChange: 'transform' }}
-          >
+          <div className="hidden sm:block w-20 h-20 md:w-28 md:h-28 relative opacity-60 section-deco-float">
             <Image src="/images/contact-deco.png" alt="" fill className="object-contain" />
-          </motion.div>
+          </div>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
@@ -131,8 +126,7 @@ export function Contact() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: '-40px' }}
             transition={{ duration: 0.5, ease: 'easeOut' }}
-            className="space-y-3 sm:space-y-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-4 sm:p-6 hover:border-blue-500/20 transition-colors duration-200"
-            style={{ willChange: 'transform, opacity' }}
+            className="space-y-3 sm:space-y-4 bg-white/5 border border-white/10 rounded-2xl p-4 sm:p-6 hover:border-blue-500/20 transition-colors duration-200"
           >
             <Input
               placeholder={t('yourName')}
@@ -183,3 +177,5 @@ export function Contact() {
     </section>
   )
 }
+
+export const Contact = memo(ContactInner)

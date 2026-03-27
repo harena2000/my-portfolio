@@ -1,7 +1,7 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
 import { Briefcase, FileText, Folder, HomeIcon, Mail, Zap, Globe } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, memo } from "react";
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
 import Image from 'next/image';
@@ -9,7 +9,7 @@ import Image from 'next/image';
 const dispatchNav = (detail: { id?: string; index?: number }) =>
   window.dispatchEvent(new CustomEvent("navigateToSection", { detail }));
 
-export function Navbar() {
+function NavbarInner() {
   const t = useTranslations('Navbar');
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const [showLangMenu, setShowLangMenu] = useState(false);
@@ -71,7 +71,6 @@ export function Navbar() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.45, ease: 'easeOut', delay: 0.2 }}
         className="fixed bottom-0 left-0 right-0 z-50 px-2 safe-area-bottom backdrop-blur-md"
-        style={{ willChange: 'transform, opacity' }}
       >
         <div className="px-1 py-1 flex items-center justify-between">
           {items.map((item) => {
@@ -117,8 +116,7 @@ export function Navbar() {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 8, scale: 0.96 }}
                   transition={{ duration: 0.12, ease: 'easeOut' }}
-                  className="absolute bottom-full right-0 mb-2 bg-black/90 backdrop-blur-xl border border-white/10 rounded-xl overflow-hidden shadow-2xl"
-                  style={{ willChange: 'transform, opacity' }}
+                  className="absolute bottom-full right-0 mb-2 bg-black/90 backdrop-blur-sm border border-white/10 rounded-xl overflow-hidden shadow-2xl"
                 >
                   {['en', 'fr'].map((locale) => (
                     <button
@@ -148,10 +146,10 @@ export function Navbar() {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5, ease: 'easeOut' }}
       className="fixed top-0 left-0 right-0 z-50 pb-2 pt-4 backdrop-blur-md bg-gradient-to-b from-black/70 via-black/40 to-transparent"
-      style={{ willChange: 'transform, opacity' }}
     >
       <div className="mx-auto max-w-2xl px-4">
-        <div className="relative rounded-2xl bg-black/40 backdrop-blur-xl border border-white/10 px-3 py-2 shadow-2xl shadow-black/30">
+        {/* Single backdrop-blur layer instead of stacking blur-md + blur-xl */}
+        <div className="relative rounded-2xl bg-black/50 backdrop-blur-md border border-white/10 px-3 py-2 shadow-2xl shadow-black/30">
           <div className="flex items-center justify-between gap-1">
             {/* Logo */}
             <button
@@ -226,8 +224,7 @@ export function Navbar() {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -6, scale: 0.96 }}
                     transition={{ duration: 0.12, ease: 'easeOut' }}
-                    className="absolute top-full right-0 mt-2 bg-black/80 backdrop-blur-xl border border-white/10 rounded-xl overflow-hidden shadow-2xl"
-                    style={{ willChange: 'transform, opacity' }}
+                    className="absolute top-full right-0 mt-2 bg-black/90 backdrop-blur-sm border border-white/10 rounded-xl overflow-hidden shadow-2xl"
                   >
                     {['en', 'fr'].map((locale) => (
                       <button
@@ -251,3 +248,5 @@ export function Navbar() {
     </motion.div>
   );
 }
+
+export const Navbar = memo(NavbarInner);

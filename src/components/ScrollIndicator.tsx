@@ -2,14 +2,14 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 
 interface ScrollIndicatorProps {
   /** The scrollable container element */
   containerRef: React.RefObject<HTMLElement | null>;
 }
 
-export function ScrollIndicator({ containerRef }: ScrollIndicatorProps) {
+function ScrollIndicatorInner({ containerRef }: ScrollIndicatorProps) {
   const [canScrollDown, setCanScrollDown] = useState(false);
 
   useEffect(() => {
@@ -52,14 +52,13 @@ export function ScrollIndicator({ containerRef }: ScrollIndicatorProps) {
           <span className="text-[10px] text-white/30 font-medium uppercase tracking-widest">
             Scroll
           </span>
-          <motion.div
-            animate={{ y: [0, 6, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-          >
+          <div className="scroll-bounce">
             <ChevronDown className="w-5 h-5 text-white/30" />
-          </motion.div>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>
   );
 }
+
+export const ScrollIndicator = memo(ScrollIndicatorInner);

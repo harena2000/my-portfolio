@@ -3,6 +3,7 @@
 import { CVData } from '@/data/cv'
 import { useLocale, useTranslations } from 'next-intl'
 import { motion, type Variants } from 'framer-motion'
+import { memo } from 'react'
 import { Briefcase, Calendar, ChevronRight } from 'lucide-react'
 import Image from 'next/image'
 
@@ -16,7 +17,7 @@ const itemVariants: Variants = {
   visible: { opacity: 1, x: 0, transition: { duration: 0.4, ease: 'easeOut' } },
 }
 
-export function Experience() {
+function ExperienceInner() {
   const locale = useLocale()
   const cv = CVData[locale as keyof typeof CVData]
   const t = useTranslations('Experience')
@@ -39,14 +40,9 @@ export function Experience() {
               {t('title')}
             </h2>
           </div>
-          <motion.div
-            animate={{ y: [0, -6, 0], rotate: [0, -3, 0] }}
-            transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-            className="hidden sm:block w-20 h-20 md:w-28 md:h-28 relative opacity-60"
-            style={{ willChange: 'transform' }}
-          >
+          <div className="hidden sm:block w-20 h-20 md:w-28 md:h-28 relative opacity-60 section-deco-float">
             <Image src="/images/experience-deco.png" alt="" fill className="object-contain" />
-          </motion.div>
+          </div>
         </motion.div>
 
         <div className="relative">
@@ -66,7 +62,6 @@ export function Experience() {
                 variants={itemVariants}
                 whileHover={{ x: 4, transition: { duration: 0.15 } }}
                 className="relative flex gap-3 sm:gap-6 group"
-                style={{ willChange: 'transform' }}
               >
                 {/* Timeline icon — only on md+ */}
                 <div className="hidden md:flex flex-col items-center flex-shrink-0">
@@ -125,3 +120,5 @@ export function Experience() {
     </section>
   )
 }
+
+export const Experience = memo(ExperienceInner)

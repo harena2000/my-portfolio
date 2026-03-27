@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { motion, type Variants } from 'framer-motion'
 import { Calendar } from 'lucide-react'
 
@@ -16,13 +16,12 @@ export const companyCardVariant: Variants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } },
 }
 
-export function CompanyCard({ exp }: { exp: Company; index?: number }) {
+const CompanyCardInner = ({ exp }: { exp: Company; index?: number }) => {
   return (
     <motion.div
       variants={companyCardVariant}
       whileHover={{ y: -4, transition: { duration: 0.18 } }}
       className="rounded-2xl bg-white/5 border border-white/10 p-5 hover:border-blue-500/30 hover:bg-blue-900/10 hover:shadow-[0_0_20px_rgba(59,130,246,0.12)] transition-colors duration-200 group"
-      style={{ backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)', willChange: 'transform' }}
     >
       <div className="flex items-center gap-3 mb-3">
         <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center font-bold text-white text-sm shadow-lg shadow-blue-900/30 group-hover:shadow-blue-600/30 transition-shadow duration-200">
@@ -46,4 +45,5 @@ export function CompanyCard({ exp }: { exp: Company; index?: number }) {
   )
 }
 
+export const CompanyCard = memo(CompanyCardInner)
 export default CompanyCard

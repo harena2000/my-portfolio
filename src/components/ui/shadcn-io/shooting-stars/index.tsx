@@ -1,7 +1,7 @@
 'use client';
 
 import { cn } from "@/lib/utils";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, memo } from "react";
 
 interface ShootingStarsProps {
   className?: string;
@@ -27,15 +27,12 @@ interface Star {
   delay: number;
 }
 
-export const ShootingStars: React.FC<ShootingStarsProps> = ({
+const ShootingStarsInner: React.FC<ShootingStarsProps> = ({
   className,
-  starColor = "#3b82f6",
-  trailColor = "#60a5fa",
   minSpeed = 8,
   maxSpeed = 18,
   minDelay = 800,
   maxDelay = 2400,
-  starWidth = 120,
   starHeight = 1.5,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -48,17 +45,17 @@ export const ShootingStars: React.FC<ShootingStarsProps> = ({
 
     let rafId: number;
     let W = 0, H = 0;
+    let isVisible = true;
 
-    const stars: Star[] = Array.from({ length: 6 }, () => createStar(0, 0, minSpeed, maxSpeed, minDelay, maxDelay));
+    const stars: Star[] = Array.from({ length: 4 }, () => createStar(0, 0)); // Reduced from 6 to 4
 
-    function createStar(W: number, H: number, minSpeed: number, maxSpeed: number, minDelay: number, maxDelay: number): Star {
-      const side = Math.floor(Math.random() * 2); // 0=top, 1=left
+    function createStar(W: number, H: number): Star {
+      const side = Math.floor(Math.random() * 2);
       const x = side === 0 ? Math.random() * (W || window.innerWidth) : 0;
       const y = side === 0 ? 0 : Math.random() * (H || window.innerHeight);
       return {
-        x,
-        y,
-        angle: 35 + Math.random() * 20, // degrees, roughly diagonal
+        x, y,
+        angle: 35 + Math.random() * 20,
         speed: minSpeed + Math.random() * (maxSpeed - minSpeed),
         length: 60 + Math.random() * 80,
         opacity: 0,
@@ -73,14 +70,42 @@ export const ShootingStars: React.FC<ShootingStarsProps> = ({
       H = canvas!.height = canvas!.offsetHeight;
     }
 
+    // Use IntersectionObserver to pause when not visible
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+        if (isVisible && !rafId) {
+          last = performance.now();
+          rafId = requestAnimationFrame(draw);
+        }
+      },
+      { threshold: 0 }
+    );
+    observer.observe(canvas);
+
     const ro = new ResizeObserver(resize);
     ro.observe(canvas);
     resize();
 
     let last = performance.now();
+    let lastDraw = 0;
+    const TARGET_FPS = 30;
+    const FRAME_INTERVAL = 1000 / TARGET_FPS;
 
     function draw(now: number) {
-      const dt = Math.min(now - last, 32); // cap at ~30fps delta to avoid huge jumps
+      if (!isVisible) {
+        rafId = 0;
+        return;
+      }
+
+      rafId = requestAnimationFrame(draw);
+
+      // Throttle to 30fps
+      const drawDelta = now - lastDraw;
+      if (drawDelta < FRAME_INTERVAL) return;
+      lastDraw = now - (drawDelta % FRAME_INTERVAL);
+
+      const dt = Math.min(now - last, 32);
       last = now;
 
       ctx!.clearRect(0, 0, W, H);
@@ -89,7 +114,6 @@ export const ShootingStars: React.FC<ShootingStarsProps> = ({
         if (!s.active) {
           s.timer += dt;
           if (s.timer >= s.delay) {
-            // Reset and activate
             const side = Math.floor(Math.random() * 2);
             s.x = side === 0 ? Math.random() * W : -10;
             s.y = side === 0 ? -10 : Math.random() * H * 0.6;
@@ -111,7 +135,6 @@ export const ShootingStars: React.FC<ShootingStarsProps> = ({
         s.x += dx;
         s.y += dy;
 
-        // Fade out near edges
         const margin = 80;
         const distToEdge = Math.min(W - s.x, H - s.y, s.x, s.y);
         s.opacity = Math.min(1, distToEdge / margin);
@@ -122,7 +145,6 @@ export const ShootingStars: React.FC<ShootingStarsProps> = ({
           continue;
         }
 
-        // Draw trail
         const tailX = s.x - Math.cos(rad) * s.length;
         const tailY = s.y - Math.sin(rad) * s.length;
 
@@ -131,7 +153,6 @@ export const ShootingStars: React.FC<ShootingStarsProps> = ({
         grad.addColorStop(0.6, `rgba(96,165,250,${s.opacity * 0.4})`);
         grad.addColorStop(1, `rgba(59,130,246,${s.opacity})`);
 
-        ctx!.save();
         ctx!.strokeStyle = grad;
         ctx!.lineWidth = starHeight;
         ctx!.lineCap = 'round';
@@ -140,22 +161,19 @@ export const ShootingStars: React.FC<ShootingStarsProps> = ({
         ctx!.lineTo(s.x, s.y);
         ctx!.stroke();
 
-        // Bright head
         ctx!.beginPath();
         ctx!.arc(s.x, s.y, starHeight * 1.5, 0, Math.PI * 2);
         ctx!.fillStyle = `rgba(255,255,255,${s.opacity * 0.9})`;
         ctx!.fill();
-        ctx!.restore();
       }
-
-      rafId = requestAnimationFrame(draw);
     }
 
     rafId = requestAnimationFrame(draw);
 
     return () => {
-      cancelAnimationFrame(rafId);
+      if (rafId) cancelAnimationFrame(rafId);
       ro.disconnect();
+      observer.disconnect();
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -168,3 +186,5 @@ export const ShootingStars: React.FC<ShootingStarsProps> = ({
     />
   );
 };
+
+export const ShootingStars = memo(ShootingStarsInner);

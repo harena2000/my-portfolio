@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, memo } from "react";
 import { cn } from "@/lib/utils";
 
 export interface ParticlesProps {
@@ -22,7 +22,7 @@ function hexToRgb(hex: string): [number, number, number] {
   return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
 }
 
-export const Particles: React.FC<ParticlesProps> = ({
+const ParticlesInner: React.FC<ParticlesProps> = ({
   className = '',
   quantity = 60,
   staticity = 50,
@@ -40,7 +40,7 @@ export const Particles: React.FC<ParticlesProps> = ({
     const container = containerRef.current;
     if (!canvas || !container) return;
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
 
     const rgb = hexToRgb(color);
@@ -48,6 +48,7 @@ export const Particles: React.FC<ParticlesProps> = ({
     let rafId: number;
     const mouse = { x: 0, y: 0 };
     let mouseThrottle = 0;
+    let isVisible = true;
 
     type Particle = {
       x: number; y: number;
@@ -75,9 +76,8 @@ export const Particles: React.FC<ParticlesProps> = ({
     }
 
     function resize() {
-      W = canvas!.width = container!.offsetWidth;
-      H = canvas!.height = container!.offsetHeight;
-      // Reset DPR scaling for sharpness
+      W = container!.offsetWidth;
+      H = container!.offsetHeight;
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       canvas!.width = W * dpr;
       canvas!.height = H * dpr;
@@ -87,14 +87,26 @@ export const Particles: React.FC<ParticlesProps> = ({
       particles = Array.from({ length: quantity }, makeParticle);
     }
 
+    // Use IntersectionObserver to pause when not visible
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+        if (isVisible && !rafId) {
+          rafId = requestAnimationFrame(draw);
+        }
+      },
+      { threshold: 0 }
+    );
+    observer.observe(container);
+
     const ro = new ResizeObserver(resize);
     ro.observe(container);
     resize();
 
-    // Throttled mouse handler — only update every 2 frames
+    // Throttled mouse handler
     function onMouseMove(e: MouseEvent) {
       const now = performance.now();
-      if (now - mouseThrottle < 32) return; // ~30fps throttle
+      if (now - mouseThrottle < 50) return; // ~20fps throttle for mouse
       mouseThrottle = now;
       const rect = canvas!.getBoundingClientRect();
       mouse.x = e.clientX - rect.left - W / 2;
@@ -102,7 +114,23 @@ export const Particles: React.FC<ParticlesProps> = ({
     }
     window.addEventListener('mousemove', onMouseMove, { passive: true });
 
-    function draw() {
+    let lastTime = 0;
+    const TARGET_FPS = 30; // Cap at 30fps — particles don't need 60fps
+    const FRAME_INTERVAL = 1000 / TARGET_FPS;
+
+    function draw(now: number) {
+      if (!isVisible) {
+        rafId = 0;
+        return;
+      }
+
+      rafId = requestAnimationFrame(draw);
+
+      // Throttle to target FPS
+      const delta = now - lastTime;
+      if (delta < FRAME_INTERVAL) return;
+      lastTime = now - (delta % FRAME_INTERVAL);
+
       ctx!.clearRect(0, 0, W, H);
 
       for (let i = 0; i < particles.length; i++) {
@@ -133,23 +161,20 @@ export const Particles: React.FC<ParticlesProps> = ({
 
         if (p.alpha < 0.01) continue;
 
-        ctx!.save();
-        ctx!.translate(p.tx, p.ty);
+        // Draw without save/restore for better performance
         ctx!.beginPath();
-        ctx!.arc(p.x, p.y, p.sz, 0, Math.PI * 2);
+        ctx!.arc(p.x + p.tx, p.y + p.ty, p.sz, 0, Math.PI * 2);
         ctx!.fillStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${p.alpha})`;
         ctx!.fill();
-        ctx!.restore();
       }
-
-      rafId = requestAnimationFrame(draw);
     }
 
     rafId = requestAnimationFrame(draw);
 
     return () => {
-      cancelAnimationFrame(rafId);
+      if (rafId) cancelAnimationFrame(rafId);
       ro.disconnect();
+      observer.disconnect();
       window.removeEventListener('mousemove', onMouseMove);
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -157,9 +182,10 @@ export const Particles: React.FC<ParticlesProps> = ({
 
   return (
     <div ref={containerRef} className={cn('pointer-events-none', className)} aria-hidden>
-      <canvas ref={canvasRef} style={{ display: 'block', willChange: 'transform' }} />
+      <canvas ref={canvasRef} style={{ display: 'block' }} />
     </div>
   );
 };
 
+export const Particles = memo(ParticlesInner);
 Particles.displayName = 'Particles';

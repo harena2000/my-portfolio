@@ -3,7 +3,7 @@
 import { motion, type Variants } from 'framer-motion'
 import { useLocale, useTranslations } from 'next-intl'
 import { Download, FileText, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react'
-import { useState, useRef, useCallback, useEffect } from 'react'
+import { useState, useRef, useCallback, useEffect, memo } from 'react'
 
 const containerVariants: Variants = {
   hidden: {},
@@ -20,7 +20,7 @@ const RESUME_FILES: Record<string, string> = {
   fr: '/resume/cv-fr.pdf',
 }
 
-export function Resume() {
+function ResumeInner() {
   const locale = useLocale()
   const t = useTranslations('Resume')
   const [zoom, setZoom] = useState(1)
@@ -174,7 +174,7 @@ export function Resume() {
           viewport={{ once: true }}
           transition={{ duration: 0.5, ease: 'easeOut', delay: 0.2 }}
           className="flex flex-col items-center gap-6"
-          style={{ willChange: 'transform, opacity' }}
+
         >
           {loading && (
             <div className="flex flex-col items-center justify-center py-20 gap-4">
@@ -246,6 +246,8 @@ export function Resume() {
     </section>
   )
 }
+
+export const Resume = memo(ResumeInner)
 
 /** Dynamically load pdf.js from CDN (only once) */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

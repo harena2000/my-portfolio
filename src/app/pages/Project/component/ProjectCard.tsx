@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, memo } from 'react'
 import { motion, type Variants } from 'framer-motion'
 import { ProjectStatus } from '@/data/cv'
 import { ChevronDown, ChevronUp, ExternalLink, Eye } from 'lucide-react'
@@ -44,7 +44,7 @@ export const cardVariant: Variants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } },
 }
 
-export function ProjectCard({ project }: { project: Project; index?: number }) {
+const ProjectCardInner = ({ project }: { project: Project; index?: number }) => {
   const locale = useLocale()
   const [expanded, setExpanded] = useState(false)
   const fullDesc = project.desc ?? ''
@@ -55,7 +55,6 @@ export function ProjectCard({ project }: { project: Project; index?: number }) {
       variants={cardVariant}
       whileHover={{ y: -4, transition: { duration: 0.18 } }}
       className="rounded-2xl bg-white/[0.04] border border-white/10 p-5 hover:border-blue-500/30 hover:bg-white/[0.06] hover:shadow-[0_0_20px_rgba(59,130,246,0.12)] transition-all duration-200 flex flex-col group self-start"
-      style={{ backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', willChange: 'transform' }}
     >
       {/* Header */}
       <div className="flex items-start justify-between mb-3">
@@ -134,4 +133,5 @@ export function ProjectCard({ project }: { project: Project; index?: number }) {
   )
 }
 
+export const ProjectCard = memo(ProjectCardInner)
 export default ProjectCard

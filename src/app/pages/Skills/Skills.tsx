@@ -3,6 +3,7 @@
 import { CVData } from '@/data/cv'
 import { useLocale, useTranslations } from 'next-intl'
 import { motion, type Variants } from 'framer-motion'
+import { memo } from 'react'
 import Image from 'next/image'
 
 interface Skill {
@@ -45,7 +46,7 @@ function SkillBar({ skill, index }: { skill: Skill; index: number }) {
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: index * 0.06, ease: 'easeOut' }}
           className="h-full rounded-full bg-gradient-to-r from-blue-600 to-blue-400"
-          style={{ transformOrigin: 'left', width: `${skill.level}%`, willChange: 'transform' }}
+          style={{ transformOrigin: 'left', width: `${skill.level}%` }}
         />
       </div>
     </motion.div>
@@ -58,7 +59,6 @@ function SkillCard({ skill }: { skill: Skill }) {
       variants={cardVariants}
       whileHover={{ y: -4, transition: { duration: 0.2 } }}
       className="flex flex-col items-center gap-2 p-3 sm:p-4 rounded-xl bg-white/5 border border-white/10 hover:border-blue-500/40 hover:bg-blue-900/10 transition-colors duration-200 cursor-default group"
-      style={{ willChange: 'transform' }}
     >
       <div className="w-8 h-8 sm:w-10 sm:h-10 relative">
         <Image src={skill.logo} alt={skill.name} fill className="object-contain" />
@@ -71,14 +71,14 @@ function SkillCard({ skill }: { skill: Skill }) {
           viewport={{ once: true }}
           transition={{ duration: 0.7, ease: 'easeOut' }}
           className="h-full rounded-full bg-gradient-to-r from-blue-600 to-blue-400"
-          style={{ transformOrigin: 'left', width: `${skill.level}%`, willChange: 'transform' }}
+          style={{ transformOrigin: 'left', width: `${skill.level}%` }}
         />
       </div>
     </motion.div>
   )
 }
 
-export function Skills() {
+function SkillsInner() {
   const locale = useLocale()
   const cv = CVData[locale as keyof typeof CVData]
   const t = useTranslations('Skills')
@@ -102,14 +102,9 @@ export function Skills() {
               {t('title')}
             </h2>
           </div>
-          <motion.div
-            animate={{ y: [0, -8, 0], rotate: [0, 5, 0] }}
-            transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-            className="hidden sm:block w-20 h-20 md:w-28 md:h-28 relative opacity-60"
-            style={{ willChange: 'transform' }}
-          >
+          <div className="hidden sm:block w-20 h-20 md:w-28 md:h-28 relative opacity-60 section-deco-float">
             <Image src="/images/skills-deco.png" alt="" fill className="object-contain" />
-          </motion.div>
+          </div>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
@@ -143,3 +138,5 @@ export function Skills() {
     </section>
   )
 }
+
+export const Skills = memo(SkillsInner)

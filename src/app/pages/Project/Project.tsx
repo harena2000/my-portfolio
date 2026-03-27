@@ -3,6 +3,7 @@
 import { CVData } from '@/data/cv'
 import { useLocale, useTranslations } from 'next-intl'
 import { motion, type Variants } from 'framer-motion'
+import { memo } from 'react'
 import { ProjectCard } from './component'
 import Image from 'next/image'
 
@@ -11,7 +12,7 @@ const gridVariants: Variants = {
   visible: { transition: { staggerChildren: 0.08 } },
 }
 
-export function Projects() {
+function ProjectsInner() {
   const locale = useLocale()
   const cv = CVData[locale as keyof typeof CVData]
   const t = useTranslations('Projects')
@@ -34,14 +35,9 @@ export function Projects() {
               {t('title')}
             </h2>
           </div>
-          <motion.div
-            animate={{ y: [0, -12, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-            className="hidden sm:block w-20 h-20 md:w-28 md:h-28 relative opacity-60"
-            style={{ willChange: 'transform' }}
-          >
+          <div className="hidden sm:block w-20 h-20 md:w-28 md:h-28 relative opacity-60 section-deco-float">
             <Image src="/images/projects-deco.png" alt="" fill className="object-contain" />
-          </motion.div>
+          </div>
         </motion.div>
 
         <motion.div
@@ -62,4 +58,5 @@ export function Projects() {
   )
 }
 
+export const Projects = memo(ProjectsInner)
 export default Projects

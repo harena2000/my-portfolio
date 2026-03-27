@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { memo } from "react";
 import { motion } from "framer-motion";
 import { Progress } from "@/components/ui/progress";
 
@@ -15,13 +16,12 @@ interface SkillsCardProps {
   align?: "left" | "right";
 }
 
-export function SkillsCard({ skill }: SkillsCardProps) {
+function SkillsCardInner({ skill }: SkillsCardProps) {
   return (
     <motion.div
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 1.01 }}
       className="w-full overflow-hidden rounded-2xl bg-white/5 border border-white/10 p-3 sm:p-4 transition shadow-sm"
-      style={{ backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)" }}
     >
       {/* Row: logo | content */}
       <div className="flex items-start gap-4">
@@ -59,3 +59,4 @@ export function SkillsCard({ skill }: SkillsCardProps) {
   );
 }
 
+export const SkillsCard = memo(SkillsCardInner);
