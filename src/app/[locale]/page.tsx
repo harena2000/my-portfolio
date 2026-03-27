@@ -90,6 +90,22 @@ export default function Home() {
     return () => window.removeEventListener("navigateToSection", navigateToSection as EventListener);
   }, [navigateToSection]);
 
+  // On mount, check for a #section hash in the URL and navigate there
+  useEffect(() => {
+    const hash = window.location.hash.replace('#', '');
+    if (!hash) return;
+    const idx = SECTION_IDS.indexOf(hash);
+    if (idx > 0) {
+      // Small delay to let layout settle, then navigate
+      const timer = setTimeout(() => {
+        window.dispatchEvent(
+          new CustomEvent('navigateToSection', { detail: { id: hash, index: idx } })
+        );
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
   // Track active section
   useEffect(() => {
     let raf = 0;
