@@ -7,8 +7,13 @@ import { CVData } from '@/data/cv'
 import { motion, type Variants } from 'framer-motion'
 import { useLocale, useTranslations } from 'next-intl'
 import { Mail, Phone, MapPin, Send, Github, Linkedin } from 'lucide-react'
-import { useState, memo } from 'react'
+import { useRef, useState, memo } from 'react'
 import Image from 'next/image'
+import emailjs from '@emailjs/browser'
+
+const SERVICE_ID = 'service_vjp2u4k'
+const TEMPLATE_ID = 'template_862cspe'
+const PUBLIC_KEY = 'n2PoQohU4NjWDSAco'
 
 const colVariants: Variants = {
   hidden: {},
@@ -24,17 +29,32 @@ function ContactInner() {
   const locale = useLocale()
   const cv = CVData[locale as keyof typeof CVData]
   const t = useTranslations('Contact')
+  const formRef = useRef<HTMLFormElement>(null)
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
+  const [error, setError] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!formRef.current) return
+
     setSending(true)
-    setTimeout(() => {
-      setSending(false)
+    setError(false)
+
+    try {
+      await emailjs.sendForm(SERVICE_ID, TEMPLATE_ID, formRef.current, {
+        publicKey: PUBLIC_KEY,
+      })
       setSent(true)
-      setTimeout(() => setSent(false), 3000)
-    }, 1500)
+      formRef.current.reset()
+      setTimeout(() => setSent(false), 4000)
+    } catch (err) {
+      console.error('EmailJS error:', err)
+      setError(true)
+      setTimeout(() => setError(false), 4000)
+    } finally {
+      setSending(false)
+    }
   }
 
   const contactItems = [
@@ -121,6 +141,7 @@ function ContactInner() {
 
           {/* Right: Contact form */}
           <motion.form
+            ref={formRef}
             onSubmit={handleSubmit}
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -129,17 +150,20 @@ function ContactInner() {
             className="space-y-3 sm:space-y-4 bg-white/5 border border-white/10 rounded-2xl p-4 sm:p-6 hover:border-blue-500/20 transition-colors duration-200"
           >
             <Input
+              name="from_name"
               placeholder={t('yourName')}
               required
               className="bg-white/5 text-white border-white/10 focus:border-blue-500/50 rounded-lg placeholder:text-gray-600 transition-colors duration-150 text-sm"
             />
             <Input
+              name="from_email"
               placeholder={t('yourEmail')}
               type="email"
               required
               className="bg-white/5 text-white border-white/10 focus:border-blue-500/50 rounded-lg placeholder:text-gray-600 transition-colors duration-150 text-sm"
             />
             <Textarea
+              name="message"
               placeholder={t('message')}
               required
               rows={4}
@@ -151,11 +175,15 @@ function ContactInner() {
               className={`w-full rounded-lg shadow-lg transition-colors duration-200 flex items-center gap-2 justify-center text-sm ${
                 sent
                   ? 'bg-green-600 hover:bg-green-600 shadow-green-600/20'
-                  : 'bg-blue-600 hover:bg-blue-500 shadow-blue-600/20 hover:shadow-blue-500/30'
+                  : error
+                    ? 'bg-red-600 hover:bg-red-600 shadow-red-600/20'
+                    : 'bg-blue-600 hover:bg-blue-500 shadow-blue-600/20 hover:shadow-blue-500/30'
               }`}
             >
               {sent ? (
                 <span className="flex items-center gap-2">✓ {t('sent') ?? 'Sent!'}</span>
+              ) : error ? (
+                <span className="flex items-center gap-2">✕ Failed — try again</span>
               ) : sending ? (
                 <span className="flex items-center gap-2">
                   <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
