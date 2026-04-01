@@ -1,7 +1,7 @@
 'use client'
 
-import { CVData } from '@/data/cv'
-import { useLocale, useTranslations } from 'next-intl'
+import { usePortfolioData } from '@/hooks/usePortfolioData'
+import { useTranslations } from 'next-intl'
 import { motion, type Variants } from 'framer-motion'
 import { memo } from 'react'
 import { Briefcase, Calendar, ChevronRight } from 'lucide-react'
@@ -18,8 +18,7 @@ const itemVariants: Variants = {
 }
 
 function ExperienceInner() {
-  const locale = useLocale()
-  const cv = CVData[locale as keyof typeof CVData]
+  const { data: cv } = usePortfolioData()
   const t = useTranslations('Experience')
 
   return (

@@ -1,7 +1,7 @@
 'use client'
 
-import { CVData } from '@/data/cv'
-import { useLocale, useTranslations } from 'next-intl'
+import { usePortfolioData } from '@/hooks/usePortfolioData'
+import { useTranslations } from 'next-intl'
 import { motion, type Variants } from 'framer-motion'
 import { memo } from 'react'
 import { ProjectCard } from './component'
@@ -13,8 +13,7 @@ const gridVariants: Variants = {
 }
 
 function ProjectsInner() {
-  const locale = useLocale()
-  const cv = CVData[locale as keyof typeof CVData]
+  const { data: cv } = usePortfolioData()
   const t = useTranslations('Projects')
 
   return (

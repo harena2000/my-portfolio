@@ -2,8 +2,8 @@
 
 import { motion, type Variants } from 'framer-motion'
 import { Button } from '@/components/ui/button'
-import { CVData } from '@/data/cv'
-import { useLocale, useTranslations } from 'next-intl'
+import { usePortfolioData } from '@/hooks/usePortfolioData'
+import { useTranslations } from 'next-intl'
 import { CompanyCard } from '@/app/pages/Hero/component'
 import { useRef, useEffect, useCallback, memo } from 'react'
 import Image from 'next/image'
@@ -36,8 +36,7 @@ function FloatingBadge({ label, className, delay = 0 }: { label: string; classNa
 }
 
 function HeroInner() {
-  const locale = useLocale()
-  const cv = CVData[locale as keyof typeof CVData]
+  const { data: cv } = usePortfolioData()
   const t = useTranslations('Hero')
   const glowRef = useRef<HTMLDivElement>(null)
   const rafRef = useRef<number>(0)

@@ -3,9 +3,9 @@
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
-import { CVData } from '@/data/cv'
+import { usePortfolioData } from '@/hooks/usePortfolioData'
 import { motion, type Variants } from 'framer-motion'
-import { useLocale, useTranslations } from 'next-intl'
+import { useTranslations } from 'next-intl'
 import { Mail, Phone, MapPin, Send, Github, Linkedin } from 'lucide-react'
 import { useRef, useState, memo } from 'react'
 import Image from 'next/image'
@@ -26,8 +26,7 @@ const rowVariants: Variants = {
 }
 
 function ContactInner() {
-  const locale = useLocale()
-  const cv = CVData[locale as keyof typeof CVData]
+  const { data: cv } = usePortfolioData()
   const t = useTranslations('Contact')
   const formRef = useRef<HTMLFormElement>(null)
   const [sending, setSending] = useState(false)

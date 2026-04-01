@@ -1,7 +1,7 @@
 'use client'
 
-import { CVData } from '@/data/cv'
-import { useLocale, useTranslations } from 'next-intl'
+import { usePortfolioData } from '@/hooks/usePortfolioData'
+import { useTranslations } from 'next-intl'
 import { motion, type Variants } from 'framer-motion'
 import { memo } from 'react'
 import Image from 'next/image'
@@ -79,8 +79,7 @@ function SkillCard({ skill }: { skill: Skill }) {
 }
 
 function SkillsInner() {
-  const locale = useLocale()
-  const cv = CVData[locale as keyof typeof CVData]
+  const { data: cv } = usePortfolioData()
   const t = useTranslations('Skills')
 
   return (
