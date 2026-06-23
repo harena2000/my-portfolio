@@ -182,6 +182,7 @@ export const CVData: Record<string, CVLocale> = {
     profile: `Développeur mobile et web fullstack expérimenté avec plus de 4 ans d'expertise chez Futurmap. Spécialisé en développement Flutter avec une solide maîtrise des technologies web modernes (Node.js, Vue.js, Django, Next.js). Expert en solutions SIG et intégration de systèmes géospatiaux complexes.`,
     skills: [
       { name: "Flutter", level: 90, logo: "/logos/flutter.svg" },
+      { name: "Firebase", level: 90, logo: "/logos/firebase.svg" },
       { name: "Vue.js", level: 75, logo: "/logos/vue.svg" },
       { name: "TypeScript", level: 75, logo: "/logos/typescript.svg" },
       { name: "Express.js", level: 75, logo: "/logos/express.svg" },
