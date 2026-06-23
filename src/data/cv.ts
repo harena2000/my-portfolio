@@ -68,6 +68,7 @@ export const CVData: Record<string, CVLocale> = {
     profile: `Experienced full-stack mobile and web developer with over 4 years of expertise at Futurmap. Specialized in Flutter development with a strong command of modern web technologies (Node.js, Vue.js, Django, Next.js). Expert in GIS solutions and complex geospatial systems integration.`,
     skills: [
       { name: "Flutter", level: 90, logo: "/logos/flutter.svg" },
+      { name: "Firebase", level: 90, logo: "/logos/firebase.svg" },
       { name: "Vue.js", level: 75, logo: "/logos/vue.svg" },
       { name: "TypeScript", level: 75, logo: "/logos/typescript.svg" },
       { name: "Express.js", level: 75, logo: "/logos/express.svg" },
@@ -81,7 +82,7 @@ export const CVData: Record<string, CVLocale> = {
         company: "Aureon Madagascar",
         role: "Lead Developer",
         from: "January 2026",
-        to: "Present",
+        to: "June 2026",
         details:
           "Lead developer responsible for technical architecture, team management, and development of mobile and web applications.",
       },
@@ -106,7 +107,8 @@ export const CVData: Record<string, CVLocale> = {
         role: "Fullstack Developer Vue / Laravel",
         from: "2021",
         to: "2022",
-        details: "Developed a storage management application with Vue.js and Laravel.",
+        details:
+          "Developed a storage management application with Vue.js and Laravel.",
       },
     ],
     projects: [
@@ -193,7 +195,7 @@ export const CVData: Record<string, CVLocale> = {
         company: "Aureon Madagascar",
         role: "Lead Développeur",
         from: "Janvier 2026",
-        to: "Présent",
+        to: "Juin 2026",
         details:
           "Lead développeur responsable de l'architecture technique, de la gestion d'équipe et du développement d'applications mobiles et web.",
       },
@@ -218,7 +220,8 @@ export const CVData: Record<string, CVLocale> = {
         role: "Développeur Fullstack Vue / Laravel",
         from: "2021",
         to: "2022",
-        details: "Développement d'une application de stockage avec Vue.js et Laravel.",
+        details:
+          "Développement d'une application de stockage avec Vue.js et Laravel.",
       },
     ],
     projects: [
