@@ -4,6 +4,7 @@ import { motion, type Variants } from 'framer-motion'
 import { useLocale, useTranslations } from 'next-intl'
 import { Download, FileText, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react'
 import { useState, useRef, useCallback, useEffect, memo } from 'react'
+import { CVData } from '@/data/cv'
 
 const containerVariants: Variants = {
   hidden: {},
@@ -15,11 +16,6 @@ const itemVariants: Variants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } },
 }
 
-const RESUME_FILES: Record<string, string> = {
-  en: '/resume/cv-en.pdf',
-  fr: '/resume/cv-fr.pdf',
-}
-
 function ResumeInner() {
   const locale = useLocale()
   const t = useTranslations('Resume')
@@ -27,9 +23,47 @@ function ResumeInner() {
   const [pageImages, setPageImages] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null)
   const canvasContainerRef = useRef<HTMLDivElement>(null)
 
-  const pdfUrl = RESUME_FILES[locale] ?? RESUME_FILES.en
+  const downloadName =
+    locale === 'fr'
+      ? 'CV-HarenaRicoMahefaniaina.pdf'
+      : 'CV-HarenaRicoMahefaniaina(english).pdf'
+
+  // Generate the resume PDF from CVData[locale] so it always matches src/data/cv.ts.
+  useEffect(() => {
+    let cancelled = false
+    let createdUrl: string | null = null
+
+    const buildPdf = async () => {
+      try {
+        const cv = CVData[locale] ?? CVData.en
+        const [{ pdf }, { ResumeDocument }] = await Promise.all([
+          import('@react-pdf/renderer'),
+          import('./ResumeDocument'),
+        ])
+        const blob = await pdf(
+          <ResumeDocument data={cv} locale={locale} />
+        ).toBlob()
+        if (cancelled) return
+        createdUrl = URL.createObjectURL(blob)
+        setPdfUrl(createdUrl)
+      } catch (err) {
+        console.error('PDF generation error:', err)
+        if (!cancelled) {
+          setError(true)
+          setLoading(false)
+        }
+      }
+    }
+
+    buildPdf()
+    return () => {
+      cancelled = true
+      if (createdUrl) URL.revokeObjectURL(createdUrl)
+    }
+  }, [locale])
 
   const handleZoomIn = useCallback(() => {
     setZoom((prev) => Math.min(prev + 0.2, 2.5))
@@ -45,6 +79,7 @@ function ResumeInner() {
 
   // Render PDF pages to canvas images using pdf.js
   useEffect(() => {
+    if (!pdfUrl) return
     let cancelled = false
     setLoading(true)
     setError(false)
@@ -112,8 +147,8 @@ function ResumeInner() {
             {/* Download button */}
             <motion.a
               variants={itemVariants}
-              href={pdfUrl}
-              download
+              href={pdfUrl ?? undefined}
+              download={downloadName}
               className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-medium text-sm shadow-lg shadow-blue-600/20 hover:shadow-blue-500/30 transition-colors duration-200 group"
             >
               <Download className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform duration-200" />
@@ -191,8 +226,8 @@ function ResumeInner() {
               <FileText className="w-12 h-12 text-gray-600" />
               <p className="text-sm text-gray-500">{locale === 'fr' ? 'Impossible de charger le PDF' : 'Failed to load PDF'}</p>
               <a
-                href={pdfUrl}
-                download
+                href={pdfUrl ?? undefined}
+                download={downloadName}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-sm transition-colors duration-200"
               >
                 <Download className="w-4 h-4" />
@@ -233,8 +268,8 @@ function ResumeInner() {
             className="mt-6 sm:hidden"
           >
             <a
-              href={pdfUrl}
-              download
+              href={pdfUrl ?? undefined}
+              download={downloadName}
               className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-medium text-sm shadow-lg shadow-blue-600/20 transition-colors duration-200"
             >
               <Download className="w-4 h-4" />

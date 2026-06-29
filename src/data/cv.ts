@@ -24,6 +24,15 @@ export interface Experience {
   from: string;
   to: string;
   details: string;
+  /** Technologies shown on the generated resume PDF. */
+  tech?: string[];
+}
+
+export interface Education {
+  period: string;
+  degree: string;
+  track?: string;
+  school: string;
 }
 
 export interface Project {
@@ -33,6 +42,8 @@ export interface Project {
   tech?: string[];
   status?: ProjectStatus | string;
   link?: string;
+  /** Date range shown on the generated resume PDF. */
+  period?: string;
 }
 
 export interface Contact {
@@ -46,18 +57,22 @@ export interface Contact {
 export interface CVLocale {
   name: string;
   title: string;
+  /** Profile photo used on the generated resume PDF (path under /public). */
+  photo: string;
   contact: Contact;
   profile: string;
   skills: Skill[];
+  languages: string[];
+  education: Education[];
   experience: Experience[];
   projects: Project[];
-  resumeUrl: string;
 }
 
 export const CVData: Record<string, CVLocale> = {
   en: {
     name: "Harena Rico Mahefaniaina",
     title: "Mobile & Web Developer",
+    photo: "/profile.png",
     contact: {
       email: "harenaricom@gmail.com",
       phone: "+261 34 33 135 51",
@@ -77,6 +92,21 @@ export const CVData: Record<string, CVLocale> = {
       { name: "PostgreSQL", level: 70, logo: "/logos/postgresql.svg" },
       { name: "Laravel", level: 65, logo: "/logos/laravel.svg" },
     ],
+    languages: ["French", "English"],
+    education: [
+      {
+        period: "2019-2022",
+        degree: "Bachelor's in Computer Science",
+        track: "Software Engineering Track",
+        school: "Zurcher Adventist University",
+      },
+      {
+        period: "2018",
+        degree: "High School Diploma",
+        track: "Julien Ramaronjisoa",
+        school: "Adventist Private High School",
+      },
+    ],
     experience: [
       {
         company: "Aureon Madagascar",
@@ -85,6 +115,7 @@ export const CVData: Record<string, CVLocale> = {
         to: "June 2026",
         details:
           "Lead developer responsible for technical architecture, team management, and development of mobile and web applications.",
+        tech: ["Flutter", "Firebase", "Gemini"],
       },
       {
         company: "Futurmap",
@@ -93,6 +124,7 @@ export const CVData: Record<string, CVLocale> = {
         to: "January 2026",
         details:
           "Lead developer in the beyond map department for code maintainability, project management, and team supervision.",
+        tech: ["Flutter", "Next.js", "Django"],
       },
       {
         company: "Futurmap",
@@ -101,6 +133,7 @@ export const CVData: Record<string, CVLocale> = {
         to: "2024",
         details:
           "Development of mobile applications with Flutter, Java and Kotlin.",
+        tech: ["Flutter", "Dart"],
       },
       {
         company: "Fitiavana.MG",
@@ -109,6 +142,7 @@ export const CVData: Record<string, CVLocale> = {
         to: "2022",
         details:
           "Developed a storage management application with Vue.js and Laravel.",
+        tech: ["Vue.js", "Laravel"],
       },
     ],
     projects: [
@@ -118,6 +152,7 @@ export const CVData: Record<string, CVLocale> = {
         desc: "Mobile application for budget, event, and activity management for groups of people. Allows users to track expenses, plan events, and manage activities collaboratively within a user-friendly interface.",
         tech: ["Flutter", "Express.js", "PostgreSQL"],
         status: ProjectStatus.ON_STANDBY,
+        period: "2023 - Present",
       },
       {
         title: "WebGIS Platform",
@@ -134,6 +169,7 @@ export const CVData: Record<string, CVLocale> = {
           "PostgreSQL",
         ],
         status: ProjectStatus.COMPLETED,
+        period: "September 2025 - January 2026",
       },
       {
         title: "InsideGolf",
@@ -142,6 +178,7 @@ export const CVData: Record<string, CVLocale> = {
         tech: ["Flutter", "Stripe", "Firebase"],
         status: ProjectStatus.COMPLETED,
         link: "https://play.google.com/store/apps/details?id=com.idevshop.oppgolf&pcampaignid=web_share",
+        period: "February 2024 - April 2025",
       },
       {
         title: "Product Ticketing",
@@ -157,6 +194,7 @@ export const CVData: Record<string, CVLocale> = {
         tech: ["Flutter"],
         status: ProjectStatus.COMPLETED,
         link: "/projects/singsong",
+        period: "April - July 2024",
       },
       {
         title: "MENTO",
@@ -165,13 +203,14 @@ export const CVData: Record<string, CVLocale> = {
         tech: ["Flutter", "Firebase", "Gemini", "Stripe"],
         status: ProjectStatus.COMPLETED,
         link: "/projects/mento",
+        period: "January 2026 - Present",
       },
     ],
-    resumeUrl: "/resume.pdf",
   },
   fr: {
     name: "Harena Rico Mahefaniaina",
     title: "Développeur Mobile & Web",
+    photo: "/profile.png",
     contact: {
       email: "harenaricom@gmail.com",
       phone: "+261 34 33 135 51",
@@ -191,6 +230,21 @@ export const CVData: Record<string, CVLocale> = {
       { name: "PostgreSQL", level: 70, logo: "/logos/postgresql.svg" },
       { name: "Laravel", level: 65, logo: "/logos/laravel.svg" },
     ],
+    languages: ["Français", "Anglais"],
+    education: [
+      {
+        period: "2019-2022",
+        degree: "Licence en Informatique",
+        track: "Parcours Génie Logiciel",
+        school: "Université Adventiste Zurcher",
+      },
+      {
+        period: "2018",
+        degree: "Baccalauréat",
+        track: "Julien Ramaronjisoa",
+        school: "Lycée Privé Adventiste",
+      },
+    ],
     experience: [
       {
         company: "Aureon Madagascar",
@@ -199,6 +253,7 @@ export const CVData: Record<string, CVLocale> = {
         to: "Juin 2026",
         details:
           "Lead développeur responsable de l'architecture technique, de la gestion d'équipe et du développement d'applications mobiles et web.",
+        tech: ["Flutter", "Firebase", "Gemini"],
       },
       {
         company: "Futurmap",
@@ -207,6 +262,7 @@ export const CVData: Record<string, CVLocale> = {
         to: "Janvier 2026",
         details:
           "Lead développeur dans le département beyond map pour la maintenabilité des codes, du projet et l'encadrement de l'équipe.",
+        tech: ["Flutter", "Next.js", "Django"],
       },
       {
         company: "Futurmap",
@@ -215,6 +271,7 @@ export const CVData: Record<string, CVLocale> = {
         to: "2024",
         details:
           "Développement d'applications mobile avec Flutter, Java et Kotlin.",
+        tech: ["Flutter", "Dart"],
       },
       {
         company: "Fitiavana.MG",
@@ -223,6 +280,7 @@ export const CVData: Record<string, CVLocale> = {
         to: "2022",
         details:
           "Développement d'une application de stockage avec Vue.js et Laravel.",
+        tech: ["Vue.js", "Laravel"],
       },
     ],
     projects: [
@@ -232,6 +290,7 @@ export const CVData: Record<string, CVLocale> = {
         desc: "Application mobile de gestion budgétaire, d'événements et d'activités pour des groupes de personnes. Permet aux utilisateurs de suivre les dépenses, planifier des événements et gérer les activités de manière collaborative au sein d'une interface conviviale.",
         tech: ["Flutter", "Express.js", "PostgreSQL"],
         status: ProjectStatus.ON_STANDBY,
+        period: "2023 - Présent",
       },
       {
         title: "Plateforme WebSIG",
@@ -248,6 +307,7 @@ export const CVData: Record<string, CVLocale> = {
           "PostgreSQL",
         ],
         status: ProjectStatus.COMPLETED,
+        period: "Septembre 2025 - Janvier 2026",
       },
       {
         title: "InsideGolf",
@@ -256,6 +316,7 @@ export const CVData: Record<string, CVLocale> = {
         tech: ["Flutter", "Stripe", "Firebase"],
         status: ProjectStatus.COMPLETED,
         link: "https://play.google.com/store/apps/details?id=com.idevshop.oppgolf&pcampaignid=web_share",
+        period: "Février 2024 - Avril 2025",
       },
       {
         title: "Product Ticketing",
@@ -271,6 +332,7 @@ export const CVData: Record<string, CVLocale> = {
         tech: ["Flutter"],
         status: ProjectStatus.COMPLETED,
         link: "/projects/singsong",
+        period: "Avril - Juillet 2024",
       },
       {
         title: "MENTO",
@@ -279,8 +341,8 @@ export const CVData: Record<string, CVLocale> = {
         tech: ["Flutter", "Firebase", "Gemini", "Stripe"],
         status: ProjectStatus.COMPLETED,
         link: "/projects/mento",
+        period: "Janvier 2026 - Présent",
       },
     ],
-    resumeUrl: "/resume.pdf",
   },
 };
