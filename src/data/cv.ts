@@ -80,7 +80,7 @@ export const CVData: Record<string, CVLocale> = {
       github: "https://github.com/harena2000",
       linkedin: "https://linkedin.com/in/harena-rico",
     },
-    profile: `Experienced full-stack mobile and web developer with over 4 years of expertise at Futurmap. Specialized in Flutter development with a strong command of modern web technologies (Node.js, Vue.js, Django, Next.js). Expert in GIS solutions and complex geospatial systems integration.`,
+    profile: `Experienced full-stack mobile and web developer with over 4 years of expertise. Specialized in Flutter development with a strong command of modern web technologies (Node.js, Vue.js, Django, Next.js). Expert in GIS solutions and complex geospatial systems integration.`,
     skills: [
       { name: "Flutter", level: 90, logo: "/logos/flutter.svg" },
       { name: "Firebase", level: 90, logo: "/logos/firebase.svg" },
@@ -218,7 +218,7 @@ export const CVData: Record<string, CVLocale> = {
       github: "https://github.com/harena2000",
       linkedin: "https://linkedin.com/in/harena-rico",
     },
-    profile: `Développeur mobile et web fullstack expérimenté avec plus de 4 ans d'expertise chez Futurmap. Spécialisé en développement Flutter avec une solide maîtrise des technologies web modernes (Node.js, Vue.js, Django, Next.js). Expert en solutions SIG et intégration de systèmes géospatiaux complexes.`,
+    profile: `Développeur mobile et web fullstack expérimenté avec plus de 4 ans d'expertise. Spécialisé en développement Flutter avec une solide maîtrise des technologies web modernes (Node.js, Vue.js, Django, Next.js). Expert en solutions SIG et intégration de systèmes géospatiaux complexes.`,
     skills: [
       { name: "Flutter", level: 90, logo: "/logos/flutter.svg" },
       { name: "Firebase", level: 90, logo: "/logos/firebase.svg" },
