@@ -2,7 +2,7 @@
 
 import { useState, memo } from 'react'
 import { motion, type Variants } from 'framer-motion'
-import { ProjectStatus } from '@/data/cv'
+import type { ProjectStatus } from '@/lib/content-types'
 import { ChevronDown, ChevronUp, ExternalLink, Eye } from 'lucide-react'
 import Link from 'next/link'
 import { useLocale } from 'next-intl'
@@ -12,25 +12,25 @@ export type Project = {
   subtitle?: string
   desc?: string
   tech?: string[]
-  status?: ProjectStatus | string
+  status?: ProjectStatus
   link?: string
   index?: number
 }
 
-const statusConfig: Record<string, { label: string; bg: string; text: string; dot: string }> = {
-  [ProjectStatus.COMPLETED]: {
+const statusConfig: Record<ProjectStatus, { label: string; bg: string; text: string; dot: string }> = {
+  completed: {
     label: 'Completed',
     bg: 'bg-emerald-900/30',
     text: 'text-emerald-400',
     dot: 'bg-emerald-400',
   },
-  [ProjectStatus.IN_PROGRESS]: {
+  'in-progress': {
     label: 'In Progress',
     bg: 'bg-amber-900/30',
     text: 'text-amber-400',
     dot: 'bg-amber-400',
   },
-  [ProjectStatus.ON_STANDBY]: {
+  'on-standby': {
     label: 'On Standby',
     bg: 'bg-gray-800/50',
     text: 'text-gray-400',

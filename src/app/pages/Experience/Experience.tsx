@@ -1,14 +1,12 @@
 'use client'
 
-import { CVData } from '@/data/cv'
-import { useLocale, useTranslations } from 'next-intl'
+import { useContent } from '@/components/ContentProvider'
+import { useTranslations } from 'next-intl'
 import { motion } from 'framer-motion'
 import { memo, useMemo } from 'react'
 import { Code2, Rocket, Smartphone } from 'lucide-react'
 import Image from 'next/image'
 import ScrollTimeline, { type ScrollTimelineItem } from '@/components/ui/scroll-timeline'
-
-const isCurrent = (to: string) => /^(present|présent)$/i.test(to)
 
 const roleIcon = (role: string) => {
   if (/lead/i.test(role)) return Rocket
@@ -17,15 +15,14 @@ const roleIcon = (role: string) => {
 }
 
 function ExperienceInner() {
-  const locale = useLocale()
-  const cv = CVData[locale as keyof typeof CVData]
+  const cv = useContent()
   const t = useTranslations('Experience')
 
   // Newest first, so the line draws downward from the latest role
   const items = useMemo<ScrollTimelineItem[]>(
     () =>
-      cv.experience.map((exp, idx) => ({
-        id: idx,
+      cv.experience.map((exp) => ({
+        id: exp.id,
         marker: exp.from.match(/\d{4}/)?.[0] ?? exp.from,
         date: `${exp.from} — ${exp.to}`,
         title: exp.role,
@@ -33,7 +30,7 @@ function ExperienceInner() {
         content: exp.details,
         tags: exp.tech,
         icon: roleIcon(exp.role),
-        current: isCurrent(exp.to),
+        current: exp.current,
       })),
     [cv.experience]
   )

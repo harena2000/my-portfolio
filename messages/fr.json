@@ -71,5 +71,9 @@
     "zoomIn": "Agrandir",
     "zoomOut": "Réduire",
     "resetZoom": "Réinitialiser le zoom"
+  },
+  "ProjectPage": {
+    "back": "Retour",
+    "screens": "{count, plural, one {# écran} other {# écrans}}"
   }
 }

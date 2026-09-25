@@ -71,5 +71,9 @@
     "zoomIn": "Zoom in",
     "zoomOut": "Zoom out",
     "resetZoom": "Reset zoom"
+  },
+  "ProjectPage": {
+    "back": "Back",
+    "screens": "{count, plural, one {# screen} other {# screens}}"
   }
 }

@@ -2,19 +2,13 @@
 
 import { Button } from '@/components/ui/button'
 import { FormDots, GlobeWireframe } from '@/components/ui/contact-with-globe'
-import { CVData } from '@/data/cv'
+import { useContent } from '@/components/ContentProvider'
+import { saveContactMessage } from '@/lib/actions/contact'
 import { motion } from 'framer-motion'
-import { useLocale, useTranslations } from 'next-intl'
+import { useTranslations } from 'next-intl'
 import { ArrowRight, Check, Github, Linkedin, Loader2, Mail, MapPin, Phone, X } from 'lucide-react'
 import { useRef, useState, memo } from 'react'
 import emailjs from '@emailjs/browser'
-
-const SERVICE_ID = 'service_vjp2u4k'
-const TEMPLATE_ID = 'template_862cspe'
-const PUBLIC_KEY = 'n2PoQohU4NjWDSAco'
-
-/** Ambohimanambola, Antananarivo */
-const HOME_LOCATION: [number, number] = [-18.93, 47.6]
 
 const smoothEase = [0.25, 0.1, 0.25, 1] as const
 
@@ -23,8 +17,11 @@ const fieldClass =
 const labelClass = 'text-[11px] font-semibold tracking-widest uppercase text-gray-500'
 
 function ContactInner() {
-  const locale = useLocale()
-  const cv = CVData[locale as keyof typeof CVData]
+  const cv = useContent()
+  const { emailjs: emailjsKeys } = cv.settings
+  const { lat, lng } = cv.contact
+  const homeLocation: [number, number] | null = lat != null && lng != null ? [lat, lng] : null
+  const cityLabel = cv.contact.city.split(',')[0].trim()
   const t = useTranslations('Contact')
   const formRef = useRef<HTMLFormElement>(null)
   const [sending, setSending] = useState(false)
@@ -39,19 +36,40 @@ function ContactInner() {
     setSending(true)
     setError(false)
 
-    try {
-      await emailjs.sendForm(SERVICE_ID, TEMPLATE_ID, formRef.current, {
-        publicKey: PUBLIC_KEY,
-      })
+    const form = formRef.current
+    const data = new FormData(form)
+    const field = (key: string) => String(data.get(key) ?? '')
+
+    // Email delivery via EmailJS (when configured in the CMS)
+    let emailDelivered = false
+    if (emailjsKeys.serviceId && emailjsKeys.templateId && emailjsKeys.publicKey) {
+      try {
+        await emailjs.sendForm(emailjsKeys.serviceId, emailjsKeys.templateId, form, {
+          publicKey: emailjsKeys.publicKey,
+        })
+        emailDelivered = true
+      } catch (err) {
+        console.error('EmailJS error:', err)
+      }
+    }
+
+    // Always keep a copy in the CMS inbox
+    const saved = await saveContactMessage({
+      name: field('from_name'),
+      email: field('from_email'),
+      message: field('message'),
+      website: field('website'),
+      emailDelivered,
+    }).catch(() => ({ ok: false as const }))
+
+    setSending(false)
+    if (emailDelivered || saved.ok) {
       setSent(true)
-      formRef.current.reset()
+      form.reset()
       setTimeout(() => setSent(false), 4000)
-    } catch (err) {
-      console.error('EmailJS error:', err)
+    } else {
       setError(true)
       setTimeout(() => setError(false), 4000)
-    } finally {
-      setSending(false)
     }
   }
 
@@ -62,7 +80,7 @@ function ContactInner() {
       icon: MapPin,
       label: t('location'),
       value: cv.contact.address,
-      href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cv.contact.address + ', Antananarivo, Madagascar')}`,
+      href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([cv.contact.address, cv.contact.city].filter(Boolean).join(', '))}`,
       focusGlobe: true,
     },
   ]
@@ -130,9 +148,9 @@ function ContactInner() {
                   target={href.startsWith('http') ? '_blank' : undefined}
                   rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
                   aria-label={`${label}: ${value}`}
-                  onMouseEnter={focusGlobe ? () => setGlobeFocus(HOME_LOCATION) : undefined}
+                  onMouseEnter={focusGlobe ? () => setGlobeFocus(homeLocation) : undefined}
                   onMouseLeave={focusGlobe ? () => setGlobeFocus(null) : undefined}
-                  onFocus={focusGlobe ? () => setGlobeFocus(HOME_LOCATION) : undefined}
+                  onFocus={focusGlobe ? () => setGlobeFocus(homeLocation) : undefined}
                   onBlur={focusGlobe ? () => setGlobeFocus(null) : undefined}
                   initial={{ opacity: 0, x: -12 }}
                   whileInView={{ opacity: 1, x: 0 }}
@@ -177,9 +195,9 @@ function ContactInner() {
             >
               <GlobeWireframe
                 className="mx-auto max-w-[360px] text-blue-300/50"
-                initialLocation={HOME_LOCATION}
+                initialLocation={homeLocation ?? undefined}
                 focus={globeFocus}
-                markers={[{ location: HOME_LOCATION, label: 'Antananarivo' }]}
+                markers={homeLocation ? [{ location: homeLocation, label: cityLabel }] : []}
               />
             </div>
             <p className="-mt-6 text-xs text-gray-500 text-center">{t('basedIn')}</p>
@@ -193,7 +211,7 @@ function ContactInner() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1.0, delay: 0.35, ease: smoothEase }}
-            className="rounded-2xl border border-white/10 bg-[#050d1f]/70 backdrop-blur-sm p-5 sm:p-7 flex flex-col gap-5 shadow-[0_0_40px_rgba(59,130,246,0.06)]"
+            className="relative rounded-2xl border border-white/10 bg-[#050d1f]/70 backdrop-blur-sm p-5 sm:p-7 flex flex-col gap-5 shadow-[0_0_40px_rgba(59,130,246,0.06)]"
           >
             <div>
               <h3 className="text-lg font-semibold text-white mb-0.5">{t('sendTitle')}</h3>
@@ -240,6 +258,16 @@ function ContactInner() {
                 className={`${fieldClass} py-3 resize-none`}
               />
             </div>
+
+            {/* Honeypot: invisible to people, bots fill it and get dropped server-side */}
+            <input
+              type="text"
+              name="website"
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              className="absolute -left-[9999px] h-0 w-0 opacity-0"
+            />
 
             <div className="flex items-center gap-3">
               <Button

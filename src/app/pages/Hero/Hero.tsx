@@ -2,11 +2,20 @@
 
 import { motion, type Variants } from 'framer-motion'
 import { Button } from '@/components/ui/button'
-import { CVData } from '@/data/cv'
-import { useLocale, useTranslations } from 'next-intl'
+import { useContent } from '@/components/ContentProvider'
+import { useTranslations } from 'next-intl'
 import { CompanyCard } from '@/app/pages/Hero/component'
 import { useRef, useEffect, useCallback, memo } from 'react'
 import Image from 'next/image'
+
+/** Positions around the hero photo for up to five floating tech badges (from CMS settings) */
+const BADGE_SPOTS = [
+  'top-0 right-0 sm:top-2 sm:right-2',
+  'bottom-4 right-0 sm:right-2',
+  'top-1/3 -left-6 sm:-left-2',
+  'bottom-8 -left-4 sm:left-0',
+  'top-0 left-1/4 sm:left-1/3',
+]
 
 const containerVariants: Variants = {
   hidden: {},
@@ -36,8 +45,8 @@ function FloatingBadge({ label, className, delay = 0 }: { label: string; classNa
 }
 
 function HeroInner() {
-  const locale = useLocale()
-  const cv = CVData[locale as keyof typeof CVData]
+  const cv = useContent()
+  const { openToWork, yearsOfExperience, heroBadges } = cv.settings
   const t = useTranslations('Hero')
   const glowRef = useRef<HTMLDivElement>(null)
   const rafRef = useRef<number>(0)
@@ -108,12 +117,14 @@ function HeroInner() {
           className="space-y-4 text-center md:text-left order-last md:order-first"
         >
           {/* Available badge */}
-          <motion.div variants={itemVariants}>
-            <span className="inline-flex items-center gap-2 px-3 py-1 text-xs font-semibold text-blue-400 bg-blue-900/30 border border-blue-500/30 rounded-full tracking-widest uppercase">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-              {t('available')}
-            </span>
-          </motion.div>
+          {openToWork && (
+            <motion.div variants={itemVariants}>
+              <span className="inline-flex items-center gap-2 px-3 py-1 text-xs font-semibold text-blue-400 bg-blue-900/30 border border-blue-500/30 rounded-full tracking-widest uppercase">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                {t('available')}
+              </span>
+            </motion.div>
+          )}
 
           {/* Name */}
           <motion.div variants={itemVariants}>
@@ -168,12 +179,18 @@ function HeroInner() {
 
           {/* Status row */}
           <motion.div variants={itemVariants} className="flex items-center gap-4 justify-center md:justify-start">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-              <span className="text-xs text-gray-400">{t('openToWork')}</span>
-            </div>
-            <div className="h-4 w-px bg-white/20" />
-            <span className="text-xs text-gray-400">4+ {t('yearsExp')}</span>
+            {openToWork && (
+              <>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                  <span className="text-xs text-gray-400">{t('openToWork')}</span>
+                </div>
+                <div className="h-4 w-px bg-white/20" />
+              </>
+            )}
+            {yearsOfExperience > 0 && (
+              <span className="text-xs text-gray-400">{yearsOfExperience}+ {t('yearsExp')}</span>
+            )}
           </motion.div>
         </motion.div>
 
@@ -197,13 +214,16 @@ function HeroInner() {
           <div className="relative w-48 h-48 sm:w-60 sm:h-60 md:w-72 md:h-72 lg:w-80 lg:h-80 hero-float">
             <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-blue-900/10 rounded-full blur-2xl scale-110" />
             <div className="relative z-10 w-full h-full rounded-full overflow-hidden border-2 border-blue-500/30 shadow-2xl shadow-blue-600/20">
-              <Image
-                src="/images/profile.webp"
-                alt="Harena Rico"
-                fill
-                className="object-cover object-top"
-                priority
-              />
+              {cv.photo && (
+                <Image
+                  src={cv.photo.url}
+                  alt={cv.photo.alt || cv.name}
+                  fill
+                  sizes="(min-width: 1024px) 320px, (min-width: 768px) 288px, (min-width: 640px) 240px, 192px"
+                  className="object-cover object-top"
+                  priority
+                />
+              )}
             </div>
             {/* Glow ring around photo */}
             <div className="absolute inset-0 rounded-full border border-blue-400/20 scale-[1.08] pointer-events-none" />
@@ -211,11 +231,9 @@ function HeroInner() {
           </div>
 
           {/* Floating tech badges — CSS animation, hidden on small screens */}
-          <FloatingBadge label="Flutter" className="top-0 right-0 sm:top-2 sm:right-2 hidden sm:block" delay={0} />
-          <FloatingBadge label="Next.js" className="bottom-4 right-0 sm:right-2 hidden sm:block" delay={0.5} />
-          <FloatingBadge label="TypeScript" className="top-1/3 -left-6 sm:-left-2 hidden sm:block" delay={1} />
-          <FloatingBadge label="Vue.js" className="bottom-8 -left-4 sm:left-0 hidden sm:block" delay={1.5} />
-          <FloatingBadge label="Express.js" className="top-0 left-1/4 sm:left-1/3 hidden sm:block" delay={2} />
+          {heroBadges.slice(0, BADGE_SPOTS.length).map((label, i) => (
+            <FloatingBadge key={label} label={label} className={`${BADGE_SPOTS[i]} hidden sm:block`} delay={i * 0.5} />
+          ))}
         </motion.div>
       </div>
 

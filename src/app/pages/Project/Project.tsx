@@ -1,6 +1,7 @@
 'use client'
 
-import { CVData, ProjectStatus, type Project } from '@/data/cv'
+import { useContent } from '@/components/ContentProvider'
+import type { Project } from '@/lib/content-types'
 import { useLocale, useTranslations } from 'next-intl'
 import { motion, type Variants } from 'framer-motion'
 import { memo, useMemo } from 'react'
@@ -15,9 +16,9 @@ const gridVariants: Variants = {
 }
 
 const toStatus = (status?: Project['status']): TimelineItem['status'] =>
-  status === ProjectStatus.IN_PROGRESS
+  status === 'in-progress'
     ? 'in-progress'
-    : status === ProjectStatus.ON_STANDBY
+    : status === 'on-standby'
       ? 'pending'
       : 'completed'
 
@@ -59,7 +60,7 @@ const findRelated = (projects: Project[], idx: number): number[] => {
 
 function ProjectsInner() {
   const locale = useLocale()
-  const cv = CVData[locale as keyof typeof CVData]
+  const cv = useContent()
   const t = useTranslations('Projects')
 
   const timelineData = useMemo<TimelineItem[]>(

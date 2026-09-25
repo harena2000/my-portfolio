@@ -19,7 +19,7 @@ import {
   View,
   Font,
 } from '@react-pdf/renderer'
-import type { CVLocale } from '@/data/cv'
+import type { SiteContent } from '@/lib/content-types'
 
 // Break lines only between words — avoids ugly mid-word hyphenation (e.g. "Mahefani-aina").
 Font.registerHyphenationCallback((word) => [word])
@@ -59,7 +59,6 @@ const LABELS: Record<string, Record<string, string>> = {
     languages: 'Languages',
     education: 'Education',
     location: 'Location',
-    city: 'Antananarivo, Madagascar',
   },
   fr: {
     experience: 'Expérience',
@@ -68,7 +67,6 @@ const LABELS: Record<string, Record<string, string>> = {
     languages: 'Langues',
     education: 'Formation',
     location: 'Localisation',
-    city: 'Antananarivo, Madagascar',
   },
 }
 
@@ -231,6 +229,8 @@ const s = StyleSheet.create({
 /*  Pieces                                                            */
 /* ------------------------------------------------------------------ */
 const range = (a: string, b?: string) => (b ? `${a} – ${b}` : a).replace(/\s*[-—]\s*/g, ' – ')
+const absoluteUrl = (url: string) =>
+  /^https?:\/\//.test(url) || typeof window === 'undefined' ? url : new URL(url, window.location.origin).href
 const stripUrl = (url: string) => url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')
 
 function HeaderBackground() {
@@ -307,9 +307,11 @@ function SkillBar({ level, id }: { level: number; id: string }) {
 
 /* ------------------------------------------------------------------ */
 
-export function ResumeDocument({ data, locale }: { data: CVLocale; locale: string }) {
+export function ResumeDocument({ data, locale }: { data: SiteContent; locale: string }) {
   const t = LABELS[locale] ?? LABELS.en
   const { contact } = data
+  // react-pdf only reads JPEG/PNG, and resolves URLs against the page when rendered in the browser
+  const photoSrc = data.photo ? absoluteUrl(data.photo.thumbUrl ?? data.photo.url) : undefined
 
   const contacts = [
     { icon: 'mail' as const, text: contact.email, href: `mailto:${contact.email}` },
@@ -328,7 +330,7 @@ export function ResumeDocument({ data, locale }: { data: CVLocale; locale: strin
             <View style={s.photoWrap}>
               <PhotoRing />
               {/* eslint-disable-next-line jsx-a11y/alt-text */}
-              {data.photo ? <Image src={data.photo} style={s.photo} /> : null}
+              {photoSrc ? <Image src={photoSrc} style={s.photo} /> : null}
             </View>
             <View style={{ flex: 1 }}>
               <Text style={s.name}>{data.name}</Text>
@@ -436,7 +438,7 @@ export function ResumeDocument({ data, locale }: { data: CVLocale; locale: strin
 
             <View style={s.sideBlock}>
               <Heading icon="pin">{t.location}</Heading>
-              <Text style={s.sideStrong}>{t.city}</Text>
+              {contact.city ? <Text style={s.sideStrong}>{contact.city}</Text> : null}
               <Text style={s.sideText}>{contact.address}</Text>
             </View>
           </View>

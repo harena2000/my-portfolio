@@ -4,7 +4,7 @@ import { motion, type Variants } from 'framer-motion'
 import { useLocale, useTranslations } from 'next-intl'
 import { Download, FileText, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react'
 import { useState, useRef, useCallback, useEffect, memo } from 'react'
-import { CVData } from '@/data/cv'
+import { useContent } from '@/components/ContentProvider'
 
 const containerVariants: Variants = {
   hidden: {},
@@ -18,6 +18,7 @@ const itemVariants: Variants = {
 
 function ResumeInner() {
   const locale = useLocale()
+  const cv = useContent()
   const t = useTranslations('Resume')
   const [zoom, setZoom] = useState(1)
   const [pageImages, setPageImages] = useState<string[]>([])
@@ -26,19 +27,16 @@ function ResumeInner() {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null)
   const canvasContainerRef = useRef<HTMLDivElement>(null)
 
-  const downloadName =
-    locale === 'fr'
-      ? 'CV-HarenaRicoMahefaniaina.pdf'
-      : 'CV-HarenaRicoMahefaniaina(english).pdf'
+  const baseName = `CV-${cv.name.replace(/\s+/g, '')}`
+  const downloadName = locale === 'fr' ? `${baseName}.pdf` : `${baseName}(english).pdf`
 
-  // Generate the resume PDF from CVData[locale] so it always matches src/data/cv.ts.
+  // Generate the resume PDF from the CMS content so it always matches what's published.
   useEffect(() => {
     let cancelled = false
     let createdUrl: string | null = null
 
     const buildPdf = async () => {
       try {
-        const cv = CVData[locale] ?? CVData.en
         const [{ pdf }, { ResumeDocument }] = await Promise.all([
           import('@react-pdf/renderer'),
           import('./ResumeDocument'),
@@ -63,7 +61,7 @@ function ResumeInner() {
       cancelled = true
       if (createdUrl) URL.revokeObjectURL(createdUrl)
     }
-  }, [locale])
+  }, [cv, locale])
 
   const handleZoomIn = useCallback(() => {
     setZoom((prev) => Math.min(prev + 0.2, 2.5))
@@ -168,7 +166,7 @@ function ResumeInner() {
           <div className="flex items-center gap-2 text-sm text-gray-400">
             <FileText className="w-4 h-4 text-blue-400" />
             <span className="hidden sm:inline">
-              {locale === 'fr' ? 'CV-HarenaRicoMahefaniaina.pdf' : 'CV-HarenaRicoMahefaniaina(english).pdf'}
+              {downloadName}
             </span>
             <span className="sm:hidden">CV.pdf</span>
           </div>

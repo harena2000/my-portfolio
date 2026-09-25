@@ -1,16 +1,11 @@
 'use client'
 
-import { CVData } from '@/data/cv'
-import { useLocale, useTranslations } from 'next-intl'
+import { useContent } from '@/components/ContentProvider'
+import type { Skill } from '@/lib/content-types'
+import { useTranslations } from 'next-intl'
 import { motion, type Variants } from 'framer-motion'
 import { memo } from 'react'
 import Image from 'next/image'
-
-interface Skill {
-  name: string
-  level: number
-  logo: string
-}
 
 const listVariants: Variants = {
   hidden: {},
@@ -32,7 +27,7 @@ function SkillBar({ skill, index }: { skill: Skill; index: number }) {
     <motion.div variants={rowVariants} className="group">
       <div className="flex items-center gap-3 mb-2">
         <div className="w-6 h-6 sm:w-7 sm:h-7 relative flex-shrink-0">
-          <Image src={skill.logo} alt={skill.name} fill className="object-contain" />
+          {skill.logo && <Image src={skill.logo} alt={skill.name} fill sizes="48px" className="object-contain" unoptimized />}
         </div>
         <div className="flex items-center justify-between w-full">
           <span className="text-sm font-medium text-gray-200">{skill.name}</span>
@@ -61,7 +56,7 @@ function SkillCard({ skill }: { skill: Skill }) {
       className="flex flex-col items-center gap-2 p-3 sm:p-4 rounded-xl bg-white/5 border border-white/10 hover:border-blue-500/40 hover:bg-blue-900/10 transition-colors duration-200 cursor-default group"
     >
       <div className="w-8 h-8 sm:w-10 sm:h-10 relative">
-        <Image src={skill.logo} alt={skill.name} fill className="object-contain" />
+        {skill.logo && <Image src={skill.logo} alt={skill.name} fill sizes="48px" className="object-contain" unoptimized />}
       </div>
       <span className="text-xs font-medium text-gray-300 group-hover:text-white transition-colors duration-150 text-center">{skill.name}</span>
       <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
@@ -79,8 +74,7 @@ function SkillCard({ skill }: { skill: Skill }) {
 }
 
 function SkillsInner() {
-  const locale = useLocale()
-  const cv = CVData[locale as keyof typeof CVData]
+  const cv = useContent()
   const t = useTranslations('Skills')
 
   return (
