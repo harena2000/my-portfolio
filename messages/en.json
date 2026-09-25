@@ -5,7 +5,8 @@
     "project": "Projects",
     "experience": "Experience",
     "contact": "Contact",
-    "resume": "Resume"
+    "resume": "Resume",
+    "next": "Next"
   },
   "Hero": {
     "available": "Available for work",
@@ -20,11 +21,22 @@
   },
   "Projects": {
     "title": "Projects",
-    "subtitle": "What I've built"
+    "subtitle": "What I've built",
+    "completed": "COMPLETED",
+    "inProgress": "IN PROGRESS",
+    "onStandby": "ON STANDBY",
+    "stack": "Tech stack",
+    "related": "Related projects",
+    "hint": "Click a project to explore · hover to pause",
+    "viewProject": "View project",
+    "previewScreens": "Preview screens"
   },
   "Experience": {
     "title": "Experience",
-    "subtitle": "My professional journey"
+    "subtitle": "My professional journey",
+    "current": "Current",
+    "past": "Past",
+    "stack": "Tech stack"
   },
   "Contact": {
     "title": "Contact",
@@ -36,7 +48,21 @@
     "yourEmail": "Your email",
     "message": "Message",
     "send": "Send Message",
-    "sending": "Sending..."
+    "sending": "Sending...",
+    "description": "Have a project in mind, a role to fill, or just want to say hi? My inbox is always open.",
+    "getInTouch": "Get in touch",
+    "getInTouchDesc": "Reach out via any channel below. I usually reply within one business day.",
+    "location": "Location",
+    "sendTitle": "Send a message",
+    "sendDesc": "Fill out the form and I'll get back to you promptly.",
+    "nameLabel": "Name / Company",
+    "emailLabel": "Email address",
+    "messageLabel": "Message",
+    "messagePlaceholder": "Tell me about your project…",
+    "sent": "Message sent!",
+    "failed": "Failed — try again",
+    "basedIn": "Based in Antananarivo, Madagascar · working remotely worldwide",
+    "namePlaceholder": "Your name"
   },
   "Resume": {
     "title": "Resume",

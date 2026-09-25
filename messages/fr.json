@@ -5,7 +5,8 @@
     "project": "Projets",
     "experience": "Expérience",
     "contact": "Contact",
-    "resume": "CV"
+    "resume": "CV",
+    "next": "Suivant"
   },
   "Hero": {
     "available": "Disponible pour travailler",
@@ -20,11 +21,22 @@
   },
   "Projects": {
     "title": "Projets",
-    "subtitle": "Ce que j'ai construit"
+    "subtitle": "Ce que j'ai construit",
+    "completed": "TERMINÉ",
+    "inProgress": "EN COURS",
+    "onStandby": "EN PAUSE",
+    "stack": "Stack technique",
+    "related": "Projets liés",
+    "hint": "Cliquez sur un projet pour explorer · survolez pour mettre en pause",
+    "viewProject": "Voir le projet",
+    "previewScreens": "Voir les écrans"
   },
   "Experience": {
     "title": "Expérience",
-    "subtitle": "Mon parcours professionnel"
+    "subtitle": "Mon parcours professionnel",
+    "current": "En cours",
+    "past": "Passé",
+    "stack": "Stack technique"
   },
   "Contact": {
     "title": "Contact",
@@ -36,7 +48,21 @@
     "yourEmail": "Votre email",
     "message": "Message",
     "send": "Envoyer le message",
-    "sending": "Envoi..."
+    "sending": "Envoi...",
+    "description": "Un projet en tête, un poste à pourvoir, ou simplement envie de dire bonjour ? Ma boîte mail est toujours ouverte.",
+    "getInTouch": "Me contacter",
+    "getInTouchDesc": "Contactez-moi par l'un des canaux ci-dessous. Je réponds généralement sous un jour ouvré.",
+    "location": "Localisation",
+    "sendTitle": "Envoyer un message",
+    "sendDesc": "Remplissez le formulaire et je vous répondrai rapidement.",
+    "nameLabel": "Nom / Entreprise",
+    "emailLabel": "Adresse e-mail",
+    "messageLabel": "Message",
+    "messagePlaceholder": "Parlez-moi de votre projet…",
+    "sent": "Message envoyé !",
+    "failed": "Échec — réessayez",
+    "basedIn": "Basé à Antananarivo, Madagascar · en télétravail partout dans le monde",
+    "namePlaceholder": "Votre nom"
   },
   "Resume": {
     "title": "CV",

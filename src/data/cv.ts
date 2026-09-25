@@ -26,6 +26,8 @@ export interface Experience {
   details: string;
   /** Technologies shown on the generated resume PDF. */
   tech?: string[];
+  /** Achievement bullets shown on the generated resume PDF (falls back to `details`). */
+  highlights?: string[];
 }
 
 export interface Education {
@@ -44,6 +46,8 @@ export interface Project {
   link?: string;
   /** Date range shown on the generated resume PDF. */
   period?: string;
+  /** One-line pitch shown on the generated resume PDF (falls back to `desc`). */
+  summary?: string;
 }
 
 export interface Contact {
@@ -72,7 +76,7 @@ export const CVData: Record<string, CVLocale> = {
   en: {
     name: "Harena Rico Mahefaniaina",
     title: "Mobile & Web Developer",
-    photo: "/profile.png",
+    photo: "/images/profile-resume.jpg",
     contact: {
       email: "harenaricom@gmail.com",
       phone: "+261 34 33 135 51",
@@ -115,7 +119,11 @@ export const CVData: Record<string, CVLocale> = {
         to: "June 2026",
         details:
           "Lead developer responsible for technical architecture, team management, and development of mobile and web applications.",
-        tech: ["Flutter", "Firebase", "Gemini"],
+        tech: ["Flutter", "Firebase", "Gemini", "Stripe"],
+        highlights: [
+          "Owned the technical architecture and led the team building the company's mobile and web products",
+          "Built MENTO, a mental-strength companion app with Gemini-powered guidance and Stripe subscriptions",
+        ],
       },
       {
         company: "Futurmap",
@@ -124,7 +132,12 @@ export const CVData: Record<string, CVLocale> = {
         to: "January 2026",
         details:
           "Lead developer in the beyond map department for code maintainability, project management, and team supervision.",
-        tech: ["Flutter", "Next.js", "Django"],
+        tech: ["Flutter", "Next.js", "Django", "QGIS"],
+        highlights: [
+          "Led the Beyond Map department: code maintainability, project planning and team supervision",
+          "Delivered a WebGIS platform with a custom QGIS plugin syncing edits to the web app live over WebSocket",
+          "Built an immersive 360° viewer that turns panoramic photos into explorable geospatial scenes",
+        ],
       },
       {
         company: "Futurmap",
@@ -133,7 +146,11 @@ export const CVData: Record<string, CVLocale> = {
         to: "2024",
         details:
           "Development of mobile applications with Flutter, Java and Kotlin.",
-        tech: ["Flutter", "Dart"],
+        tech: ["Flutter", "Dart", "Java", "Kotlin"],
+        highlights: [
+          "Developed cross-platform mobile apps in Flutter, with native Android work in Java and Kotlin",
+          "Shipped InsideGolf, a golf-learning app published on Google Play with Stripe payments and Firebase",
+        ],
       },
       {
         company: "Fitiavana.MG",
@@ -143,11 +160,15 @@ export const CVData: Record<string, CVLocale> = {
         details:
           "Developed a storage management application with Vue.js and Laravel.",
         tech: ["Vue.js", "Laravel"],
+        highlights: [
+          "Built a storage management application end to end: Vue.js front end and Laravel back end",
+        ],
       },
     ],
     projects: [
       {
         title: "ZakaJiaby",
+        summary: "Group budgeting app to track shared expenses, plan events and organize activities together",
         subtitle: "Freelance | Cross-platform Web and Mobile",
         desc: "Mobile application for budget, event, and activity management for groups of people. Allows users to track expenses, plan events, and manage activities collaboratively within a user-friendly interface.",
         tech: ["Flutter", "Express.js", "PostgreSQL"],
@@ -156,6 +177,7 @@ export const CVData: Record<string, CVLocale> = {
       },
       {
         title: "WebGIS Platform",
+        summary: "Web GIS with a QGIS plugin syncing edits live over WebSocket and a 360° panorama viewer",
         subtitle: "Futurmap | Web GIS Application",
         desc: "Development of a complete WebGIS platform with QGIS integration. Creation of a custom QGIS plugin communicating via WebSocket to synchronize changes directly with the web application. Implementation of a system for displaying geospatial layers on images and an interactive map. Development of an innovative viewer transforming panoramic images into an immersive 360° experience.",
         tech: [
@@ -173,6 +195,7 @@ export const CVData: Record<string, CVLocale> = {
       },
       {
         title: "InsideGolf",
+        summary: "Golf-learning mobile app on Google Play with in-app payments",
         subtitle: "Futurmap | Cross-platform Mobile",
         desc: "Development of a dedicated mobile application for learning golf, offering an optimal user experience and advanced features for golf enthusiasts.",
         tech: ["Flutter", "Stripe", "Firebase"],
@@ -182,6 +205,7 @@ export const CVData: Record<string, CVLocale> = {
       },
       {
         title: "Product Ticketing",
+        summary: "Ticket management platform for request tracking and real-time team collaboration",
         subtitle: "Freelance | Web Application",
         desc: "Design and development of a complete product ticket management platform. With a robust architecture allowing for efficient request management, ticket tracking, and real-time collaboration.",
         tech: ["Express.js", "Vue.js", "TailwindCSS", "Docker", "PostgreSQL"],
@@ -189,6 +213,7 @@ export const CVData: Record<string, CVLocale> = {
       },
       {
         title: "SingSong",
+        summary: "Social karaoke app to sing, listen to and record songs, built for the Adventist community",
         subtitle: "Freelance | Mobile Application",
         desc: "A social karaoke mobile application allowing users to sing, listen, and record songs. This application is targeted for Adventists.",
         tech: ["Flutter"],
@@ -198,6 +223,7 @@ export const CVData: Record<string, CVLocale> = {
       },
       {
         title: "MENTO",
+        summary: "Mental-strength companion that helps users organize thoughts and understand their feelings",
         subtitle: "AUREON | Mobile Application",
         desc: "MENTO is your personal companion for mental strength. An app that helps you organize your thoughts, understand your feelings, and gain new perspectives. No hocus-pocus, but modern psychology made simple and accessible.",
         tech: ["Flutter", "Firebase", "Gemini", "Stripe"],
@@ -210,7 +236,7 @@ export const CVData: Record<string, CVLocale> = {
   fr: {
     name: "Harena Rico Mahefaniaina",
     title: "Développeur Mobile & Web",
-    photo: "/profile.png",
+    photo: "/images/profile-resume.jpg",
     contact: {
       email: "harenaricom@gmail.com",
       phone: "+261 34 33 135 51",
@@ -253,7 +279,11 @@ export const CVData: Record<string, CVLocale> = {
         to: "Juin 2026",
         details:
           "Lead développeur responsable de l'architecture technique, de la gestion d'équipe et du développement d'applications mobiles et web.",
-        tech: ["Flutter", "Firebase", "Gemini"],
+        tech: ["Flutter", "Firebase", "Gemini", "Stripe"],
+        highlights: [
+          "Responsable de l'architecture technique et de l'équipe produisant les applications mobiles et web",
+          "Conception de MENTO, compagnon de force mentale avec accompagnement par Gemini et abonnements Stripe",
+        ],
       },
       {
         company: "Futurmap",
@@ -262,7 +292,12 @@ export const CVData: Record<string, CVLocale> = {
         to: "Janvier 2026",
         details:
           "Lead développeur dans le département beyond map pour la maintenabilité des codes, du projet et l'encadrement de l'équipe.",
-        tech: ["Flutter", "Next.js", "Django"],
+        tech: ["Flutter", "Next.js", "Django", "QGIS"],
+        highlights: [
+          "Pilotage du département Beyond Map : maintenabilité du code, planification et encadrement d'équipe",
+          "Livraison d'une plateforme WebGIS avec un plugin QGIS synchronisant les modifications en temps réel via WebSocket",
+          "Création d'un visualiseur 360° transformant des photos panoramiques en scènes géospatiales immersives",
+        ],
       },
       {
         company: "Futurmap",
@@ -271,7 +306,11 @@ export const CVData: Record<string, CVLocale> = {
         to: "2024",
         details:
           "Développement d'applications mobile avec Flutter, Java et Kotlin.",
-        tech: ["Flutter", "Dart"],
+        tech: ["Flutter", "Dart", "Java", "Kotlin"],
+        highlights: [
+          "Développement d'applications mobiles multiplateformes en Flutter, avec des modules Android natifs en Java et Kotlin",
+          "Publication d'InsideGolf, application d'apprentissage du golf sur Google Play, avec paiements Stripe et Firebase",
+        ],
       },
       {
         company: "Fitiavana.MG",
@@ -281,11 +320,15 @@ export const CVData: Record<string, CVLocale> = {
         details:
           "Développement d'une application de stockage avec Vue.js et Laravel.",
         tech: ["Vue.js", "Laravel"],
+        highlights: [
+          "Réalisation complète d'une application de gestion de stock : front-end Vue.js et back-end Laravel",
+        ],
       },
     ],
     projects: [
       {
         title: "ZakaJiaby",
+        summary: "Application de budget de groupe : dépenses partagées, événements et activités collaboratives",
         subtitle: "Freelance | Web et Mobile Multi-plateforme",
         desc: "Application mobile de gestion budgétaire, d'événements et d'activités pour des groupes de personnes. Permet aux utilisateurs de suivre les dépenses, planifier des événements et gérer les activités de manière collaborative au sein d'une interface conviviale.",
         tech: ["Flutter", "Express.js", "PostgreSQL"],
@@ -294,6 +337,7 @@ export const CVData: Record<string, CVLocale> = {
       },
       {
         title: "Plateforme WebSIG",
+        summary: "SIG web avec plugin QGIS synchronisé en temps réel via WebSocket et visualiseur 360°",
         subtitle: "Futurmap | Application Web SIG",
         desc: "Développement d'une plateforme WebSIG complète avec une intégration du QGIS. Création d'un plugin QGIS personnalisé communiquant via WebSocket pour synchroniser les modifications directement avec l'application web. Mise en place d'un système d'affichage de couches géospatiales sur les images et une carte interactive. Développement d'un viewer innovant transformant les images panoramiques en expérience 360° immersive.",
         tech: [
@@ -311,6 +355,7 @@ export const CVData: Record<string, CVLocale> = {
       },
       {
         title: "InsideGolf",
+        summary: "Application mobile d'apprentissage du golf publiée sur Google Play, avec paiements intégrés",
         subtitle: "Futurmap | Mobile Multi-plateforme",
         desc: "Développement d'une application mobile dédiée sur l'apprentissage du golf, offrant une expérience utilisateur optimale et des fonctionnalités avancées pour les passionnés de golf.",
         tech: ["Flutter", "Stripe", "Firebase"],
@@ -320,6 +365,7 @@ export const CVData: Record<string, CVLocale> = {
       },
       {
         title: "Product Ticketing",
+        summary: "Plateforme de gestion de tickets : suivi des demandes et collaboration en temps réel",
         subtitle: "Freelance | Application Web",
         desc: "Conception et développement d'une plateforme de gestion de ticket complète des produits. Avec une architecture robuste permettant la gestion efficace des demandes, le suivi des tickets et la collaboration en temps réel.",
         tech: ["Express.js", "Vue.js", "TailwindCSS", "Docker", "PostgreSQL"],
@@ -327,6 +373,7 @@ export const CVData: Record<string, CVLocale> = {
       },
       {
         title: "SingSong",
+        summary: "Karaoké social pour chanter, écouter et enregistrer des chansons, pensé pour les adventistes",
         subtitle: "Freelance | Application Mobile",
         desc: "Une application mobile de karaoké social permettant aux utilisateurs de chanter, d'écouter et d'enregistrer des chansons. Cette application est ciblée pour les Adventistes.",
         tech: ["Flutter"],
@@ -336,6 +383,7 @@ export const CVData: Record<string, CVLocale> = {
       },
       {
         title: "MENTO",
+        summary: "Compagnon de force mentale pour organiser ses pensées et mieux comprendre ses émotions",
         subtitle: "AUREON | Application Mobile",
         desc: "MENTO est votre compagnon personnel pour la force mentale. Une application qui vous aide à organiser vos pensées, comprendre vos émotions et acquérir de nouvelles perspectives. Pas de charlatanisme, mais de la psychologie moderne rendue simple et accessible.",
         tech: ["Flutter", "Firebase", "Gemini", "Stripe"],

@@ -1,29 +1,26 @@
 'use client'
 
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
+import { FormDots, GlobeWireframe } from '@/components/ui/contact-with-globe'
 import { CVData } from '@/data/cv'
-import { motion, type Variants } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { useLocale, useTranslations } from 'next-intl'
-import { Mail, Phone, MapPin, Send, Github, Linkedin } from 'lucide-react'
+import { ArrowRight, Check, Github, Linkedin, Loader2, Mail, MapPin, Phone, X } from 'lucide-react'
 import { useRef, useState, memo } from 'react'
-import Image from 'next/image'
 import emailjs from '@emailjs/browser'
 
 const SERVICE_ID = 'service_vjp2u4k'
 const TEMPLATE_ID = 'template_862cspe'
 const PUBLIC_KEY = 'n2PoQohU4NjWDSAco'
 
-const colVariants: Variants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.09 } },
-}
+/** Ambohimanambola, Antananarivo */
+const HOME_LOCATION: [number, number] = [-18.93, 47.6]
 
-const rowVariants: Variants = {
-  hidden: { opacity: 0, y: 12 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.38, ease: 'easeOut' } },
-}
+const smoothEase = [0.25, 0.1, 0.25, 1] as const
+
+const fieldClass =
+  'w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-gray-100 placeholder:text-gray-600 outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/15 transition-all duration-200'
+const labelClass = 'text-[11px] font-semibold tracking-widest uppercase text-gray-500'
 
 function ContactInner() {
   const locale = useLocale()
@@ -33,6 +30,7 @@ function ContactInner() {
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
   const [error, setError] = useState(false)
+  const [globeFocus, setGlobeFocus] = useState<[number, number] | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -57,148 +55,221 @@ function ContactInner() {
     }
   }
 
-  const contactItems = [
+  const contactLinks = [
     { icon: Mail, label: t('email'), value: cv.contact.email, href: `mailto:${cv.contact.email}` },
-    { icon: Phone, label: t('phone'), value: cv.contact.phone, href: `tel:${cv.contact.phone}` },
-    { icon: MapPin, label: t('address'), value: cv.contact.address, href: null },
+    { icon: Phone, label: t('phone'), value: cv.contact.phone, href: `tel:${cv.contact.phone.replace(/\s/g, '')}` },
+    {
+      icon: MapPin,
+      label: t('location'),
+      value: cv.contact.address,
+      href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cv.contact.address + ', Antananarivo, Madagascar')}`,
+      focusGlobe: true,
+    },
   ]
 
+  const socials = [
+    { icon: Github, label: 'GitHub', href: cv.contact.github },
+    { icon: Linkedin, label: 'LinkedIn', href: cv.contact.linkedin },
+  ].filter((s): s is typeof s & { href: string } => Boolean(s.href))
+
   return (
-    <section
-      className="w-full flex items-center justify-center text-white py-8 sm:py-12 px-4 sm:px-6"
-    >
-      <div className="max-w-5xl mx-auto w-full">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, ease: 'easeOut' }}
-          className="mb-6 sm:mb-10 flex items-center justify-between"
-        >
-          <div>
-            <span className="text-xs font-semibold text-blue-400 uppercase tracking-widest">{t('subtitle')}</span>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mt-2 bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
-              {t('title')}
-            </h2>
-          </div>
-          <div className="hidden sm:block w-20 h-20 md:w-28 md:h-28 relative opacity-60 section-deco-float">
-            <Image src="/images/contact-deco.png" alt="" fill className="object-contain" />
-          </div>
-        </motion.div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-          {/* Left: Contact info */}
+    <section className="relative w-full text-white py-6 sm:py-10 px-4 sm:px-6">
+      <div className="relative mx-auto max-w-5xl">
+        {/* Header */}
+        <div className="flex flex-col items-center text-center gap-3 mb-8 md:mb-10">
           <motion.div
-            variants={colVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-40px' }}
-            className="space-y-3 sm:space-y-4"
+            initial={{ opacity: 0, y: -12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: smoothEase }}
+            className="inline-flex items-center px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-400/30"
           >
-            {contactItems.map((item, idx) => {
-              const Icon = item.icon
-              return (
-                <motion.div
-                  key={idx}
-                  variants={rowVariants}
-                  className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl bg-white/5 border border-white/10 hover:border-blue-500/30 hover:bg-blue-900/10 transition-colors duration-200 group"
-                >
-                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-blue-900/30 border border-blue-500/30 flex items-center justify-center flex-shrink-0 group-hover:bg-blue-900/50 transition-colors duration-200">
-                    <Icon className="w-4 h-4 text-blue-400" />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-xs text-gray-500 uppercase tracking-wider">{item.label}</p>
-                    {item.href ? (
-                      <a href={item.href} className="text-sm text-gray-200 hover:text-blue-400 transition-colors duration-150 truncate block">{item.value}</a>
-                    ) : (
-                      <p className="text-sm text-gray-200 truncate">{item.value}</p>
-                    )}
-                  </div>
-                </motion.div>
-              )
-            })}
-
-            {/* Social links */}
-            <motion.div variants={rowVariants} className="flex gap-3 pt-1">
-              <a
-                href={cv.contact.github ?? 'https://github.com'}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:bg-blue-900/30 hover:border-blue-500/40 transition-colors duration-200"
-              >
-                <Github className="w-4 h-4 text-gray-400 hover:text-white transition-colors duration-150" />
-              </a>
-              <a
-                href={cv.contact.linkedin ?? 'https://linkedin.com'}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:bg-blue-900/30 hover:border-blue-500/40 transition-colors duration-200"
-              >
-                <Linkedin className="w-4 h-4 text-gray-400 hover:text-white transition-colors duration-150" />
-              </a>
-            </motion.div>
+            <span className="text-xs sm:text-sm text-blue-400 font-medium">{t('subtitle')}</span>
           </motion.div>
 
-          {/* Right: Contact form */}
+          <motion.h2
+            initial={{ opacity: 0, y: 14 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.9, delay: 0.15, ease: smoothEase }}
+            className="text-3xl sm:text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400"
+          >
+            {t('title')}
+          </motion.h2>
+
+          <motion.p
+            initial={{ opacity: 0, y: 14 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.9, delay: 0.3, ease: smoothEase }}
+            className="text-sm sm:text-base text-gray-400 max-w-md"
+          >
+            {t('description')}
+          </motion.p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 items-start">
+          {/* Left: channels + globe */}
+          <motion.div
+            initial={{ opacity: 0, y: 28 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.0, delay: 0.2, ease: smoothEase }}
+            className="flex flex-col gap-5"
+          >
+            <div className="flex flex-col gap-1">
+              <h3 className="text-lg sm:text-xl font-semibold text-white">{t('getInTouch')}</h3>
+              <p className="text-sm text-gray-400 leading-relaxed max-w-sm">{t('getInTouchDesc')}</p>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              {contactLinks.map(({ icon: Icon, label, value, href, focusGlobe }, i) => (
+                <motion.a
+                  key={label}
+                  href={href}
+                  target={href.startsWith('http') ? '_blank' : undefined}
+                  rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                  aria-label={`${label}: ${value}`}
+                  onMouseEnter={focusGlobe ? () => setGlobeFocus(HOME_LOCATION) : undefined}
+                  onMouseLeave={focusGlobe ? () => setGlobeFocus(null) : undefined}
+                  onFocus={focusGlobe ? () => setGlobeFocus(HOME_LOCATION) : undefined}
+                  onBlur={focusGlobe ? () => setGlobeFocus(null) : undefined}
+                  initial={{ opacity: 0, x: -12 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.3 + i * 0.1, ease: smoothEase }}
+                  className="group flex items-center gap-3 w-fit max-w-full text-sm text-gray-400 hover:text-white transition-colors duration-200 outline-none focus-visible:text-white"
+                >
+                  <span className="w-9 h-9 rounded-lg bg-white/[0.04] border border-white/10 group-hover:border-blue-500/40 group-hover:bg-blue-500/10 group-focus-visible:border-blue-500/60 flex items-center justify-center shrink-0 transition-all duration-200">
+                    <Icon className="w-4 h-4 text-gray-500 group-hover:text-blue-400 transition-colors duration-200" />
+                  </span>
+                  <span className="truncate">{value}</span>
+                </motion.a>
+              ))}
+
+              <motion.div
+                initial={{ opacity: 0, x: -12 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.3 + contactLinks.length * 0.1, ease: smoothEase }}
+                className="flex gap-2 pt-1"
+              >
+                {socials.map(({ icon: Icon, label, href }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    title={label}
+                    className="group w-9 h-9 rounded-lg bg-white/[0.04] border border-white/10 hover:border-blue-500/40 hover:bg-blue-500/10 flex items-center justify-center transition-all duration-200"
+                  >
+                    <Icon className="w-4 h-4 text-gray-500 group-hover:text-blue-400 transition-colors duration-200" />
+                  </a>
+                ))}
+              </motion.div>
+            </div>
+
+            {/* Globe, cropped and faded out at the bottom */}
+            <div
+              className="relative h-60 overflow-hidden"
+              style={{ maskImage: 'linear-gradient(to bottom, black 55%, transparent 100%)' }}
+            >
+              <GlobeWireframe
+                className="mx-auto max-w-[360px] text-blue-300/50"
+                initialLocation={HOME_LOCATION}
+                focus={globeFocus}
+                markers={[{ location: HOME_LOCATION, label: 'Antananarivo' }]}
+              />
+            </div>
+            <p className="-mt-6 text-xs text-gray-500 text-center">{t('basedIn')}</p>
+          </motion.div>
+
+          {/* Right: form */}
           <motion.form
             ref={formRef}
             onSubmit={handleSubmit}
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: '-40px' }}
-            transition={{ duration: 0.5, ease: 'easeOut' }}
-            className="space-y-3 sm:space-y-4 bg-white/5 border border-white/10 rounded-2xl p-4 sm:p-6 hover:border-blue-500/20 transition-colors duration-200"
+            initial={{ opacity: 0, y: 28 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.0, delay: 0.35, ease: smoothEase }}
+            className="rounded-2xl border border-white/10 bg-[#050d1f]/70 backdrop-blur-sm p-5 sm:p-7 flex flex-col gap-5 shadow-[0_0_40px_rgba(59,130,246,0.06)]"
           >
-            <Input
-              name="from_name"
-              placeholder={t('yourName')}
-              required
-              className="bg-white/5 text-white border-white/10 focus:border-blue-500/50 rounded-lg placeholder:text-gray-600 transition-colors duration-150 text-sm"
-            />
-            <Input
-              name="from_email"
-              placeholder={t('yourEmail')}
-              type="email"
-              required
-              className="bg-white/5 text-white border-white/10 focus:border-blue-500/50 rounded-lg placeholder:text-gray-600 transition-colors duration-150 text-sm"
-            />
-            <Textarea
-              name="message"
-              placeholder={t('message')}
-              required
-              rows={4}
-              className="bg-white/5 text-white border-white/10 focus:border-blue-500/50 rounded-lg placeholder:text-gray-600 resize-none transition-colors duration-150 text-sm"
-            />
-            <Button
-              type="submit"
-              disabled={sending || sent}
-              className={`w-full rounded-lg shadow-lg transition-colors duration-200 flex items-center gap-2 justify-center text-sm ${
-                sent
-                  ? 'bg-green-600 hover:bg-green-600 shadow-green-600/20'
-                  : error
-                    ? 'bg-red-600 hover:bg-red-600 shadow-red-600/20'
-                    : 'bg-blue-600 hover:bg-blue-500 shadow-blue-600/20 hover:shadow-blue-500/30'
-              }`}
-            >
-              {sent ? (
-                <span className="flex items-center gap-2">✓ {t('sent') ?? 'Sent!'}</span>
-              ) : error ? (
-                <span className="flex items-center gap-2">✕ Failed — try again</span>
-              ) : sending ? (
-                <span className="flex items-center gap-2">
-                  <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                  </svg>
-                  {t('sending')}
-                </span>
-              ) : (
-                <span className="flex items-center gap-2">
-                  <Send className="w-4 h-4" />
-                  {t('send')}
-                </span>
-              )}
-            </Button>
+            <div>
+              <h3 className="text-lg font-semibold text-white mb-0.5">{t('sendTitle')}</h3>
+              <p className="text-sm text-gray-400">{t('sendDesc')}</p>
+            </div>
+
+            <FormDots />
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex flex-col gap-2">
+                <label htmlFor="contact-name" className={labelClass}>{t('nameLabel')}</label>
+                <input
+                  id="contact-name"
+                  name="from_name"
+                  type="text"
+                  autoComplete="name"
+                  placeholder={t('namePlaceholder')}
+                  required
+                  className={fieldClass}
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label htmlFor="contact-email" className={labelClass}>{t('emailLabel')}</label>
+                <input
+                  id="contact-email"
+                  name="from_email"
+                  type="email"
+                  autoComplete="email"
+                  placeholder={t('yourEmail')}
+                  required
+                  className={fieldClass}
+                />
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label htmlFor="contact-message" className={labelClass}>{t('messageLabel')}</label>
+              <textarea
+                id="contact-message"
+                name="message"
+                placeholder={t('messagePlaceholder')}
+                rows={5}
+                required
+                className={`${fieldClass} py-3 resize-none`}
+              />
+            </div>
+
+            <div className="flex items-center gap-3">
+              <Button
+                type="submit"
+                disabled={sending || sent}
+                className={`h-11 px-7 rounded-xl font-semibold text-sm text-white group shadow-lg transition-colors duration-200 disabled:opacity-100 ${
+                  sent
+                    ? 'bg-emerald-600 hover:bg-emerald-600 shadow-emerald-600/20'
+                    : error
+                      ? 'bg-red-600 hover:bg-red-600 shadow-red-600/20'
+                      : 'bg-blue-600 hover:bg-blue-500 shadow-blue-600/25'
+                }`}
+              >
+                {sent ? (
+                  <><Check className="w-4 h-4" /> {t('sent')}</>
+                ) : error ? (
+                  <><X className="w-4 h-4" /> {t('failed')}</>
+                ) : sending ? (
+                  <><Loader2 className="w-4 h-4 animate-spin" /> {t('sending')}</>
+                ) : (
+                  <>
+                    {t('send')}
+                    <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+                  </>
+                )}
+              </Button>
+              <span className="sr-only" role="status" aria-live="polite">
+                {sent ? t('sent') : error ? t('failed') : ''}
+              </span>
+            </div>
           </motion.form>
         </div>
       </div>
