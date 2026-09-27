@@ -125,8 +125,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Mobile: allow the page to scroll vertically */
-@media (max-width: 767px) {
+/* Phones and touch tablets (stacked layout): allow the page to scroll vertically */
+@media (max-width: 767px), (pointer: coarse) {
   html, body {
     overflow: auto;
     height: auto;
@@ -134,8 +134,8 @@ body {
   }
 }
 
-/* Desktop: body locked — only the horizontal snap container scrolls */
-@media (min-width: 768px) {
+/* Desktop with a mouse/trackpad (staircase map): body locked — the section camera moves the view */
+@media (min-width: 768px) and (pointer: fine) {
   html, body {
     height: 100dvh;
     overflow: hidden;
@@ -156,38 +156,33 @@ body {
   padding-bottom: env(safe-area-inset-bottom, 8px);
 }
 
-/* ─── Scrollbar: hidden ─── */
-.scrollbar-none::-webkit-scrollbar { display: none; }
-.scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+/* ─── Scrollbars: hidden everywhere on the site (scrolling still works) ─── */
+html,
+body,
+* {
+  scrollbar-width: none;      /* Firefox */
+  -ms-overflow-style: none;   /* legacy Edge */
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+*::-webkit-scrollbar {        /* Chrome, Safari, Edge */
+  display: none;
+  width: 0;
+  height: 0;
+}
 
-/* ─── Scrollbar: subtle ─── */
-.scrollbar-furtif {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255,255,255,0.10) transparent;
-}
-.scrollbar-furtif::-webkit-scrollbar { width: 5px; height: 5px; }
-.scrollbar-furtif::-webkit-scrollbar-track { background: transparent; }
-.scrollbar-furtif::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.08);
-  border-radius: 9999px;
-}
-.scrollbar-furtif:hover::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.16);
-}
-.scrollbar-furtif::-webkit-scrollbar-corner { background: transparent; }
-
-/* ─── Spin keyframe ─── */
-@keyframes spin {
+/* ─── Hero ring spin (named so it doesn't override Tailwind's animate-spin) ─── */
+@keyframes hero-spin {
   from { transform: translate(-50%, -50%) rotate(0deg); }
   to   { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
 /* ─── Hero ring animations (CSS-only, GPU-composited) ─── */
 .hero-ring {
-  animation: spin 20s linear infinite;
+  animation: hero-spin 20s linear infinite;
 }
 .hero-ring-reverse {
-  animation: spin 15s linear infinite reverse;
+  animation: hero-spin 15s linear infinite reverse;
 }
 
 /* ─── Hero float (profile photo) ─── */
@@ -215,6 +210,13 @@ body {
 }
 .section-deco-float {
   animation: deco-float 5s ease-in-out infinite;
+}
+
+/* ─── Pause looping animations in sections the camera isn't showing (desktop map) ─── */
+[data-offscreen] *,
+[data-offscreen] *::before,
+[data-offscreen] *::after {
+  animation-play-state: paused !important;
 }
 
 /* ─── Scroll indicator bounce ─── */

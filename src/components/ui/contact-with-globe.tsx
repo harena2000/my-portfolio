@@ -19,7 +19,7 @@ interface GlobeWireframeProps {
   strokeWidth?: number;
   showGraticule?: boolean;
   graticuleOpacity?: number;
-  /** Degrees per second */
+  /** Idle spin in degrees per second; 0 keeps the globe still until hovered or dragged */
   autoRotateSpeed?: number;
   /** When set, the globe stops auto-rotating and flies to this point */
   focus?: LatLng | null;
@@ -111,7 +111,7 @@ export function GlobeWireframe({
 
   // Idle spin
   useEffect(() => {
-    if (!isVisible || isDragging || focus || reducedMotion) return;
+    if (!autoRotateSpeed || !isVisible || isDragging || focus || reducedMotion) return;
     let raf = 0;
     let last = performance.now();
     const tick = (now: number) => {

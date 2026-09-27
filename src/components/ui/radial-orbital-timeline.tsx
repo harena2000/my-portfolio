@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import NextLink from "next/link";
 import { ArrowRight, ArrowUpRight, Link, Zap } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -73,6 +73,11 @@ export default function RadialOrbitalTimeline({
 
   const containerRef = useRef<HTMLDivElement>(null);
   const orbitRef = useRef<HTMLDivElement>(null);
+  const nodeEls = useRef<(HTMLDivElement | null)[]>([]);
+  // While auto-rotating, the live angle lives here and nodes are moved directly in the DOM,
+  // so the orbit spins without re-rendering React every frame
+  const liveAngle = useRef(0);
+  const spinning = useRef(false);
 
   const autoRotate =
     activeNodeId === null && !isHovered && isVisible && !reducedMotion;
@@ -111,20 +116,62 @@ export default function RadialOrbitalTimeline({
     return () => obs.disconnect();
   }, []);
 
-  // Smooth, frame-rate independent rotation
+  const calculateNodePosition = (index: number, total: number, rotation: number) => {
+    const angle = (index / total) * 360 + rotation;
+    const radian = (angle * Math.PI) / 180;
+
+    const x = radius * Math.cos(radian);
+    const y = radius * Math.sin(radian);
+
+    // Nodes toward the bottom feel "closer": brighter and on top
+    const depth = (1 + Math.sin(radian)) / 2;
+    const zIndex = Math.round(100 + 50 * depth);
+    const opacity = 0.5 + 0.5 * depth;
+
+    return { x, y, zIndex, opacity };
+  };
+
+  /** Move every node to the given rotation, bypassing React (idle spin only: no node is active) */
+  const placeNodes = (rotation: number) => {
+    nodeEls.current.forEach((el, index) => {
+      if (!el) return;
+      const p = calculateNodePosition(index, timelineData.length, rotation);
+      el.style.transform = `translate(${p.x}px, ${p.y}px)`;
+      el.style.zIndex = String(p.zIndex);
+      el.style.opacity = String(p.opacity);
+    });
+  };
+
+  // Smooth, frame-rate independent idle rotation, written straight to the DOM
   useEffect(() => {
     if (!autoRotate) return;
+    liveAngle.current = rotationAngle;
+    spinning.current = true;
     let raf = 0;
     let last = performance.now();
     const tick = (now: number) => {
       const delta = (now - last) / 1000;
       last = now;
-      setRotationAngle((prev) => (prev + ROTATION_SPEED * delta) % 360);
+      liveAngle.current = (liveAngle.current + ROTATION_SPEED * delta) % 360;
+      placeNodes(liveAngle.current);
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
+    return () => {
+      cancelAnimationFrame(raf);
+      spinning.current = false;
+      // Hand the live angle back to React so the next render continues from here
+      setRotationAngle(liveAngle.current);
+    };
+    // placeNodes/rotationAngle are read when the spin (re)starts only
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoRotate]);
+
+  // A re-render mid-spin (e.g. hover starting) would reset nodes to the stale state angle;
+  // re-apply the live angle before paint so nothing jumps
+  useLayoutEffect(() => {
+    if (spinning.current) placeNodes(liveAngle.current);
+  });
 
   const close = useCallback(() => setActiveNodeId(null), []);
 
@@ -158,21 +205,6 @@ export default function RadialOrbitalTimeline({
     if (e.target === containerRef.current || e.target === orbitRef.current) {
       close();
     }
-  };
-
-  const calculateNodePosition = (index: number, total: number) => {
-    const angle = (index / total) * 360 + rotationAngle;
-    const radian = (angle * Math.PI) / 180;
-
-    const x = radius * Math.cos(radian);
-    const y = radius * Math.sin(radian);
-
-    // Nodes toward the bottom feel "closer": brighter and on top
-    const depth = (1 + Math.sin(radian)) / 2;
-    const zIndex = Math.round(100 + 50 * depth);
-    const opacity = 0.5 + 0.5 * depth;
-
-    return { x, y, zIndex, opacity };
   };
 
   const activeItem = timelineData.find((item) => item.id === activeNodeId);
@@ -234,7 +266,7 @@ export default function RadialOrbitalTimeline({
         />
 
         {timelineData.map((item, index) => {
-          const position = calculateNodePosition(index, timelineData.length);
+          const position = calculateNodePosition(index, timelineData.length, rotationAngle);
           const isExpanded = activeNodeId === item.id;
           const isRelated = isRelatedToActive(item.id);
           const Icon = item.icon;
@@ -244,8 +276,12 @@ export default function RadialOrbitalTimeline({
           return (
             <div
               key={item.id}
+              ref={(el) => {
+                nodeEls.current[index] = el;
+              }}
               className={cn(
-                "absolute",
+                // Own compositor layer: the idle spin moves nodes without repainting the section
+                "absolute will-change-transform",
                 // Only ease while snapping to a node; auto-rotation is per-frame
                 !autoRotate && "transition-[transform,opacity] duration-700 ease-out"
               )}
@@ -311,7 +347,7 @@ export default function RadialOrbitalTimeline({
               {isExpanded && (
                 <Card
                   onClick={(e) => e.stopPropagation()}
-                  className="absolute top-16 left-1/2 -translate-x-1/2 w-72 gap-3 py-4 bg-[#050d1f]/95 backdrop-blur-lg border-blue-400/30 text-white shadow-xl shadow-blue-500/10 overflow-visible animate-in fade-in zoom-in-95 slide-in-from-top-2 duration-300"
+                  className="absolute top-16 left-1/2 -translate-x-1/2 w-72 gap-3 py-4 bg-[#050d1f]/95 border-blue-400/30 text-white shadow-xl shadow-blue-500/10 overflow-visible animate-in fade-in zoom-in-95 slide-in-from-top-2 duration-300"
                 >
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-px h-3 bg-blue-300/50" />
                   <CardHeader className="px-4 gap-1">

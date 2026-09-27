@@ -1,15 +1,16 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { memo, useEffect, useState } from "react";
+import { SECTION_IDS, legDirection } from "@/lib/section-map";
 
 /**
- * Desktop-only pill shown once the current snap panel is scrolled to its end,
- * telling the user that scrolling further moves on to the next section.
+ * Desktop-only pill shown once the current section is scrolled to its end, telling the user
+ * that scrolling further moves on to the next section (the arrow shows which way).
  */
-function SectionContinueHintInner({ sectionIds }: { sectionIds: string[] }) {
+function SectionContinueHintInner() {
   const t = useTranslations("Navbar");
   const [index, setIndex] = useState(0);
   const [atBottom, setAtBottom] = useState(false);
@@ -24,7 +25,7 @@ function SectionContinueHintInner({ sectionIds }: { sectionIds: string[] }) {
   }, []);
 
   useEffect(() => {
-    const panel = document.getElementById(`section-${sectionIds[index]}`);
+    const panel = document.getElementById(`section-${SECTION_IDS[index]}`);
     if (!panel) return;
     const check = () => setAtBottom(panel.scrollTop + panel.clientHeight >= panel.scrollHeight - 2);
     check();
@@ -37,9 +38,9 @@ function SectionContinueHintInner({ sectionIds }: { sectionIds: string[] }) {
       window.removeEventListener("resize", check);
       timers.forEach(clearTimeout);
     };
-  }, [index, sectionIds]);
+  }, [index]);
 
-  const nextId = sectionIds[index + 1];
+  const nextId = SECTION_IDS[index + 1];
   const visible = atBottom && Boolean(nextId);
 
   return (
@@ -60,7 +61,11 @@ function SectionContinueHintInner({ sectionIds }: { sectionIds: string[] }) {
           <span>
             {t("next")}: <span className="text-blue-300">{t(nextId)}</span>
           </span>
-          <ChevronRight className="w-3.5 h-3.5 text-blue-300 animate-pulse" />
+          {legDirection(index) === "down" ? (
+            <ChevronDown className="w-3.5 h-3.5 text-blue-300 animate-pulse" />
+          ) : (
+            <ChevronRight className="w-3.5 h-3.5 text-blue-300 animate-pulse" />
+          )}
         </motion.button>
       )}
     </AnimatePresence>

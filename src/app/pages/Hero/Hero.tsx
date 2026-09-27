@@ -12,8 +12,8 @@ import Image from 'next/image'
 const BADGE_SPOTS = [
   'top-0 right-0 sm:top-2 sm:right-2',
   'bottom-4 right-0 sm:right-2',
-  'top-1/3 -left-6 sm:-left-2',
-  'bottom-8 -left-4 sm:left-0',
+  'top-1/3 -left-10 md:-left-20',
+  'bottom-8 -left-6 md:-left-12',
   'top-0 left-1/4 sm:left-1/3',
 ]
 
@@ -36,7 +36,7 @@ const cardsVariants: Variants = {
 function FloatingBadge({ label, className, delay = 0 }: { label: string; className: string; delay?: number }) {
   return (
     <div
-      className={`absolute px-2.5 py-1 rounded-full bg-black/60 border border-blue-500/30 text-xs text-blue-300 font-medium shadow-lg floating-badge ${className}`}
+      className={`absolute px-2.5 py-1 rounded-full bg-black/60 border border-blue-500/30 text-xs text-blue-300 font-medium shadow-lg z-20 floating-badge ${className}`}
       style={{ animationDelay: `${delay}s` }}
     >
       {label}
@@ -98,7 +98,7 @@ function HeroInner() {
 
   return (
     <section
-      className="w-full flex flex-col items-center justify-center px-4 sm:px-6 md:px-12 lg:px-16 py-8 md:py-10 relative"
+      className="w-full flex flex-col items-center justify-center px-4 sm:px-6 md:px-12 lg:px-16 py-8 md:py-6 relative"
     >
       {/* Cursor glow — hidden on touch devices */}
       <div
@@ -107,14 +107,14 @@ function HeroInner() {
         style={{ top: 0, left: 0 }}
       />
 
-      <div className="w-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-x-12 items-center z-10">
+      <div className="w-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-x-16 lg:gap-x-24 items-center md:min-h-[calc(100dvh-11rem)] z-10">
 
         {/* Left Text Section */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="space-y-4 text-center md:text-left order-last md:order-first"
+          className="space-y-4 md:space-y-6 text-center md:text-left order-last md:order-first w-full md:max-w-xl md:justify-self-center"
         >
           {/* Available badge */}
           {openToWork && (
@@ -199,14 +199,14 @@ function HeroInner() {
           initial={{ opacity: 0, scale: 0.92 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.7, ease: 'easeOut', delay: 0.2 }}
-          className="relative flex justify-center md:justify-end order-first md:order-last"
+          className="relative flex justify-center items-center order-first md:order-last md:justify-self-center md:py-10"
         >
           {/* Decorative rings — CSS animation, no will-change (lightweight borders) */}
           <div
-            className="absolute top-1/2 left-1/2 w-[220px] h-[220px] sm:w-[280px] sm:h-[280px] md:w-[340px] md:h-[340px] rounded-full border border-blue-500/10 hero-ring"
+            className="absolute top-1/2 left-1/2 w-[220px] h-[220px] sm:w-[280px] sm:h-[280px] md:w-[340px] md:h-[340px] rounded-full border border-blue-500/10 -translate-x-1/2 -translate-y-1/2 hero-ring"
           />
           <div
-            className="absolute top-1/2 left-1/2 w-[180px] h-[180px] sm:w-[230px] sm:h-[230px] md:w-[280px] md:h-[280px] rounded-full border border-blue-500/15 hero-ring-reverse"
+            className="absolute top-1/2 left-1/2 w-[180px] h-[180px] sm:w-[230px] sm:h-[230px] md:w-[280px] md:h-[280px] rounded-full border border-blue-500/15 -translate-x-1/2 -translate-y-1/2 hero-ring-reverse"
           />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] md:w-[400px] md:h-[400px] bg-blue-600/8 rounded-full blur-3xl pointer-events-none" />
 
@@ -242,7 +242,7 @@ function HeroInner() {
         variants={cardsVariants}
         initial="hidden"
         animate="visible"
-        className="mt-6 md:mt-8 w-full max-w-7xl z-10"
+        className="mt-10 md:mt-12 w-full max-w-7xl z-10"
       >
         {/* Mobile: horizontal scrollable row */}
         <div className="flex md:hidden gap-3 overflow-x-auto pb-2 scrollbar-none -mx-4 px-4">

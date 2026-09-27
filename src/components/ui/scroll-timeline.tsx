@@ -224,7 +224,7 @@ function TimelineRow({
         viewport={{ root: rootRef, once: true, amount: 0.3 }}
         transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
         className={cn(
-          "group min-w-0 flex-1 rounded-xl border bg-white/5 p-4 backdrop-blur-sm transition-colors duration-300 sm:p-5",
+          "group min-w-0 flex-1 rounded-xl border bg-white/5 p-4 transition-colors duration-300 sm:p-5",
           "hover:bg-white/[0.08] hover:shadow-[0_0_20px_rgba(59,130,246,0.1)]",
           lit ? "border-blue-500/25" : "border-white/10"
         )}

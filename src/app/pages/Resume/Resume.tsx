@@ -161,7 +161,7 @@ function ResumeInner() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.35, ease: 'easeOut', delay: 0.15 }}
-          className="flex items-center justify-between mb-4 px-3 py-2 rounded-xl bg-white/5 border border-white/10 sticky top-16 z-20 backdrop-blur-xl"
+          className="flex items-center justify-between mb-4 px-3 py-2 rounded-xl bg-[#0a1428]/95 border border-white/10 sticky top-16 z-20"
         >
           <div className="flex items-center gap-2 text-sm text-gray-400">
             <FileText className="w-4 h-4 text-blue-400" />

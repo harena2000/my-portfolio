@@ -211,7 +211,7 @@ function ContactInner() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1.0, delay: 0.35, ease: smoothEase }}
-            className="relative rounded-2xl border border-white/10 bg-[#050d1f]/70 backdrop-blur-sm p-5 sm:p-7 flex flex-col gap-5 shadow-[0_0_40px_rgba(59,130,246,0.06)]"
+            className="relative rounded-2xl border border-white/10 bg-[#050d1f]/80 p-5 sm:p-7 flex flex-col gap-5 shadow-[0_0_40px_rgba(59,130,246,0.06)]"
           >
             <div>
               <h3 className="text-lg font-semibold text-white mb-0.5">{t('sendTitle')}</h3>
