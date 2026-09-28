@@ -70,7 +70,12 @@
     "download": "Télécharger le PDF",
     "zoomIn": "Agrandir",
     "zoomOut": "Réduire",
-    "resetZoom": "Réinitialiser le zoom"
+    "resetZoom": "Réinitialiser le zoom",
+    "format": "Format du CV",
+    "friendly": "Design",
+    "ats": "ATS",
+    "friendlyHint": "Mise en page soignée, pour une lecture humaine",
+    "atsHint": "Mise en page simple, lisible par les logiciels de recrutement (ATS)"
   },
   "ProjectPage": {
     "back": "Retour",

@@ -70,7 +70,12 @@
     "download": "Download PDF",
     "zoomIn": "Zoom in",
     "zoomOut": "Zoom out",
-    "resetZoom": "Reset zoom"
+    "resetZoom": "Reset zoom",
+    "format": "Resume format",
+    "friendly": "Friendly",
+    "ats": "ATS",
+    "friendlyHint": "Designed layout, for people reading it",
+    "atsHint": "Plain layout, easy for applicant tracking systems (ATS) to parse"
   },
   "ProjectPage": {
     "back": "Back",

@@ -25,10 +25,20 @@ function ResumeInner() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
   const [pdfUrl, setPdfUrl] = useState<string | null>(null)
+  // "friendly": designed layout for people · "ats": plain layout for applicant tracking systems
+  const [variant, setVariant] = useState<'friendly' | 'ats'>('friendly')
   const canvasContainerRef = useRef<HTMLDivElement>(null)
 
-  const baseName = `CV-${cv.name.replace(/\s+/g, '')}`
+  const baseName = `CV-${cv.name.replace(/\s+/g, '')}${variant === 'ats' ? '-ATS' : ''}`
   const downloadName = locale === 'fr' ? `${baseName}.pdf` : `${baseName}(english).pdf`
+
+  const chooseVariant = (next: 'friendly' | 'ats') => {
+    if (next === variant) return
+    setVariant(next)
+    setLoading(true)
+    setError(false)
+    setPageImages([])
+  }
 
   // Generate the resume PDF from the CMS content so it always matches what's published.
   useEffect(() => {
@@ -37,13 +47,18 @@ function ResumeInner() {
 
     const buildPdf = async () => {
       try {
-        const [{ pdf }, { ResumeDocument }] = await Promise.all([
+        const [{ pdf }, { ResumeDocument }, { ATSResumeDocument }] = await Promise.all([
           import('@react-pdf/renderer'),
           import('./ResumeDocument'),
+          import('./ATSResumeDocument'),
         ])
-        const blob = await pdf(
-          <ResumeDocument data={cv} locale={locale} />
-        ).toBlob()
+        const doc =
+          variant === 'ats' ? (
+            <ATSResumeDocument data={cv} locale={locale} />
+          ) : (
+            <ResumeDocument data={cv} locale={locale} />
+          )
+        const blob = await pdf(doc).toBlob()
         if (cancelled) return
         createdUrl = URL.createObjectURL(blob)
         setPdfUrl(createdUrl)
@@ -61,7 +76,7 @@ function ResumeInner() {
       cancelled = true
       if (createdUrl) URL.revokeObjectURL(createdUrl)
     }
-  }, [cv, locale])
+  }, [cv, locale, variant])
 
   const handleZoomIn = useCallback(() => {
     setZoom((prev) => Math.min(prev + 0.2, 2.5))
@@ -142,6 +157,30 @@ function ResumeInner() {
               </h2>
             </div>
 
+            <motion.div variants={itemVariants} className="flex flex-wrap items-center gap-3">
+            {/* Friendly / ATS switch */}
+            <div
+              role="radiogroup"
+              aria-label={t('format')}
+              className="inline-flex items-center rounded-xl border border-white/10 bg-white/[0.04] p-1"
+            >
+              {(['friendly', 'ats'] as const).map((v) => (
+                <button
+                  key={v}
+                  type="button"
+                  role="radio"
+                  aria-checked={variant === v}
+                  onClick={() => chooseVariant(v)}
+                  title={t(v === 'ats' ? 'atsHint' : 'friendlyHint')}
+                  className={`px-3.5 py-1.5 rounded-lg text-sm font-medium transition-colors duration-200 outline-none focus-visible:ring-2 focus-visible:ring-blue-400/80 ${
+                    variant === v ? 'bg-blue-600 text-white shadow shadow-blue-600/30' : 'text-gray-400 hover:text-white'
+                  }`}
+                >
+                  {t(v)}
+                </button>
+              ))}
+            </div>
+
             {/* Download button */}
             <motion.a
               variants={itemVariants}
@@ -152,6 +191,7 @@ function ResumeInner() {
               <Download className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform duration-200" />
               {t('download')}
             </motion.a>
+            </motion.div>
           </motion.div>
         </motion.div>
 
